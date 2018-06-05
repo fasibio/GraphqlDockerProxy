@@ -1,0 +1,17 @@
+version: '3'
+services: 
+  api: 
+    restart: always
+    build: ../
+    expose:
+      - 3000
+    networks:
+     - web
+    environment: 
+      - dockerNetwork=web
+      - gqlProxyToken=1234
+    volumes: 
+     - /var/run/docker.sock:/var/run/docker.sock
+networks:
+  web:
+    external: true
