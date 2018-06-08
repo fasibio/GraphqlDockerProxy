@@ -99,9 +99,12 @@ Go in the Folder where the SWAPI Service is.
 Send the Command ```sudo docker-compose scale swapi=3```
 The Proxy will known that and Start a Lolabalance
 
+
 ##all About Namespaces
 Namespaces are set by the GraphQl Backend Mikroservice (with the label ```gqlProxy.namespace```)
 If you need more than one GraphQL Backend Server with in the same Namespace, both have to give the same name in there label ```gqlProxy.namespace```. The Proxy will merge it. 
+
+
 ###WARNING!!!!
 At the Moment its not possible to have same named Query or same type with different entitys. The Proxy will use the first one he found. 
 
