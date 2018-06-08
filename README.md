@@ -2,6 +2,7 @@
 A generic Graphql Docker Proxy 
 
 Its a GraphQL API Gateway. 
+
 [![Docker Build Status](https://img.shields.io/docker/build/fasibio/graphqldockerproxy.svg)](https://hub.docker.com/r/fasibio/graphqldockerproxy/) 
 ## How does it works: 
 It works standalone. 
