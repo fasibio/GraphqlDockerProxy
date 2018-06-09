@@ -2,7 +2,7 @@ const Dotenv = require('dotenv-webpack')
 
 
 module.exports = {
-  entry: './index.js',
+  entry: ['babel-polyfill', './index.js'],
   target: 'node',
   output: {
     path: __dirname + '/dist', //eslint-disable-line
@@ -14,15 +14,44 @@ module.exports = {
         test: /\.js$/,
         use: ['remove-hashbag-loader'],
       },
-    ],
-    loaders: [
       {
         test: /\.js$/,
-        exclude: [
-          /node_modules/,
-        ],
-        loader: 'babel-loader',
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+            plugins: [
+              'transform-class-properties',
+            ],
+          },
+        },
       },
+    ],
+    loaders: [
+      // {
+      //   test: /\.js$/,
+      //   exclude: [
+      //     /node_modules/,
+      //   ],
+      //   loader: 'babel',
+      //   // options: {
+      //   //   plugins: [
+      //   //     'transform-es2015-arrow-functions',
+      //   //     'check-es2015-constants',
+      //   //     'transform-es2015-block-scoping',
+      //   //     'syntax-async-functions',
+      //   //     'transform-regenerator',
+      //   //     'transform-class-properties',
+      //   //     'transform-flow-strip-types',
+      //   //     ['transform-runtime', {
+      //   //       'polyfill': true,
+      //   //       'regenerator': true,
+      //   //     }],
+      //   //   ],
+      //   //   presets: ['env', 'es2015'],
+      //   // },
+      // },
     ],
   },
   resolveLoader: {
