@@ -1,6 +1,4 @@
-const webpack = require('webpack')
 const Dotenv = require('dotenv-webpack')
-const ReplacePlugin = require('webpack-plugin-replace')
 
 
 module.exports = {
@@ -14,8 +12,8 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        use: ["remove-hashbag-loader"]
-      }
+        use: ['remove-hashbag-loader'],
+      },
     ],
     loaders: [
       {
@@ -29,20 +27,13 @@ module.exports = {
   },
   resolveLoader: {
     alias: {
-      "remove-hashbag-loader": __dirname + "/loaders/remove-hashbag-loader"
-    }
+      'remove-hashbag-loader': __dirname + '/loaders/remove-hashbag-loader',
+    },
   },
   plugins: [
     new Dotenv({
       path: './.env',
     }),
-    new ReplacePlugin({
-      exclude: [
-        /node_modules/,
-      ],
-      values: {
-        '/../__schemas__/': '/',
-      },
-    }),
+
   ],
 }
