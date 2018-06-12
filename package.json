@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack -d --config webpack.config.js --watch --watch-poll",
+    "dev": "webpack -d --config webpack.config.dev.js --watch --watch-poll",
     "build": "webpack -d --config webpack.config.js",
     "start": "npm run build && node dist/bundle.js",
     "startDev": "dockerNetwork=web gqlProxyToken=1234 nodemon dist/bundle.js",
@@ -27,7 +27,7 @@
     "@babel/core": "^7.0.0-beta.49",
     "@babel/preset-env": "^7.0.0-beta.49",
     "babel-cli": "6.26.0",
-    "babel-core": "6.26.0",
+    "babel-core": "^6.26.0",
     "babel-eslint": "8.0.1",
     "babel-loader": "^8.0.0-beta.3",
     "babel-plugin-check-es2015-constants": "6.22.0",
@@ -45,12 +45,13 @@
     "eslint": "4.9.0",
     "eslint-plugin-classes": "0.1.1",
     "eslint-plugin-import": "2.7.0",
+    "flow-babel-webpack-plugin": "^1.1.1",
     "husky": "0.14.3",
     "jasmine-reporters": "2.2.1",
     "jest-cli": "22.4.3",
     "nodemon": "^1.17.5",
     "pkg": "^4.3.1",
-    "webpack": "^3.10.0",
+    "webpack": "^3.12.0",
     "webpack-plugin-replace": "1.1.1"
   },
   "pkg": {

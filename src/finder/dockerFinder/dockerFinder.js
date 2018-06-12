@@ -1,18 +1,20 @@
+//@flow
 import { Docker } from 'node-docker-api'
 import { token, network } from '../../properties'
 import { loadANewLoadBalaceMiddleware, closeAllServer } from './loadBalancer'
 import { FindEndpoints } from '../findEndpointsInterface'
+import type { Endpoints } from '../findEndpointsInterface'
 export class DockerFinder extends FindEndpoints{
   constructor(){
     super()
   }
 
-  handleRestart = (endpoints) => {
+  handleRestart = (endpoints : Endpoints): Endpoints => {
     return this.foundEquals(endpoints)
   }
 
 
-  foundEquals = (data) => {
+  foundEquals = (data: Endpoints) :Endpoints => {
     closeAllServer()
     for (const one in data){
       const namespace = data[one]
@@ -56,7 +58,7 @@ export class DockerFinder extends FindEndpoints{
  * 
  * 
  */
- updateUrl = (url, sockData) => {
+ updateUrl = (url:string, sockData:any) :string => {
    if (url.startsWith('http')){
      return url
    } else {
@@ -64,7 +66,7 @@ export class DockerFinder extends FindEndpoints{
    }
  }
 
-  getEndpoints = async() => {
+  getEndpoints = async(): Endpoints => {
     const docker = new Docker({ socketPath: '/var/run/docker.sock' })
 
     return await docker.container.list().then(containers => {
