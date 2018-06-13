@@ -1,3 +1,4 @@
+//@flow
 import { makeRemoteExecutableSchema, mergeSchemas, introspectSchema } from 'graphql-tools'
 import { graphqlExpress,
   graphiqlExpress,
@@ -7,7 +8,8 @@ import { weaveSchemas } from 'graphql-weaver'
 import { HttpLink } from 'apollo-link-http'
 import fetch from 'node-fetch'
 import * as bodyParser from 'body-parser'
-import { getDockerEndpoints, foundEquals } from './findContainer'
+import { DockerFinder } from './finder/dockerFinder/dockerFinder'
+import type { Endpoints, Endpoint } from './finder/findEndpointsInterface'
 const createRemoteSchema = async(url) => {
   const link = new HttpLink({ uri: url, fetch })
   const schema = await introspectSchema(link)
@@ -26,11 +28,14 @@ const weaverIt = async(endpoints) => {
   })
 }
 
-const getMergedInformation = async(namespace) => {
+const getMergedInformation = async(namespace: Array<Endpoint>) => {
   const schema = []
-  for (const oneEndpoint in namespace){
-    schema.push(await createRemoteSchema(namespace[oneEndpoint].url))
-  }
+
+  await namespace.forEach(async(one) => {
+    console.log('oneEndpoint:', one)
+    schema.push(await createRemoteSchema(one.url))
+
+  })
   const merged = mergeSchemas({
     schemas: schema,
   })
@@ -42,9 +47,10 @@ const run = async() => {
 
   console.log('Start IT')
   let server = null
-  let lastEndPoints = null
+  let lastEndPoints : string = ''
+  const dockerFinder = new DockerFinder()
   setInterval(async() => {
-    const endpoints = await getDockerEndpoints()
+    const endpoints : Endpoints = await dockerFinder.getEndpoints()
 
     if (JSON.stringify(endpoints) !== lastEndPoints){
       console.log('Changes Found restart Server')
@@ -52,7 +58,7 @@ const run = async() => {
         server.close()
       }
       lastEndPoints = JSON.stringify(endpoints)
-      server = await start(foundEquals(endpoints))
+      server = await start(dockerFinder.handleRestart(endpoints))
     } else {
       console.log('no Change at endpoints does not need a restart')
     }
@@ -60,7 +66,7 @@ const run = async() => {
 
 }
 
-const start = async(endpoints) => {
+const start = async(endpoints : Endpoints) => {
 
   const weaverEndpoints = []
 
