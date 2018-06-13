@@ -1,0 +1,49 @@
+---
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  
+  labels:
+    app:     swapi
+  name:      swapi
+  namespace: swapi
+spec:
+  minReadySeconds: 20
+  replicas: 2
+  revisionHistoryLimit: 32
+  template:
+    metadata:
+      name: swapi
+      labels:
+        app: swapi
+    spec:
+      terminationGracePeriodSeconds: 1
+      containers:
+        - image: bfillmer/graphql-swapi
+          imagePullPolicy: Always
+          name: swapi
+          ports:
+            - containerPort: 9000
+              name: http-port
+          # readinessProbe:
+          #   httpGet:
+          #     port: http-port
+          #     path: /
+---
+kind: Service
+apiVersion: v1
+metadata:
+  annotations:
+    gqlProxy.token: '1234'
+    gqlProxy.url: ':9000/graphql'
+    gqlProxy.namespace: 'swapi'
+  labels:
+    name: swapi
+  name:      swapi
+  namespace: swapi
+spec:
+  ports:
+    - port: 9000
+      name: http
+  selector:
+    app: swapi

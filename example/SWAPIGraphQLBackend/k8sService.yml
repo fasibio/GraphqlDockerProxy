@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: swapi
+  annotations:
+    gqlProxy.token: '1234'
+    gqlProxy.url: ':9000/graphql'
+    gqlProxy.namespace: 'swapi'
+spec:
+  selector:
+    app: swapi
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 9000

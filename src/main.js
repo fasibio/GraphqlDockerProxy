@@ -9,7 +9,10 @@ import { HttpLink } from 'apollo-link-http'
 import fetch from 'node-fetch'
 import * as bodyParser from 'body-parser'
 import { DockerFinder } from './finder/dockerFinder/dockerFinder'
+import { K8sFinder } from './finder/k8sFinder/k8sFinder'
+import { runtime } from './properties'
 import type { Endpoints, Endpoint } from './finder/findEndpointsInterface'
+
 const createRemoteSchema = async(url) => {
   const link = new HttpLink({ uri: url, fetch })
   const schema = await introspectSchema(link)
@@ -48,9 +51,20 @@ const run = async() => {
   console.log('Start IT')
   let server = null
   let lastEndPoints : string = ''
-  const dockerFinder = new DockerFinder()
+  let finder
+
+  switch (runtime()){
+    case 'kubernetes':{
+      finder = new K8sFinder()
+      break
+    }
+    case 'docker': {
+      finder = new DockerFinder()
+    }
+
+  }
   setInterval(async() => {
-    const endpoints : Endpoints = await dockerFinder.getEndpoints()
+    const endpoints : Endpoints = await finder.getEndpoints()
 
     if (JSON.stringify(endpoints) !== lastEndPoints){
       console.log('Changes Found restart Server')
@@ -58,7 +72,7 @@ const run = async() => {
         server.close()
       }
       lastEndPoints = JSON.stringify(endpoints)
-      server = await start(dockerFinder.handleRestart(endpoints))
+      server = await start(finder.handleRestart(endpoints))
     } else {
       console.log('no Change at endpoints does not need a restart')
     }
