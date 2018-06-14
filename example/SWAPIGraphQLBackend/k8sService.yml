@@ -4,7 +4,7 @@ metadata:
   name: swapi
   annotations:
     gqlProxy.token: '1234'
-    gqlProxy.url: ':9000/graphql'
+    gqlProxy.url: ':9001/graphql'
     gqlProxy.namespace: 'swapi'
 spec:
   selector:

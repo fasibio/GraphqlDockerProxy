@@ -1,3 +1,6 @@
+//@flow
+
+
 global.idx = (obj, callBack) => {
   try {
     const res = callBack(obj)

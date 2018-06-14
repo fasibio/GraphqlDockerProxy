@@ -2,25 +2,65 @@
 //@flow
 const Client = require('kubernetes-client').Client
 const config = require('kubernetes-client').config
+import * as clientLabels from '../clientLabels'
 import { FindEndpoints } from '../findEndpointsInterface'
+import { token } from '../../properties'
+import type { Endpoints } from '../findEndpointsInterface'
+declare function idx(obj: any, callBack: any):any
+
 export class K8sFinder extends FindEndpoints{
   constructor(){
     super()
   }
 
+  updateUrl = (url:string, sockData:any) :string => {
+    if (url.startsWith('http')){
+      return url
+    } else {
+      return 'http://' + sockData.metadata.name + '.' + sockData.metadata.namespace + url
+    }
+  }
 
-  getEndpoints = async() => {
+
+  getEndpoints = async(): Endpoints => {
+    const result = {}
+
     const client = new Client({ config: config.fromKubeconfig() })
     await client.loadSpec()
     // const namespaces = await client.api.v1.namespaces.get()
-    // console.log(Object.keys(client.api.extension.v1beta1.deployments.get()))
-    const services = await client.api.v1.services.get()//client.api.v1.services.get()
-    console.log(JSON.stringify(services))
-    // namespaces.body.items.forEach((one) => {
-    //   console.log('hier bin ich ', JSON.stringify(one))
+    // console.log())
 
-    // })
-    return {}
+    const deployments = await client.api.extension.v1beta1.deployments.get()
+
+    const services = await client.api.v1.services.get()//client.api.v1.services.get()
+    services.body.items.forEach((one) => {
+      if (idx(one, _ => _.metadata.annotations[clientLabels.TOKEN]) == token()){
+        const url = this.updateUrl(one.metadata.annotations[clientLabels.URL], one)
+        const namespace = one.metadata.annotations[clientLabels.NAMESPACE]
+        if (result[namespace] == undefined){
+          result[namespace] = []
+        }
+        const deploymentName = one.spec.selector.app
+
+        const compareDeployments = deployments.body.items.filter((one) => {
+          return one.spec.template.metadata.labels.app == deploymentName
+        })
+        let __created = ''
+        compareDeployments.forEach((one) => {
+          __created += one.metadata.creationTimestamp
+        })
+        result[namespace].push({
+          url,
+          namespace,
+          typePrefix: namespace + '_',
+          __created: __created,
+          __imageID: '',
+        })
+
+      }
+
+    })
+    return result
   }
 }
 

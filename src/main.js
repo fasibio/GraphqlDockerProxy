@@ -65,6 +65,7 @@ const run = async() => {
   }
   setInterval(async() => {
     const endpoints : Endpoints = await finder.getEndpoints()
+    console.log('Enpoint Result: ', JSON.stringify(endpoints))
 
     if (JSON.stringify(endpoints) !== lastEndPoints){
       console.log('Changes Found restart Server')

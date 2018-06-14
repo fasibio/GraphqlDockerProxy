@@ -3,7 +3,7 @@
 [include]
 
 [libs]
-
+./idx.js
 [lints]
 
 [options]
