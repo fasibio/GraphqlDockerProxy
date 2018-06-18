@@ -25,12 +25,15 @@ export class K8sFinder extends FindEndpoints{
   getEndpoints = async(): Endpoints => {
     const result = {}
     let client : any = {}
+    console.log('Load K8s')
     switch (kubernetesConfigurationKind()){
       case 'fromKubeconfig': {
+        console.log('Load fromKubeconfig')
         client = new Client({ config: config.fromKubeconfig() })
         break
       }
       case 'getInCluster': {
+        console.log('Load getInCluster')
         client = new Client({ config: config.getInCluster() })
         break
       }
