@@ -14,7 +14,10 @@ export const runtime = () => {
 }
 
 
-export const kubernetesServiceHost = () => {
-  // $KUBERNETES_SERVICE
-  return
+export const kubernetesConfigurationKind = () => {
+  // $kubernetesConfigurationKind
+  /**
+   * fromKubeconfig, getInCluster
+   */
+  return idx(process, _ => _.env.kubernetesConfigurationKind) || 'fromKubeconfig'
 }

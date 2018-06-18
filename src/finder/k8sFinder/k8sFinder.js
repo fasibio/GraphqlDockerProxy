@@ -4,7 +4,7 @@ const Client = require('kubernetes-client').Client
 const config = require('kubernetes-client').config
 import * as clientLabels from '../clientLabels'
 import { FindEndpoints } from '../findEndpointsInterface'
-import { token } from '../../properties'
+import { token, kubernetesConfigurationKind } from '../../properties'
 import type { Endpoints } from '../findEndpointsInterface'
 declare function idx(obj: any, callBack: any):any
 
@@ -24,8 +24,17 @@ export class K8sFinder extends FindEndpoints{
 
   getEndpoints = async(): Endpoints => {
     const result = {}
-
-    const client = new Client({ config: config.fromKubeconfig() })
+    let client : any = {}
+    switch (kubernetesConfigurationKind()){
+      case 'fromKubeconfig': {
+        client = new Client({ config: config.fromKubeconfig() })
+        break
+      }
+      case 'getInCluster': {
+        client = new Client({ config: config.getInCluster() })
+        break
+      }
+    }
     await client.loadSpec()
     // const namespaces = await client.api.v1.namespaces.get()
     // console.log())
