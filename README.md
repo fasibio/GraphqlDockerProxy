@@ -4,6 +4,9 @@ A generic Graphql Docker Proxy
 Its a GraphQL API Gateway. 
 
 [![Docker Build Status](https://img.shields.io/docker/build/fasibio/graphqldockerproxy.svg)](https://hub.docker.com/r/fasibio/graphqldockerproxy/) 
+
+It works with docker and Kubernetes
+# Run with docker
 ## How does it works: 
 It works standalone. 
 So you can start it in your docker cloud. 
@@ -114,3 +117,133 @@ In the Folder example you find the docker-compose files for this example.
 
 
 
+# Run with Kubernetes
+
+Complete Doku will coming soon. 
+
+At the Moment: Read the "How it works with Docker". 
+And here example Kubernetes yaml files. 
+##The Yaml for the Proxy:
+
+Deployment.yaml
+```
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.13.0 (84fa826)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: api
+  name: api
+  namespace: gqlproxy
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: api
+    spec:
+      containers:
+      - env:
+        - name: dockerNetwork
+          value: web
+        - name: gqlProxyToken
+          value: "1234"
+        - name: kubernetesConfigurationKind
+          value: getInCluster
+        - name: qglProxyRuntime
+          value: kubernetes
+        image: fasibio/graphqldockerproxy
+        name: api
+        ports:
+        - containerPort: 3000
+        resources: {}
+      restartPolicy: Always
+status: {}
+
+```
+
+serice.yaml
+```
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.13.0 (84fa826)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: api
+  name: api
+  namespace: gqlproxy
+spec:
+  ports:
+  - name: "3000"
+    port: 3000
+    targetPort: 3000
+  selector:
+    io.kompose.service: api
+status:
+  loadBalancer: {}
+
+```
+
+## The Yaml for the GraphQL (SWAPI)
+
+```
+---
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  
+  labels:
+    app:     swapi
+  name:      swapi
+  namespace: starwars
+spec:
+  minReadySeconds: 20
+  replicas: 2
+  revisionHistoryLimit: 32
+  template:
+    metadata:
+      name: swapi
+      labels:
+        app: swapi
+    spec:
+      terminationGracePeriodSeconds: 1
+      containers:
+        - image: bfillmer/graphql-swapi
+          imagePullPolicy: Always
+          name: swapi
+          ports:
+            - containerPort: 9000
+              name: http-port
+          # readinessProbe:
+          #   httpGet:
+          #     port: http-port
+          #     path: /
+---
+kind: Service
+apiVersion: v1
+metadata:
+  annotations:
+    gqlProxy.token: '1234'
+    gqlProxy.url: ':9001/graphql'
+    gqlProxy.namespace: 'swapi'
+  labels:
+    name: swapi
+  name:      swapi
+  namespace: starwars
+spec:
+  ports:
+    - port: 9001
+      targetPort: 9000
+      name: http
+  selector:
+    app: swapi
+
+```
