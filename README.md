@@ -1,21 +1,21 @@
 # GraphqlDockerProxy
 A generic Graphql Docker Proxy 
 
-Its a GraphQL API Gateway. 
+It's a GraphQL API Gateway. 
 
 [![Docker Build Status](https://img.shields.io/docker/build/fasibio/graphqldockerproxy.svg)](https://hub.docker.com/r/fasibio/graphqldockerproxy/) 
 
-It works with docker and Kubernetes
-# Run with docker
-## How does it works: 
-It works standalone. 
-So you can start it in your docker cloud. 
-And wirte many small GraphQL-Mikroservices. Over docker labels you can "registry" your Mikroservices to the Proxy. 
-The Proxy will find them and add them to his self. 
+!!!It works with **Docker** and **Kubernetes**!!!
+# Run with Docker
+## How Does it Work: 
+It works without dependencies. 
+You can start it in your docker cloud. 
+Use it to manage your GraphQL-Microservices. With docker labels you can registory your microservices in the proxy.
+The proxy automatically will find your services and add them to the gateway.
 
-## Lets Start the Proxy
-In this example we will you docker-compose to start the Proxy. 
-Here is a example docker-compose file: 
+## How to Start the Proxy
+In this example we will use docker-compose to start the proxy. 
+Here is an example docker-compose file: 
 ```
 version: '3'
 services: 
@@ -37,28 +37,28 @@ networks:
   web:
     external: true
 ```
-This will start the Proxy on Port 3000. 
-Its importend to include the ```docker.sock```as volume.
-You have to set to enviroments. 
- - dockerNetwork: the Network where all Backend Graphqlserver will be include
- - gqlProxyToken: a token which specified which backend GraphQL Server is think for this Proxy. 
+This will start the proxy on port 3000. 
+It's important to include the ```docker.sock``` as volume.
+You can do this with the following environment variables:
+ - dockerNetwork: the network where the backend GraphQL-Server will run
+ - gqlProxyToken: a token which verifies that the microservice belongs to the proxy 
 
- Thats all!!
- Now you can open the Proxy under http://127.0.0.1:3000/graphiql .
+ That's all!!
+ Now you can open the proxy under http://127.0.0.1:3000/graphiql .
  The API is reachable under http://127.0.0.1:3000/graphql .
 
- At the moment it is an empty Gateway. 
+ At the moment it is an empty gateway. 
 
- ## Lets start a GraphQL Microservice 
+ ## Let's Start a GraphQL Microservice 
 
- At you Backend GraphQL-Client it is important to put them in the same Network (In this example it calls web). 
- Now you have to set the following Label: 
-  - gqlProxy.token: the same token where you have set in the proxy. (In this example 1234)
-  - gqlProxy.url: this is a little bit false named. Here you have to set the intern "relativ Path" where the Graphql server is running inside the container. For Example: :9000/graphql
-  - gqlProxy.namespace: a name Space where it will be hanging into the Proxy.
+ It is imporant to put your microservice in the same network as the proxy (In this example the network is called 'web'). 
+ Now you have to set the following labels: 
+  - gqlProxy.token: The same token you set in the proxy. (In this example 1234)
+  - gqlProxy.url: This is the relative path to the proxy running inside the container. (For example: :9000/graphql)
+  - gqlProxy.namespace: The namespace that wraps your microservice.
 
-  ## Lets write a Example of a GraphQL Backend: 
-  For this example we will use the Dockerimage ```bfillmer/graphql-swapi```
+  ## Let's Write an Example Microservice
+  For this example we will use the Docker image ```bfillmer/graphql-swapi```
 
   Create a docker-compose file: 
   ```
@@ -79,10 +79,11 @@ networks:
       external: true
   ```
 
-Start the compose file. 
-The Proxy will automatic find the Service and include them. 
-Under http://127.0.0.1:3000/graphiql you can now see that the service have a namespace swapi. 
-Inside this namespace you talk with the graphql-swapi Mikroservice. 
+Start the docker-compose file. 
+The proxy will automatically find the microservice and include it.
+Under http://127.0.0.1:3000/graphiql you can now see that swapi is now wrapping your graphql microservice. 
+Inside this namespace you can make graphql requests. 
+For example:
 ```
 {
   swapi{
@@ -95,25 +96,30 @@ Inside this namespace you talk with the graphql-swapi Mikroservice.
 }
 ```
 
-## Now lets scale the Graphql Mikroservice !
-The Proxy know same Images a make a round robin Lolabalance. 
+## Now Let's Scale the GraphQL Microservice !
+The proxy knows how to reference the same images with a round robin loadbalancer. 
 
-Go in the Folder where the SWAPI Service is. 
+Go in the folder where the SWAPI service is. 
 
-Send the Command ```sudo docker-compose scale swapi=3```
-The Proxy will known that and Start a Lolabalance
+Enter the command: 
+```sudo docker-compose scale swapi=3```
+
+The proxy will automatically start a loadbalancer
 
 
-## all About Namespaces
-Namespaces are set by the GraphQl Backend Mikroservice (with the label ```gqlProxy.namespace```)
-If you need more than one GraphQL Backend Server with in the same Namespace, both have to give the same name in there label ```gqlProxy.namespace```. The Proxy will merge it. 
+## All About Namespaces
+Namespaces are set by the GraphQl backend microservice, with the label ```gqlProxy.namespace```.
+If you need more than one GraphQL backend server in the same namespace, then give the same name in the label ```gqlProxy.namespace```. The proxy will merge the services. 
 
 
 ### WARNING!!!!
-At the Moment its not possible to have same named Query or same type with different entitys. The Proxy will use the first one he found. 
+At the moment it's not possible to have same queries, mutations or types for different entities. The proxy will use the first one it finds. 
 
-## Something else 
-In the Folder example you find the docker-compose files for this example. 
+### Note
+You can find examples (and docker-compose files) in the example directory of this git project.
+
+### TODO
+Kubernetes Support - coming soon...
 
 
 
