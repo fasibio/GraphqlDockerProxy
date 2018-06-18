@@ -12,8 +12,10 @@ services:
     environment: 
       - dockerNetwork=web
       - gqlProxyToken=1234
-    volumes: 
-     - /var/run/docker.sock:/var/run/docker.sock
+      - qglProxyRuntime=kubernetes
+      - kubernetesConfigurationKind=getInCluster
+    # volumes: 
+    #  - /var/run/docker.sock:/var/run/docker.sock
 networks:
   web:
     external: true
