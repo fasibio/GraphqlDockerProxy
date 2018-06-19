@@ -129,7 +129,8 @@ Complete Doku will coming soon.
 
 At the Moment: Read the "How it works with Docker". 
 And here example Kubernetes yaml files. 
-##The Yaml for the Proxy:
+
+## The Yaml for the Proxy:
 
 Deployment.yaml
 ```
