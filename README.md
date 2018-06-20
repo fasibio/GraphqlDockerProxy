@@ -278,7 +278,7 @@ Key | Available Values | Default | Description | Need for | Required
  ## Available Labels/annotations for all Backend GraphQL Server
 
 Key | Available Values |  Description | Required 
---- | --- | --- | --- | --- | ---
+--- | --- | --- | --- 
 | ```gqlProxy.token``` |string | The same token you set in the proxy. (In this example 1234) | true 
 |```gqlProxy.url``` | string |  This is the relative path to the proxy running inside the container. (For example: :9000/graphql)| true
 | ```gqlProxy.namespace``` | string  | The namespace that wraps your microservice  see "All About Namespaces" for more Information| true
