@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tests the docḱerfinder Class tests method getEndpoints gives a list of object and filter the right endpoints 1`] = `
+Object {
+  "one": Array [
+    Object {
+      "__created": "20180101",
+      "__imageID": "one",
+      "namespace": "one",
+      "typePrefix": "one_",
+      "url": "http://123.122.123.123:9000/graphql",
+    },
+  ],
+  "two": Array [
+    Object {
+      "__created": "20180101",
+      "__imageID": "two",
+      "namespace": "two",
+      "typePrefix": "two_",
+      "url": "http://123.122.123.123:9000/graphql",
+    },
+    Object {
+      "__created": "20180101",
+      "__imageID": "twoTWO",
+      "namespace": "two",
+      "typePrefix": "two_",
+      "url": "http://123.122.123.123:9000/graphql",
+    },
+  ],
+}
+`;

@@ -8,7 +8,7 @@
     "build": "webpack -d --config webpack.config.js",
     "start": "npm run build && node dist/bundle.js",
     "startDev": "dockerNetwork=web gqlProxyToken=1234 nodemon dist/bundle.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "pkg-docker": "pkg dist/bundle.js --targets node9-alpine-x64 --output pkg/app"
   },
   "author": "",
@@ -30,6 +30,7 @@
     "babel-cli": "6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "8.0.1",
+    "babel-jest": "^23.0.1",
     "babel-loader": "^8.0.0-beta.3",
     "babel-plugin-check-es2015-constants": "6.22.0",
     "babel-plugin-syntax-async-functions": "6.13.0",
@@ -50,7 +51,7 @@
     "flow-babel-webpack-plugin": "^1.1.1",
     "husky": "0.14.3",
     "jasmine-reporters": "2.2.1",
-    "jest-cli": "22.4.3",
+    "jest": "22.4.3",
     "nodemon": "^1.17.5",
     "pkg": "^4.3.1",
     "webpack": "^3.12.0",
@@ -58,15 +59,5 @@
   },
   "pkg": {
     "scripts": "**/*.js"
-  },
-  "jest": {
-    "modulePathIgnorePatterns": [
-      "<rootDir>/testfolder/"
-    ],
-    "collectCoverage": true,
-    "setupTestFrameworkScriptFile": "./setup-jasmine-env.js",
-    "setupFiles": [
-      "./jest-env.js"
-    ]
   }
 }

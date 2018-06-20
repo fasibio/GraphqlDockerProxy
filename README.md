@@ -29,6 +29,7 @@ services:
     networks:
      - web
     environment: 
+      - qglProxyRuntime=docker
       - dockerNetwork=web
       - gqlProxyToken=1234
     volumes: 
@@ -40,8 +41,9 @@ networks:
 This will start the proxy on port 3000. 
 It's important to include the ```docker.sock``` as volume.
 You can do this with the following environment variables:
- - dockerNetwork: the network where the backend GraphQL-Server will run
- - gqlProxyToken: a token which verifies that the microservice belongs to the proxy 
+- ```qglProxyRuntime```: can be ```docker``` or ```kubernetes```. For Docker you need docker ^^
+ - ```dockerNetwork```: the network where the backend GraphQL-Server will run
+ - ```gqlProxyToken```: a token which verifies that the microservice belongs to the proxy 
 
  That's all!!
  Now you can open the proxy under http://127.0.0.1:3000/graphiql .
@@ -53,9 +55,9 @@ You can do this with the following environment variables:
 
  It is imporant to put your microservice in the same network as the proxy (In this example the network is called 'web'). 
  Now you have to set the following labels: 
-  - gqlProxy.token: The same token you set in the proxy. (In this example 1234)
-  - gqlProxy.url: This is the relative path to the proxy running inside the container. (For example: :9000/graphql)
-  - gqlProxy.namespace: The namespace that wraps your microservice.
+  - ```gqlProxy.token```: The same token you set in the proxy. (In this example 1234)
+  - ```gqlProxy.url```: This is the relative path to the proxy running inside the container. (For example: :9000/graphql)
+  - ```gqlProxy.namespace```: The namespace that wraps your microservice.
 
   ## Let's Write an Example Microservice
   For this example we will use the Docker image ```bfillmer/graphql-swapi```
@@ -107,30 +109,30 @@ Enter the command:
 The proxy will automatically start a loadbalancer
 
 
-## All About Namespaces
-Namespaces are set by the GraphQl backend microservice, with the label ```gqlProxy.namespace```.
-If you need more than one GraphQL backend server in the same namespace, then give the same name in the label ```gqlProxy.namespace```. The proxy will merge the services. 
-
-
-### WARNING!!!!
-At the moment it's not possible to have same queries, mutations or types for different entities. The proxy will use the first one it finds. 
-
 ### Note
 You can find examples (and docker-compose files) in the example directory of this git project.
-
-### TODO
-Kubernetes Support - coming soon...
-
-
 
 # Run with Kubernetes
 
 Complete Doku will coming soon. 
 
-At the Moment: Read the "How it works with Docker". 
-And here example Kubernetes yaml files. 
+The service is available for Kubernetes. 
+It will use the Kubernetes API to find available GraphQL Endpoints. 
 
-## The Yaml for the Proxy:
+General use is the same like docker. 
+See "How it works with Docker".
+You have to set labels in the Deployment-Manifest.
+
+The following labels a available/necessary 
+- ```qglProxyRuntime```: can be ```docker``` or ```kubernetes```. For Kubernetes you need kubernetes ^^
+- ```gqlProxyToken```: a token which verifies that the microservice belongs to the proxy 
+- ```kubernetesConfigurationKind```: How the proxy find the Kubernetes API. 
+  - ```fromKubeconfig```: A Config file which is mount in the Container
+  - ```getInCluster```: The POD as it self.
+
+Here is a Example How to run:  
+
+## The Yaml for the GraphQL Proxy:
 
 Deployment.yaml
 ```
@@ -156,8 +158,6 @@ spec:
     spec:
       containers:
       - env:
-        - name: dockerNetwork
-          value: web
         - name: gqlProxyToken
           value: "1234"
         - name: kubernetesConfigurationKind
@@ -201,6 +201,12 @@ status:
 
 ## The Yaml for the GraphQL (SWAPI)
 
+Here it is importend that the ```service``` have the ```annotations``` 
+  - ```gqlProxy.token```: The same token you set in the proxy. (In this example 1234)
+  - ```gqlProxy.url```: This is the relative path to the proxy running inside the container. (For example: :9000/graphql)
+  - ```gqlProxy.namespace```: The namespace that wraps your microservice.
+
+
 ```
 ---
 kind: Deployment
@@ -229,10 +235,6 @@ spec:
           ports:
             - containerPort: 9000
               name: http-port
-          # readinessProbe:
-          #   httpGet:
-          #     port: http-port
-          #     path: /
 ---
 kind: Service
 apiVersion: v1
@@ -254,3 +256,29 @@ spec:
     app: swapi
 
 ```
+## All About Namespaces
+Namespaces are set by the GraphQl backend microservice, with the label ```gqlProxy.namespace```.
+If you need more than one GraphQL backend server in the same namespace, then give the same name in the label ```gqlProxy.namespace```. The proxy will merge the services. 
+
+
+### WARNING!!!!
+At the moment it's not possible to have same queries, mutations or types for different entities. The proxy will use the first one it finds. 
+
+
+## Available Environments for the GraphQL Proxy
+
+Key | Available Values | Default | Description | Need for | Required 
+--- | --- | --- | --- | --- | ---
+| ```qglProxyRuntime``` | ```docker``` or ```kubernetes``` | ```docker``` | tells the proxy run in a docker or in a kubernetes world | docker and kubernetes | true 
+|```dockerNetwork``` | string | none | the network where the backend GraphQL-Server shard with the proxy| docker | for docker
+| ```gqlProxyToken``` | string | empty string | a token which verifies that the microservice belongs to the proxy | both | false but better you set it
+|```kubernetesConfigurationKind``` | ```fromKubeconfig``` or ```getInCluster``` | ```fromKubeconfig``` | How the proxy find the Kubernetes API Config. | kubernetes | false
+
+
+ ## Available Labels/annotations for all Backend GraphQL Server
+
+Key | Available Values |  Description | Required 
+--- | --- | --- | --- | --- | ---
+| ```gqlProxy.token``` |string | The same token you set in the proxy. (In this example 1234) | true 
+|```gqlProxy.url``` | string |  This is the relative path to the proxy running inside the container. (For example: :9000/graphql)| true
+| ```gqlProxy.namespace``` | string  | The namespace that wraps your microservice  see "All About Namespaces" for more Information| true
