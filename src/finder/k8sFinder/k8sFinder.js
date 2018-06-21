@@ -6,6 +6,7 @@ import * as clientLabels from '../clientLabels'
 import { FindEndpoints } from '../findEndpointsInterface'
 import { token, kubernetesConfigurationKind } from '../../properties'
 import type { Endpoints } from '../findEndpointsInterface'
+import { getInClusterByUser } from './getInClusterByUser'
 declare function idx(obj: any, callBack: any):any
 
 export class K8sFinder extends FindEndpoints{
@@ -36,6 +37,10 @@ export class K8sFinder extends FindEndpoints{
         console.log('Load getInCluster:', config.getInCluster())
         client = new Client({ config: config.getInCluster() })
         break
+      }
+      case 'getInClusterByUser':{
+        console.log('Load getIntClusterByUser:', getInClusterByUser())
+        client = new Client({ config: getInClusterByUser() })
       }
     }
     await client.loadSpec()

@@ -17,7 +17,15 @@ export const runtime = () => {
 export const kubernetesConfigurationKind = () => {
   // $kubernetesConfigurationKind
   /**
-   * fromKubeconfig, getInCluster
+   * fromKubeconfig, getInCluster, getInClusterByUser
    */
   return idx(process, _ => _.env.kubernetesConfigurationKind) || 'fromKubeconfig'
+}
+
+export const k8sUser = () => {
+  return idx(process, _ => _.env.gqlProxyK8sUser) || ''
+}
+
+export const k8sUserPassword = () => {
+  return idx(process, _ => _.env.gqlProxyK8sUserPassword) || ''
 }

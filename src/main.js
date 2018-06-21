@@ -12,7 +12,7 @@ import { DockerFinder } from './finder/dockerFinder/dockerFinder'
 import { K8sFinder } from './finder/k8sFinder/k8sFinder'
 import { runtime } from './properties'
 import type { Endpoints, Endpoint } from './finder/findEndpointsInterface'
-import { sortEndpointAndFindAvailableEndpoints } from './finder/endpointsAvailable'
+// import { sortEndpointAndFindAvailableEndpoints } from './finder/endpointsAvailable'
 const createRemoteSchema = async(url) => {
   const link = new HttpLink({ uri: url, fetch })
   const schema = await introspectSchema(link)
