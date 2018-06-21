@@ -33,7 +33,7 @@ export class K8sFinder extends FindEndpoints{
         break
       }
       case 'getInCluster': {
-        console.log('Load getInCluster')
+        console.log('Load getInCluster:', config.getInCluster())
         client = new Client({ config: config.getInCluster() })
         break
       }
