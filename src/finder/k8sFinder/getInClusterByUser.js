@@ -7,7 +7,7 @@ export const getInClusterByUser = () => {
 
 
   return {
-    url: host + ':' + port,
+    url: 'https://' + host + ':' + port,
     auth: {
       user: k8sUser(),
       pass: k8sUserPassword(),
