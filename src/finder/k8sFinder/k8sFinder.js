@@ -34,12 +34,12 @@ export class K8sFinder extends FindEndpoints{
         break
       }
       case 'getInCluster': {
-        console.log('Load getInCluster:', config.getInCluster())
+        console.log('Load getInCluster')
         client = new Client({ config: config.getInCluster() })
         break
       }
       case 'getInClusterByUser':{
-        console.log('Load getIntClusterByUser:', getInClusterByUser())
+        console.log('Load getIntClusterByUser')
         client = new Client({ config: getInClusterByUser() })
       }
     }
@@ -52,34 +52,39 @@ export class K8sFinder extends FindEndpoints{
       const namespaceObj = items[one]
       const k8sNamespace = namespaceObj.metadata.name
       // const services = client.api.v1.namespaces(namespace).services.get()
-      const services = await client.api.v1.namespaces(k8sNamespace).services.get()
-      const servicesItems = services.body.items
-      for (const oneService in servicesItems){
-        const oneServiceItem = servicesItems[oneService]
-        if (idx(oneServiceItem, _ => _.metadata.annotations[clientLabels.TOKEN]) == token()){
-          const url = this.updateUrl(oneServiceItem.metadata.annotations[clientLabels.URL], oneServiceItem)
-          const namespace = oneServiceItem.metadata.annotations[clientLabels.NAMESPACE]
-          if (result[namespace] == undefined){
-            result[namespace] = []
+      try {
+        const services = await client.api.v1.namespaces(k8sNamespace).services.get()
+        const servicesItems = services.body.items
+        for (const oneService in servicesItems){
+          const oneServiceItem = servicesItems[oneService]
+          if (idx(oneServiceItem, _ => _.metadata.annotations[clientLabels.TOKEN]) == token()){
+            const url = this.updateUrl(oneServiceItem.metadata.annotations[clientLabels.URL], oneServiceItem)
+            const namespace = oneServiceItem.metadata.annotations[clientLabels.NAMESPACE]
+            if (result[namespace] == undefined){
+              result[namespace] = []
+            }
+            const deploymentName = oneServiceItem.spec.selector.app
+            const deployments = await client.apis.apps.v1beta2.namespaces(k8sNamespace).deployments.get()
+            const compareDeployments = deployments.body.items.filter((one) => {
+              return one.spec.template.metadata.labels.app == deploymentName
+            })
+            let __created = ''
+            compareDeployments.forEach((one) => {
+              __created += one.metadata.creationTimestamp
+            })
+            result[namespace].push({
+              url,
+              namespace,
+              typePrefix: namespace + '_',
+              __created: __created,
+              __imageID: '',
+            })
           }
-          const deploymentName = oneServiceItem.spec.selector.app
-          const deployments = await client.apis.apps.v1beta2.namespaces(k8sNamespace).deployments.get()
-          const compareDeployments = deployments.body.items.filter((one) => {
-            return one.spec.template.metadata.labels.app == deploymentName
-          })
-          let __created = ''
-          compareDeployments.forEach((one) => {
-            __created += one.metadata.creationTimestamp
-          })
-          result[namespace].push({
-            url,
-            namespace,
-            typePrefix: namespace + '_',
-            __created: __created,
-            __imageID: '',
-          })
         }
+      } catch (e){
+        console.log('error by reading namespace:' + k8sNamespace + ' ', e)
       }
+
     }
     return result
   }

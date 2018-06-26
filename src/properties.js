@@ -10,7 +10,7 @@ export const token = () => {
  * Available values: docker & kubernetes
  */
 export const runtime = () => {
-  return idx(process, _ => _.env.qglProxyRuntime) || 'docker'
+  return idx(process, _ => _.env.qglProxyRuntime) || 'kubernetes'
 }
 
 
