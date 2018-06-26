@@ -46,37 +46,41 @@ export class K8sFinder extends FindEndpoints{
     await client.loadSpec()
     // const namespaces = await client.api.v1.namespaces.get()
     // console.log())
-
-    const deployments = await client.api.extension.v1beta1.deployments.get()
-
-    const services = await client.api.v1.services.get()//client.api.v1.services.get()
-    services.body.items.forEach((one) => {
-      if (idx(one, _ => _.metadata.annotations[clientLabels.TOKEN]) == token()){
-        const url = this.updateUrl(one.metadata.annotations[clientLabels.URL], one)
-        const namespace = one.metadata.annotations[clientLabels.NAMESPACE]
-        if (result[namespace] == undefined){
-          result[namespace] = []
+    const allNamespaces = await client.api.v1.namespaces.get()
+    const items = allNamespaces.body.items
+    for (const one in items) {
+      const namespaceObj = items[one]
+      const k8sNamespace = namespaceObj.metadata.name
+      // const services = client.api.v1.namespaces(namespace).services.get()
+      const services = await client.api.v1.namespaces(k8sNamespace).services.get()
+      const servicesItems = services.body.items
+      for (const oneService in servicesItems){
+        const oneServiceItem = servicesItems[oneService]
+        if (idx(oneServiceItem, _ => _.metadata.annotations[clientLabels.TOKEN]) == token()){
+          const url = this.updateUrl(oneServiceItem.metadata.annotations[clientLabels.URL], oneServiceItem)
+          const namespace = oneServiceItem.metadata.annotations[clientLabels.NAMESPACE]
+          if (result[namespace] == undefined){
+            result[namespace] = []
+          }
+          const deploymentName = oneServiceItem.spec.selector.app
+          const deployments = await client.apis.apps.v1beta2.namespaces(k8sNamespace).deployments.get()
+          const compareDeployments = deployments.body.items.filter((one) => {
+            return one.spec.template.metadata.labels.app == deploymentName
+          })
+          let __created = ''
+          compareDeployments.forEach((one) => {
+            __created += one.metadata.creationTimestamp
+          })
+          result[namespace].push({
+            url,
+            namespace,
+            typePrefix: namespace + '_',
+            __created: __created,
+            __imageID: '',
+          })
         }
-        const deploymentName = one.spec.selector.app
-
-        const compareDeployments = deployments.body.items.filter((one) => {
-          return one.spec.template.metadata.labels.app == deploymentName
-        })
-        let __created = ''
-        compareDeployments.forEach((one) => {
-          __created += one.metadata.creationTimestamp
-        })
-        result[namespace].push({
-          url,
-          namespace,
-          typePrefix: namespace + '_',
-          __created: __created,
-          __imageID: '',
-        })
-
       }
-
-    })
+    }
     return result
   }
 }
