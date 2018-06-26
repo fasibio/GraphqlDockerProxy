@@ -29,3 +29,7 @@ export const k8sUser = () => {
 export const k8sUserPassword = () => {
   return idx(process, _ => _.env.gqlProxyK8sUserPassword) || ''
 }
+
+export const getPollingMs = () => {
+  return idx(process, _ => _.env.gqlProxyPollingMs) || 5000
+}

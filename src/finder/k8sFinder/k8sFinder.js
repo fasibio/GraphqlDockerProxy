@@ -82,7 +82,8 @@ export class K8sFinder extends FindEndpoints{
           }
         }
       } catch (e){
-        console.log('error by reading namespace:' + k8sNamespace + ' ', e)
+        //no loging because user have no permisson 
+        // console.log('error by reading namespace:' + k8sNamespace + ' ', e)
       }
 
     }

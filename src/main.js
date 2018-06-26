@@ -10,7 +10,7 @@ import fetch from 'node-fetch'
 import * as bodyParser from 'body-parser'
 import { DockerFinder } from './finder/dockerFinder/dockerFinder'
 import { K8sFinder } from './finder/k8sFinder/k8sFinder'
-import { runtime } from './properties'
+import { runtime, getPollingMs } from './properties'
 import type { Endpoints, Endpoint } from './finder/findEndpointsInterface'
 // import { sortEndpointAndFindAvailableEndpoints } from './finder/endpointsAvailable'
 const createRemoteSchema = async(url) => {
@@ -78,7 +78,7 @@ const run = async() => {
     } else {
       console.log('no Change at endpoints does not need a restart')
     }
-  }, 5000)
+  }, getPollingMs())
 
 }
 
