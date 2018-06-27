@@ -272,7 +272,10 @@ Key | Available Values | Default | Description | Need for | Required
 | ```qglProxyRuntime``` | ```docker``` or ```kubernetes``` | ```docker``` | tells the proxy run in a docker or in a kubernetes world | docker and kubernetes | true 
 |```dockerNetwork``` | string | none | the network where the backend GraphQL-Server shard with the proxy| docker | for docker
 | ```gqlProxyToken``` | string | empty string | a token which verifies that the microservice belongs to the proxy | both | false but better you set it
-|```kubernetesConfigurationKind``` | ```fromKubeconfig``` or ```getInCluster``` | ```fromKubeconfig``` | How the proxy find the Kubernetes API Config. | kubernetes | false
+|```kubernetesConfigurationKind``` | ```fromKubeconfig``` or ```getInCluster``` or ```getInClusterByUser``` | ```fromKubeconfig``` | How the proxy find the Kubernetes API Config. | kubernetes | false
+|```gqlProxyPollingMs```| int | 5000 | The Polling time to check for changes |  both | false
+|```gqlProxyK8sUser```| string | no Default | It is only needed for ```getInClusterByUser```. The K8s user |  kubernetes | false
+|```gqlProxyK8sUserPassword```| string | no Default | It is only needed for ```getInClusterByUser```. The Password for the K8s user |  kubernetes | false
 
 
  ## Available Labels/annotations for all Backend GraphQL Server
