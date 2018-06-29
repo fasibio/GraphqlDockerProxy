@@ -10,8 +10,7 @@ services:
         - gqlProxy.token=1234
         - gqlProxy.url=:9000/graphql
         - gqlProxy.namespace=swapi
-      ports: 
-        - 900:9000
+
 networks:
     web:
       external: true

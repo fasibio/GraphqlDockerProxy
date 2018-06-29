@@ -5,6 +5,7 @@ import { loadANewLoadBalaceMiddleware, closeAllServer } from './loadBalancer'
 import { FindEndpoints } from '../findEndpointsInterface'
 import type { Endpoints } from '../findEndpointsInterface'
 import * as clientLabels from '../clientLabels'
+import { sortEndpointAndFindAvailableEndpoints } from '../endpointsAvailable'
 export class DockerFinder extends FindEndpoints{
   constructor(){
     super()
@@ -16,6 +17,7 @@ export class DockerFinder extends FindEndpoints{
 
 
   foundEquals = (data: Endpoints) :Endpoints => {
+    data = sortEndpointAndFindAvailableEndpoints(data)
     closeAllServer()
     for (const one in data){
       const namespace = data[one]
