@@ -5480,7 +5480,7 @@ pkg-fetch@2.5.4:
     semver "5.4.1"
     unique-temp-dir "1.0.0"
 
-pkg@^4.3.1:
+pkg@4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/pkg/-/pkg-4.3.1.tgz#1a161a53f1e3222c3dd3ca5705c738d419395a24"
   dependencies:

@@ -13,7 +13,7 @@ export const loadANewLoadBalaceMiddleware = (listOfBackends) => {
 
   const handler = (req, res) => {
 
-    console.log('hier:', req.headers, servers.length)
+    // console.log('hier:', req.headers, servers.length)
     if (req.url === '/'){
       req.url = ''
     }

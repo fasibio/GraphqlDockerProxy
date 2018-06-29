@@ -34,11 +34,10 @@ const weaverIt = async(endpoints) => {
 const getMergedInformation = async(namespace: Array<Endpoint>) => {
   const schema = []
 
-  await namespace.forEach(async(one) => {
-    console.log('oneEndpoint:', one)
-    schema.push(await createRemoteSchema(one.url))
+  for (let i = 0; i < namespace.length; i++){
+    schema.push(await createRemoteSchema(namespace[i].url))
+  }
 
-  })
   const merged = mergeSchemas({
     schemas: schema,
   })
@@ -90,7 +89,7 @@ const start = async(endpoints : Endpoints) => {
     if (endpoints[one].length === 1){
       weaverEndpoints.push(endpoints[one][0])
     } else {
-
+      console.log('Found more than one endpoint in same namespace start Merge', endpoints[one])
       weaverEndpoints.push({
         namespace: one,
         typePrefix: one + '_',

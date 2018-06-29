@@ -4,6 +4,7 @@ import { token, network } from '../../properties'
 import { loadANewLoadBalaceMiddleware, closeAllServer } from './loadBalancer'
 import { FindEndpoints } from '../findEndpointsInterface'
 import type { Endpoints } from '../findEndpointsInterface'
+import * as clientLabels from '../clientLabels'
 export class DockerFinder extends FindEndpoints{
   constructor(){
     super()
@@ -72,9 +73,9 @@ export class DockerFinder extends FindEndpoints{
     return await docker.container.list().then(containers => {
       const result = {}
       containers.forEach(one => {
-        if (one.data.Labels['gqlProxy.token'] == token()){
-          const url = one.data.Labels['gqlProxy.url']
-          const namespace = one.data.Labels['gqlProxy.namespace']
+        if (one.data.Labels[clientLabels.TOKEN] == token()){
+          const url = one.data.Labels[clientLabels.URL]
+          const namespace = one.data.Labels[clientLabels.NAMESPACE]
           if (result[namespace] == undefined){
             result[namespace] = []
           }
@@ -86,7 +87,7 @@ export class DockerFinder extends FindEndpoints{
             __imageID: one.data.Image,
           })
         } else {
-          console.log('no gqlProxy labels set')
+          // console.log('no gqlProxy labels set')
         }
       })
 

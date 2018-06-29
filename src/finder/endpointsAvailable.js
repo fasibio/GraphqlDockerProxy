@@ -1,4 +1,3 @@
-//@flow
 import fetch from 'node-fetch'
 import type { Endpoints } from './findEndpointsInterface'
 
