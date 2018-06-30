@@ -10,10 +10,11 @@ import fetch from 'node-fetch'
 import * as bodyParser from 'body-parser'
 import { DockerFinder } from './finder/dockerFinder/dockerFinder'
 import { K8sFinder } from './finder/k8sFinder/k8sFinder'
-import { runtime, getPollingMs, printAllConfigs } from './properties'
+import { runtime, getPollingMs, printAllConfigs, adminPassword, adminUser } from './properties'
 import type { Endpoints, Endpoint } from './finder/findEndpointsInterface'
 import { sortEndpointAndFindAvailableEndpoints } from './finder/endpointsAvailable'
 import adminSchema from './admin/adminSchema'
+import basicAuth from 'express-basic-auth'
 const createRemoteSchema = async(url) => {
   const link = new HttpLink({ uri: url, fetch })
   const schema = await introspectSchema(link)
@@ -116,23 +117,35 @@ const start = async(endpoints : Endpoints) => {
   // })
   const schema = await weaverIt(weaverEndpoints)
   const app = express()
+
+  app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }))
+
+  app.use(
+    '/graphiql',
+    graphiqlExpress({
+      endpointURL: '/graphql',
+    })
+  )
+
+  if (adminUser() !== ''){
+    const users = {}
+    users[adminUser()] = adminPassword()
+    app.use(basicAuth({
+      users,
+      challenge: true,
+    }))
+  }
+
   app.use('/admin/graphql', bodyParser.json(), graphqlExpress({
     context: {
       endpoints: await endpoints,
     },
     schema: adminSchema,
   }))
-  app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }))
   app.use(
     '/admin/graphiql',
     graphiqlExpress({
       endpointURL: '/admin/graphql',
-    })
-  )
-  app.use(
-    '/graphiql',
-    graphiqlExpress({
-      endpointURL: '/graphql',
     })
   )
   console.log('Server running. Open http://localhost:3000/graphiql to run queries.')

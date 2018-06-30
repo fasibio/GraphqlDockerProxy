@@ -34,10 +34,20 @@ export const getPollingMs = () => {
   return idx(process, _ => _.env.gqlProxyPollingMs) || 5000
 }
 
+export const adminUser = () => {
+  return idx(process, _ => _.env.gqlProxyAdminUser) || ''
+}
+
+export const adminPassword = () => {
+  return idx(process, _ => _.env.gqlProxyAdminPassword) || ''
+}
+
+
 export const printAllConfigs = () => {
   console.log('===================================')
   console.log('qglProxyRuntime:', runtime())
   console.log('gqlProxyPollingMs:', getPollingMs())
+  console.log('gqlProxyAdminUser:', adminUser())
   if (runtime() === 'docker'){
     console.log('dockerNetwork:', network())
     console.log('gqlProxyToken:', token())
