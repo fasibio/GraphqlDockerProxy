@@ -10,9 +10,10 @@ import fetch from 'node-fetch'
 import * as bodyParser from 'body-parser'
 import { DockerFinder } from './finder/dockerFinder/dockerFinder'
 import { K8sFinder } from './finder/k8sFinder/k8sFinder'
-import { runtime, getPollingMs } from './properties'
+import { runtime, getPollingMs, printAllConfigs } from './properties'
 import type { Endpoints, Endpoint } from './finder/findEndpointsInterface'
 import { sortEndpointAndFindAvailableEndpoints } from './finder/endpointsAvailable'
+import adminSchema from './admin/adminSchema'
 const createRemoteSchema = async(url) => {
   const link = new HttpLink({ uri: url, fetch })
   const schema = await introspectSchema(link)
@@ -24,11 +25,14 @@ const createRemoteSchema = async(url) => {
 }
 
 const weaverIt = async(endpoints) => {
-  console.log('weaverIt', endpoints)
+  try {
+    return await weaveSchemas({
+      endpoints,
+    })
+  } catch (e){
+    console.log('WeaverIt goes Wrong', e)
+  }
 
-  return await weaveSchemas({
-    endpoints,
-  })
 }
 
 const getMergedInformation = async(namespace: Array<Endpoint>) => {
@@ -48,6 +52,8 @@ const getMergedInformation = async(namespace: Array<Endpoint>) => {
 const run = async() => {
 
   console.log('Start IT')
+  console.log('With Configuration: ')
+  printAllConfigs()
   let server = null
   let lastEndPoints : string = ''
   let finder
@@ -63,21 +69,25 @@ const run = async() => {
 
   }
   setInterval(async() => {
-    let endpoints : Endpoints = await finder.getEndpoints()
-    endpoints = await sortEndpointAndFindAvailableEndpoints(endpoints)
-    console.log('Enpoint Result: ', JSON.stringify(endpoints))
+    try {
+      let endpoints : Endpoints = await finder.getEndpoints()
+      endpoints = await sortEndpointAndFindAvailableEndpoints(endpoints)
+      if (JSON.stringify(endpoints) !== lastEndPoints){
+        console.log('Changes Found restart Server')
+        if (server != null){
+          server.close()
+        }
 
-    if (JSON.stringify(endpoints) !== lastEndPoints){
-      console.log('Changes Found restart Server')
-      if (server != null){
-        server.close()
+        lastEndPoints = JSON.stringify(endpoints)
+        server = await start(await finder.handleRestart(endpoints))
+      } else {
+        console.log('no Change at endpoints does not need a restart')
       }
-
-      lastEndPoints = JSON.stringify(endpoints)
-      server = await start(finder.handleRestart(endpoints))
-    } else {
-      console.log('no Change at endpoints does not need a restart')
+    } catch (e){
+      console.log('GLOBAL ERROR', e)
+      lastEndPoints = ''
     }
+
   }, getPollingMs())
 
 }
@@ -106,7 +116,19 @@ const start = async(endpoints : Endpoints) => {
   // })
   const schema = await weaverIt(weaverEndpoints)
   const app = express()
+  app.use('/admin/graphql', bodyParser.json(), graphqlExpress({
+    context: {
+      endpoints: await endpoints,
+    },
+    schema: adminSchema,
+  }))
   app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }))
+  app.use(
+    '/admin/graphiql',
+    graphiqlExpress({
+      endpointURL: '/admin/graphql',
+    })
+  )
   app.use(
     '/graphiql',
     graphiqlExpress({

@@ -33,3 +33,20 @@ export const k8sUserPassword = () => {
 export const getPollingMs = () => {
   return idx(process, _ => _.env.gqlProxyPollingMs) || 5000
 }
+
+export const printAllConfigs = () => {
+  console.log('===================================')
+  console.log('qglProxyRuntime:', runtime())
+  console.log('gqlProxyPollingMs:', getPollingMs())
+  if (runtime() === 'docker'){
+    console.log('dockerNetwork:', network())
+    console.log('gqlProxyToken:', token())
+  } else if (runtime() === 'kubernetes'){
+    console.log('kubernetesConfigurationKind:', kubernetesConfigurationKind())
+    if (kubernetesConfigurationKind() === 'getInClusterByUser'){
+      console.log('gqlProxyK8sUser:', k8sUser())
+      console.log('gqlProxyK8sUserPassword:', '********')
+    }
+  }
+  console.log('===================================')
+}

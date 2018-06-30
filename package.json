@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "webpack -d --config webpack.config.dev.js --watch --watch-poll",
     "build": "webpack -d --config webpack.config.js",
-    "start": "npm run build && node dist/bundle.js",
+    "start": "npm run build &&dockerNetwork=web gqlProxyToken=1234 node dist/bundle.js",
     "startDev": "dockerNetwork=web gqlProxyToken=1234 nodemon dist/bundle.js",
     "test": "jest",
     "pkg-docker": "pkg dist/bundle.js --targets node9-alpine-x64 --output pkg/app"

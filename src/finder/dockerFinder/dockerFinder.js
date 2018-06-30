@@ -16,8 +16,8 @@ export class DockerFinder extends FindEndpoints{
   }
 
 
-  foundEquals = (data: Endpoints) :Endpoints => {
-    data = sortEndpointAndFindAvailableEndpoints(data)
+  foundEquals = async(data: Endpoints) :Endpoints => {
+    data = await sortEndpointAndFindAvailableEndpoints(data)
     closeAllServer()
     for (const one in data){
       const namespace = data[one]
@@ -41,12 +41,22 @@ export class DockerFinder extends FindEndpoints{
           }
           if (lbData[searchingElement.__imageID] !== undefined){
             lbData[searchingElement.__imageID].push(searchingElement)
-            namespace[i].url = loadANewLoadBalaceMiddleware(lbData[searchingElement.__imageID])
+            const lbResult = loadANewLoadBalaceMiddleware(lbData[searchingElement.__imageID])
+            namespace[i].url = lbResult.url
+            namespace[i].__loadbalance = {
+              count: namespace.length,
+              endpoints: lbResult.clients,
+            }
+
           }
         }
-        data[one] = namespace.filter(one => {
-          return !one.__burnd
-        })
+        const newNamespaces = []
+        for (const oneBurable in namespace){
+          if (!namespace[oneBurable].__burnd){
+            newNamespaces.push(namespace[oneBurable])
+          }
+        }
+        data[one] = newNamespaces
 
       }
 

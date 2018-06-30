@@ -8,7 +8,6 @@ export const loadANewLoadBalaceMiddleware = (listOfBackends) => {
   const servers = listOfBackends.map(one => {
     return one.url
   })
-  console.log(servers)
   let cur = 0
 
   const handler = (req, res) => {
@@ -25,7 +24,10 @@ export const loadANewLoadBalaceMiddleware = (listOfBackends) => {
   server.post('*', handler).post('*', handler)
   const port = getNextPortNumber()
   lBserver.push(server.listen(port))
-  return 'http://127.0.0.1:' + port + ''
+  return {
+    url: 'http://127.0.0.1:' + port + '',
+    clients: listOfBackends.map((one) => Object.assign({}, one)),
+  }
 }
 
 let nextPortNumber = 0
