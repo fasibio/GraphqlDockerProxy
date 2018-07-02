@@ -112,7 +112,12 @@ const start = async(endpoints : Endpoints) => {
 
   for (const one in endpoints){
     if (endpoints[one].length === 1){
-      weaverEndpoints.push(endpoints[one][0])
+      weaverEndpoints.push({
+        namespace: one,
+        typePrefic: one + '_',
+        schema: await createRemoteSchema(endpoints[one][0].url),
+
+      })
     } else {
       console.log('Found more than one endpoint in same namespace start Merge', endpoints[one])
       weaverEndpoints.push({
