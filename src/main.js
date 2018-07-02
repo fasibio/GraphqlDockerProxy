@@ -15,6 +15,8 @@ import type { Endpoints, Endpoint } from './finder/findEndpointsInterface'
 import { sortEndpointAndFindAvailableEndpoints } from './finder/endpointsAvailable'
 import adminSchema from './admin/adminSchema'
 import basicAuth from 'express-basic-auth'
+import cluster from 'cluster'
+
 const createRemoteSchema = async(url) => {
   const link = new HttpLink({ uri: url, fetch })
   const schema = await introspectSchema(link)
@@ -80,7 +82,18 @@ const run = async() => {
         }
 
         lastEndPoints = JSON.stringify(endpoints)
-        server = await start(await finder.handleRestart(endpoints))
+
+        cluster.schedulingPolicy = cluster.SCHED_RR
+        if (cluster.isMaster){
+          var cpuCount = require('os').cpus().length
+          for (var i = 0; i < cpuCount; i += 1) {
+            console.log('START SLAVE')
+            cluster.fork()
+          }
+        } else {
+          server = await start(await finder.handleRestart(endpoints))
+        }
+
       } else {
         console.log('no Change at endpoints does not need a restart')
       }
