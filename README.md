@@ -5,8 +5,17 @@ It's a GraphQL API Gateway.
 
 [![Docker Build Status](https://img.shields.io/docker/build/fasibio/graphqldockerproxy.svg)](https://hub.docker.com/r/fasibio/graphqldockerproxy/) 
 
-!!!It works with **Docker** and **Kubernetes**!!!
-# Run with Docker
+
+
+![alt tag](./doc/assets/kontext.png)
+
+# Features
+ - Continuously integrate the Backend GraphQLs (**No restart!**)
+ - !!!It works with **Docker** and **Kubernetes**!!!
+ - Support auto of the box load balance (at docker)
+
+
+# Run with Docker (Quickstart)
 ## How Does it Work: 
 It works without dependencies. 
 You can start it in your docker cloud. 
@@ -83,7 +92,7 @@ networks:
 
 Start the docker-compose file. 
 The proxy will automatically find the microservice and include it.
-Under http://127.0.0.1:3000/graphiql you can now see that swapi is now wrapping your graphql microservice. 
+Under http://127.0.0.1:3000/graphiql you can now see that swapi is now wrapping your graphql microservice 
 Inside this namespace you can make graphql requests. 
 For example:
 ```
@@ -98,6 +107,8 @@ For example:
 }
 ```
 
+Or use the adminpage to see what is included http://127.0.0.1:3000/admin/graphiq
+
 ## Now Let's Scale the GraphQL Microservice !
 The proxy knows how to reference the same images with a round robin loadbalancer. 
 
@@ -111,6 +122,7 @@ The proxy will automatically start a loadbalancer
 
 ### Note
 You can find examples (and docker-compose files) in the example directory of this git project.
+
 
 # Run with Kubernetes
 
@@ -256,7 +268,7 @@ spec:
     app: swapi
 
 ```
-## All About Namespaces
+## All About Namespaces<a name="allAboutNamespaces"></a>
 Namespaces are set by the GraphQl backend microservice, with the label ```gqlProxy.namespace```.
 If you need more than one GraphQL backend server in the same namespace, then give the same name in the label ```gqlProxy.namespace```. The proxy will merge the services. 
 
@@ -264,6 +276,12 @@ If you need more than one GraphQL backend server in the same namespace, then giv
 ### WARNING!!!!
 At the moment it's not possible to have same queries, mutations or types for different entities. The proxy will use the first one it finds. 
 
+
+# Admin page / Metadata Page
+To See what the proxy have include und find an other graphqlServer under ```/admin/graphql``` there is a graphiql to (```/admin/graphiql```)
+There you see all Namespace and the endpoints, which was included. 
+If a endpoints is loadbalance, you can find all all nested "real" endpoints. 
+With the environment ```gqlProxyAdminUser``` and ```gqlProxyAdminPassword``` you can set a Basic Auth for the admin page.
 
 ## Available Environments for the GraphQL Proxy
 
@@ -276,6 +294,29 @@ Key | Available Values | Default | Description | Need for | Required
 |```gqlProxyPollingMs```| int | 5000 | The Polling time to check for changes |  both | false
 |```gqlProxyK8sUser```| string | no Default | It is only needed for ```getInClusterByUser```. The K8s user |  kubernetes | false
 |```gqlProxyK8sUserPassword```| string | no Default | It is only needed for ```getInClusterByUser```. The Password for the K8s user |  kubernetes | false
+|```gqlProxyAdminUser```| string | empty string | The user for Basic Auth at the admin page |  both | false
+|```gqlProxyAdminPassword```| string | empty string | The password for Basic Auth user at the admin page |  both | false
+
+### Possible Combination for Docker
+  - ```qglProxyRuntime```=docker
+  - ```dockerNetwork```=web
+### Possible combination for Kubernetes
+
+#### and find the user in the pod itself
+  - ```qglProxyRuntime```=kubernetes
+  - ```kubernetesConfigurationKind```=getInCluster
+
+   
+#### or give an explizit user
+  - ```qglProxyRuntime```=kubernetes
+  - ```kubernetesConfigurationKind```=getInClusterByUser
+  - ```gqlProxyK8sUser```=myK8sUser
+  - ```gqlProxyK8sUserPassword```=thePassword
+
+### environments you can set in all Kombination
+  - ```gqlProxyPollingMs```=10000
+  - ```gqlProxyAdminUser```=myAdminPageUser
+  - ```gqlProxyAdminPassword```=adminPassword
 
 
  ## Available Labels/annotations for all Backend GraphQL Server
@@ -284,4 +325,4 @@ Key | Available Values |  Description | Required
 --- | --- | --- | --- 
 | ```gqlProxy.token``` |string | The same token you set in the proxy. (In this example 1234) | true 
 |```gqlProxy.url``` | string |  This is the relative path to the proxy running inside the container. (For example: :9000/graphql)| true
-| ```gqlProxy.namespace``` | string  | The namespace that wraps your microservice  see "All About Namespaces" for more Information| true
+| ```gqlProxy.namespace``` | string  | The namespace that wraps your microservice  see ["All About Namespaces"](#allAboutNamespaces) for more Information| true

@@ -16,7 +16,7 @@ import { sortEndpointAndFindAvailableEndpoints } from './finder/endpointsAvailab
 import adminSchema from './admin/adminSchema'
 import basicAuth from 'express-basic-auth'
 import cluster from 'cluster'
-import deepcopy from 'deepcopy/cjs/index'
+// import deepcopy from 'deepcopy/cjs/index'
 
 const createRemoteSchema = async(url) => {
   const link = new HttpLink({ uri: url, fetch })
@@ -83,7 +83,7 @@ const run = async() => {
         }
 
         lastEndPoints = JSON.stringify(endpoints)
-
+        // $FlowFixMe: suppressing this error until we can refactor
         cluster.schedulingPolicy = cluster.SCHED_RR
         if (cluster.isMaster){
           var cpuCount = require('os').cpus().length
@@ -107,7 +107,7 @@ const run = async() => {
 
 }
 
-const oldSchema = null
+// const oldSchema = null
 
 const start = async(endpoints : Endpoints) => {
 
