@@ -8,7 +8,7 @@ const typeDefs = `
 
   type endpoint{
     url: String
-    created: Float
+    created: String
     imageID: String
     loadBalance: loadBalance
   }
