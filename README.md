@@ -7,7 +7,7 @@ It's a GraphQL API Gateway.
 
 
 
-![alt tag](./doc/assets/kontext.svg)
+![alt tag](/doc/assets/kontext.png?raw=true)
 
 # Features
  - Continuously integrate the Backend GraphQLs (**No restart!**)
