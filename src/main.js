@@ -10,12 +10,13 @@ import fetch from 'node-fetch'
 import * as bodyParser from 'body-parser'
 import { DockerFinder } from './finder/dockerFinder/dockerFinder'
 import { K8sFinder } from './finder/k8sFinder/k8sFinder'
-import { runtime, getPollingMs, printAllConfigs, adminPassword, adminUser } from './properties'
+import { runtime, getPollingMs, printAllConfigs, adminPassword, adminUser, knownOldSchemas } from './properties'
 import type { Endpoints, Endpoint } from './finder/findEndpointsInterface'
 import { sortEndpointAndFindAvailableEndpoints } from './finder/endpointsAvailable'
 import adminSchema from './admin/adminSchema'
 import basicAuth from 'express-basic-auth'
 import cluster from 'cluster'
+import deepcopy from 'deepcopy/cjs/index'
 
 const createRemoteSchema = async(url) => {
   const link = new HttpLink({ uri: url, fetch })
@@ -106,37 +107,36 @@ const run = async() => {
 
 }
 
+const oldSchema = null
+
 const start = async(endpoints : Endpoints) => {
 
   const weaverEndpoints = []
 
   for (const one in endpoints){
-    if (endpoints[one].length === 1){
-      weaverEndpoints.push({
-        namespace: one,
-        typePrefic: one + '_',
-        schema: await createRemoteSchema(endpoints[one][0].url),
-
-      })
-    } else {
-      console.log('Found more than one endpoint in same namespace start Merge', endpoints[one])
-      weaverEndpoints.push({
-        namespace: one,
-        typePrefix: one + '_',
-        schema: await getMergedInformation(endpoints[one]),
-      })
-    }
+    weaverEndpoints.push({
+      namespace: one,
+      typePrefix: one + '_',
+      schema: await getMergedInformation(endpoints[one]),
+    })
   }
-  // console.log(weaverEndpoints)
-  // const schema = mergeSchemas({
-  //   schemas: [
-  //     mobileshop, fasibioAuth,
-  //   ],
-  // })
   const schema = await weaverIt(weaverEndpoints)
-  const app = express()
+  let schemaMerged = null
+  // if (knownOldSchemas() == 'true'){
 
-  app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }))
+  //   if (oldSchema != null){
+  //     console.log('merge Old and New Schemas. to known old Schemas', oldSchema)
+  //     schemaMerged = mergeSchemas({
+  //       schemas: [schema, oldSchema],
+  //     })
+  //   } else {
+  schemaMerged = schema
+  // }
+
+  // oldSchema = deepcopy(schemaMerged)
+  // }
+  const app = express()
+  app.use('/graphql', bodyParser.json(), graphqlExpress({ schema: schemaMerged }))
 
   app.use(
     '/graphiql',

@@ -13,6 +13,7 @@ services:
       - dockerNetwork=web
       - gqlProxyToken=1234
       - qglProxyRuntime=docker
+      - gqlProxyKnownOldSchemas=true
     volumes: 
      - /var/run/docker.sock:/var/run/docker.sock
 networks:

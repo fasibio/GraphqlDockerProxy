@@ -13,6 +13,13 @@ export const runtime = () => {
   return idx(process, _ => _.env.qglProxyRuntime) || 'docker'
 }
 
+/**
+ * true or false (false  = default)
+ * If a backend is not reachable anymore the schema will be allready known
+ */
+export const knownOldSchemas = () => {
+  return idx(process, _ => _.env.gqlProxyKnownOldSchemas) || false
+}
 
 export const kubernetesConfigurationKind = () => {
   // $kubernetesConfigurationKind
@@ -48,6 +55,7 @@ export const printAllConfigs = () => {
   console.log('qglProxyRuntime:', runtime())
   console.log('gqlProxyPollingMs:', getPollingMs())
   console.log('gqlProxyAdminUser:', adminUser())
+  console.log('gqlProxyKnownOldSchemas', knownOldSchemas())
   if (runtime() === 'docker'){
     console.log('dockerNetwork:', network())
     console.log('gqlProxyToken:', token())
