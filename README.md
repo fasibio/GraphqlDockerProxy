@@ -10,9 +10,9 @@ It's a GraphQL API Gateway.
 ![oh man get image not visible](/doc/assets/kontext.png?raw=true)
 
 # Features
- - Continuously integrate the Backend GraphQLs (**No restart!**)
+ - Continuously integrates the Backend GraphQL Nodes (**No restart!**)
  - !!!It works with **Docker** and **Kubernetes**!!!
- - Support auto of the box load balance (at docker)
+ - Supports load balancing (with docker)
 
 
 # Run with Docker (Quickstart)
@@ -92,7 +92,7 @@ networks:
 
 Start the docker-compose file. 
 The proxy will automatically find the microservice and include it.
-Under http://127.0.0.1:3000/graphiql you can now see that swapi is now wrapping your graphql microservice 
+Under http://127.0.0.1:3000/graphiql you can now see that swapi has wrapped your graphql microservice 
 Inside this namespace you can make graphql requests. 
 For example:
 ```
@@ -107,7 +107,7 @@ For example:
 }
 ```
 
-Or use the adminpage to see what is included http://127.0.0.1:3000/admin/graphiq
+Or you can use the adminpage to see what has been included http://127.0.0.1:3000/admin/graphiq
 
 ## Now Let's Scale the GraphQL Microservice !
 The proxy knows how to reference the same images with a round robin loadbalancer. 
@@ -278,51 +278,55 @@ At the moment it's not possible to have same queries, mutations or types for dif
 
 
 # Admin page / Metadata Page
-To See what the proxy have include und find an other graphqlServer under ```/admin/graphql``` there is a graphiql to (```/admin/graphiql```)
-There you see all Namespace and the endpoints, which was included. 
-If a endpoints is loadbalance, you can find all all nested "real" endpoints. 
-With the environment ```gqlProxyAdminUser``` and ```gqlProxyAdminPassword``` you can set a Basic Auth for the admin page.
+
+To see what the proxy has included and there is another graphql service under ```/admin/graphql``` as well. 
+There is also a graphiql service at ```/admin/graphiql```.
+Here you can see all of the namespaces and endpoint metadata for the included proxy nodes.
+If an endpoint being served by a loadbalancer, then you can also find the "real" endpoints. 
+
+Set the environment variables, ```gqlProxyAdminUser``` and ```gqlProxyAdminPassword```, to configure a Basic Auth for the admin page.
 
 ## Available Environments for the GraphQL Proxy
 
 Key | Available Values | Default | Description | Need for | Required 
 --- | --- | --- | --- | --- | ---
-| ```qglProxyRuntime``` | ```docker``` or ```kubernetes``` | ```docker``` | tells the proxy run in a docker or in a kubernetes world | docker and kubernetes | true 
-|```dockerNetwork``` | string | none | the network where the backend GraphQL-Server shard with the proxy| docker | for docker
+| ```qglProxyRuntime``` | ```docker``` or ```kubernetes``` | ```docker``` | tells the proxy run to in a docker image or in a kubernetes "world" | docker and kubernetes | true 
+|```dockerNetwork``` | string | none | the network where the backend GraphQL-Server is shared with the proxy| docker | for docker
 | ```gqlProxyToken``` | string | empty string | a token which verifies that the microservice belongs to the proxy | both | false but better you set it
-|```kubernetesConfigurationKind``` | ```fromKubeconfig``` or ```getInCluster``` or ```getInClusterByUser``` | ```fromKubeconfig``` | How the proxy find the Kubernetes API Config. | kubernetes | false
-|```gqlProxyPollingMs```| int | 5000 | The Polling time to check for changes |  both | false
-|```gqlProxyK8sUser```| string | no Default | It is only needed for ```getInClusterByUser```. The K8s user |  kubernetes | false
-|```gqlProxyK8sUserPassword```| string | no Default | It is only needed for ```getInClusterByUser```. The Password for the K8s user |  kubernetes | false
-|```gqlProxyAdminUser```| string | empty string | The user for Basic Auth at the admin page |  both | false
-|```gqlProxyAdminPassword```| string | empty string | The password for Basic Auth user at the admin page |  both | false
+|```kubernetesConfigurationKind``` | ```fromKubeconfig``` or ```getInCluster``` or ```getInClusterByUser``` | ```fromKubeconfig``` | How the proxy finds the Kubernetes API config. | kubernetes | false
+|```gqlProxyPollingMs```| int | 5000 | The polling time to check for changes |  both | false
+|```gqlProxyK8sUser```| string | no Default | The K8s user. This is only needed for configuration type ```getInClusterByUser```. |  kubernetes | false
+|```gqlProxyK8sUserPassword```| string | no Default |  The password for the K8s user. This is only needed for configuration type ```getInClusterByUser```. |  kubernetes | false
+|```gqlProxyAdminUser```| string | empty string | The Basic Auth user for the admin page |  both | false
+|```gqlProxyAdminPassword```| string | empty string | The Basic Auth password for the admin page |  both | false
 
-### Possible Combination for Docker
+### Possible Environment Variable Combinations for Docker
   - ```qglProxyRuntime```=docker
   - ```dockerNetwork```=web
-### Possible combination for Kubernetes
 
-#### and find the user in the pod itself
+### Possible Environment Variable Combinations for Kubernetes
+
+#### For a User in the Pod
   - ```qglProxyRuntime```=kubernetes
   - ```kubernetesConfigurationKind```=getInCluster
 
    
-#### or give an explizit user
+#### For an Explicit User
   - ```qglProxyRuntime```=kubernetes
   - ```kubernetesConfigurationKind```=getInClusterByUser
   - ```gqlProxyK8sUser```=myK8sUser
   - ```gqlProxyK8sUserPassword```=thePassword
 
-### environments you can set in all Kombination
+### For All of the Above
   - ```gqlProxyPollingMs```=10000
   - ```gqlProxyAdminUser```=myAdminPageUser
   - ```gqlProxyAdminPassword```=adminPassword
 
 
- ## Available Labels/annotations for all Backend GraphQL Server
+ ## Available Labels/Annotations for all GraphQL Endpoints
 
 Key | Available Values |  Description | Required 
 --- | --- | --- | --- 
 | ```gqlProxy.token``` |string | The same token you set in the proxy. (In this example 1234) | true 
 |```gqlProxy.url``` | string |  This is the relative path to the proxy running inside the container. (For example: :9000/graphql)| true
-| ```gqlProxy.namespace``` | string  | The namespace that wraps your microservice  see ["All About Namespaces"](#allAboutNamespaces) for more Information| true
+| ```gqlProxy.namespace``` | string  | The namespace that wraps your microservice.  See ["All About Namespaces"](#allAboutNamespaces) for more information| true
