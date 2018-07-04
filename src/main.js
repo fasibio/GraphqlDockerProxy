@@ -16,10 +16,16 @@ import { sortEndpointAndFindAvailableEndpoints } from './finder/endpointsAvailab
 import adminSchema from './admin/adminSchema'
 import basicAuth from 'express-basic-auth'
 import cluster from 'cluster'
+import { setContext } from 'apollo-link-context'
 // import deepcopy from 'deepcopy/cjs/index'
 
+
 const createRemoteSchema = async(url) => {
-  const link = new HttpLink({ uri: url, fetch })
+  const http = new HttpLink({ uri: url, fetch })
+  const link = setContext((request, previousContext) => {
+    return previousContext.graphqlContext
+  }).concat(http)
+
   const schema = await introspectSchema(link)
   const executableSchema = makeRemoteExecutableSchema({
     schema,
@@ -136,8 +142,12 @@ const start = async(endpoints : Endpoints) => {
   // oldSchema = deepcopy(schemaMerged)
   // }
   const app = express()
-  app.use('/graphql', bodyParser.json(), graphqlExpress({ schema: schemaMerged }))
-
+  app.use('/graphql', bodyParser.json(), (res, req) => {
+    graphqlExpress({ schema: schemaMerged,
+      context: {
+        headers: res.headers,
+      } })(res, req)
+  })
   app.use(
     '/graphiql',
     graphiqlExpress({
