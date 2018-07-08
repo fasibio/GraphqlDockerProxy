@@ -1,0 +1,11 @@
+pipeline: 
+  test: 
+    image: alpine
+    commands: 
+      - env
+  build: 
+    iamge: plugins/docker
+    secrets: [ docker_username, docker_password ]    
+    repo: fasibio/graphqldockerproxy
+    tags: [rc0.0.9]
+    
