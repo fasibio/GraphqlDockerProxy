@@ -1,6 +1,6 @@
 pipeline: 
   test: 
-    image: alpine
+    image: alpine:latest
     commands: 
       - env
   build: 
