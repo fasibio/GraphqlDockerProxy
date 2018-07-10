@@ -1,0 +1,10 @@
+test:
+  stage: test
+  tags: 
+    - docker
+  image: docker
+  script:
+    - env
+    - docker info
+stages: 
+  - test
