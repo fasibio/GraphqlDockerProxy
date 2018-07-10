@@ -1,8 +1,7 @@
 test:
   stage: test
   tags: 
-    - docker
-    - fasibio
+    - dockerfasibio
   image: docker
   script:
     - env
