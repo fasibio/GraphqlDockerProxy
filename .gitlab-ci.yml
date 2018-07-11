@@ -1,10 +1,21 @@
-test:
-  stage: test
+build:
+  stage: build
   tags: 
     - dockerfasibio
   image: docker
   script:
-    - env 
-    - docker info
+    - dockerize/buildDocker.sh latest
+   only:
+      - master
+publish:
+  stage: publish
+  tags: 
+    - dockerfasibio
+  image: docker
+  script:
+    - dockerize/publish.sh latest
+  only:
+    - master
 stages: 
-  - test
+  - build
+  - publish
