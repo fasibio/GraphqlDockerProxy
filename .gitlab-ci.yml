@@ -4,6 +4,7 @@ build:
     - dockerfasibio
   image: docker
   script:
+    - ls -lag
     - ./dockerize/buildDocker.sh latest
   only:
     - master
