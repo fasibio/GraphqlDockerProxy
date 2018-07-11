@@ -4,7 +4,7 @@ build:
     - dockerfasibio
   image: docker
   script:
-    - dockerize/buildDocker.sh latest
+    - ./dockerize/buildDocker.sh latest
   only:
     - master
 publish:
@@ -13,7 +13,7 @@ publish:
     - dockerfasibio
   image: docker
   script:
-    - dockerize/publish.sh latest
+    - ./dockerize/publish.sh latest
   only:
     - master
 stages: 
