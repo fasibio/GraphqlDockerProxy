@@ -4,7 +4,7 @@ test:
     - dockerfasibio
   image: docker
   script:
-    - env
+    - env 
     - docker info
 stages: 
   - test
