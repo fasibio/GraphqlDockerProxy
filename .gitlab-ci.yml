@@ -5,8 +5,8 @@ build:
   image: docker
   script:
     - dockerize/buildDocker.sh latest
-   only:
-      - master
+  only:
+    - master
 publish:
   stage: publish
   tags: 
