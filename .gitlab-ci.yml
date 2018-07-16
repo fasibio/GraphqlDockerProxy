@@ -22,7 +22,7 @@
       - dockerfasibio
     image: docker
     script:
-      - sh -x ./dockerize/buildDocker.sh $CI_COMMIT_TAG
+      - sh -x ./dockerize/buildDocker.sh $CI_COMMIT_REF_NAME
     only:
       - /^([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
       - /^rc_([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
@@ -34,7 +34,7 @@
       - dockerfasibio
     image: docker
     script:
-      - sh -x ./dockerize/publish.sh $CI_COMMIT_TAG
+      - sh -x ./dockerize/publish.sh $CI_COMMIT_REF_NAME
     only:
       - /^([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
       - /^rc_([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
