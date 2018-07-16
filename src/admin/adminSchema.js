@@ -1,5 +1,5 @@
 import { makeExecutableSchema } from 'graphql-tools'
-
+import { getBlacklist, clearAll } from '../finder/k8sFinder/blacklist'
 const typeDefs = `
   type namespace{
     name: String
@@ -18,8 +18,13 @@ const typeDefs = `
     endpoints: [endpoint]
   }
 
+  type Kubernetes{
+    blacklist: [String]
+    clearBlackList: Boolean
+  }
   type Query{
     namespaces: [namespace]
+    kubernetes: Kubernetes
   }
 
 `
@@ -44,6 +49,17 @@ const mappingEndpoint = (endpoint) => {
 }
 const resolvers = {
   Query: {
+    kubernetes: () => {
+      return {
+        blacklist: () => {
+          return getBlacklist()
+        },
+        clearBlackList: () => {
+          clearAll()
+          return true
+        },
+      }
+    },
     namespaces: (one, two, context) => {
       const result = []
       const endpoints = context.endpoints

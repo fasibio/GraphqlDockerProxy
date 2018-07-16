@@ -7,6 +7,7 @@ import { FindEndpoints } from '../findEndpointsInterface'
 import { token, kubernetesConfigurationKind } from '../../properties'
 import type { Endpoints } from '../findEndpointsInterface'
 import { getInClusterByUser } from './getInClusterByUser'
+import { addNamespaceToBlacklist, isNamespaceAtBlacklist } from './blacklist'
 declare function idx(obj: any, callBack: any):any
 
 export class K8sFinder extends FindEndpoints{
@@ -51,6 +52,10 @@ export class K8sFinder extends FindEndpoints{
     for (const one in items) {
       const namespaceObj = items[one]
       const k8sNamespace = namespaceObj.metadata.name
+      if (isNamespaceAtBlacklist(k8sNamespace)){
+        console.log('Namespace ' + k8sNamespace + 'is on Blacklist. Because Permissionproblem. Clear on admin Page')
+        continue
+      }
       // const services = client.api.v1.namespaces(namespace).services.get()
       try {
         const services = await client.api.v1.namespaces(k8sNamespace).services.get()
@@ -82,6 +87,7 @@ export class K8sFinder extends FindEndpoints{
           }
         }
       } catch (e){
+        addNamespaceToBlacklist(k8sNamespace)
         //no loging because user have no permisson 
         // console.log('error by reading namespace:' + k8sNamespace + ' ', e)
       }
