@@ -7,7 +7,6 @@
       - sh -x ./dockerize/buildDocker.sh latest
     only:
       - master
-      - /^rc_([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
   publish:
     stage: publish
     tags: 
@@ -17,7 +16,6 @@
       - sh -x ./dockerize/publish.sh latest
     only:
       - master
-      - /^rc_([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
   buildTag:
     stage: build
     tags: 
@@ -28,8 +26,7 @@
     only:
       - /^([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
       - /^rc_([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
-    except:
-      - tags
+
     
   publishTag:
     stage: publish
@@ -41,8 +38,6 @@
     only:
       - /^([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
       - /^rc_([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
-    except:
-      - tags
   stages: 
     - build
     - publish
