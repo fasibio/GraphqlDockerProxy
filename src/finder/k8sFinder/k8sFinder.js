@@ -53,7 +53,7 @@ export class K8sFinder extends FindEndpoints{
       const namespaceObj = items[one]
       const k8sNamespace = namespaceObj.metadata.name
       if (isNamespaceAtBlacklist(k8sNamespace)){
-        console.log('Namespace ' + k8sNamespace + 'is on Blacklist. Because Permissionproblem. Clear on admin Page')
+        //console.log('Namespace ' + k8sNamespace + 'is on Blacklist. Because Permissionproblem. Clear on admin Page')
         continue
       }
       // const services = client.api.v1.namespaces(namespace).services.get()
