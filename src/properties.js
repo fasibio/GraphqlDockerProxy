@@ -6,6 +6,14 @@ export const token = () => {
   return idx(process, _ => _.env.gqlProxyToken) || ''
 }
 
+export const getVersion = () => {
+  return idx(process, _ => _.env.VERSION)
+}
+
+export const getBuildNumber = () => {
+  return idx(process, _ => _.env.BUILD_NUMBER)
+}
+
 /**
  * Available values: docker & kubernetes
  */
@@ -16,6 +24,7 @@ export const runtime = () => {
 /**
  * true or false (false  = default)
  * If a backend is not reachable anymore the schema will be allready known
+ * WIP Not produktionable
  */
 export const knownOldSchemas = () => {
   return idx(process, _ => _.env.gqlProxyKnownOldSchemas) || false
