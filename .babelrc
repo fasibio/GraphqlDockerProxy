@@ -7,10 +7,11 @@
     "transform-regenerator",
     "transform-class-properties",
     "transform-flow-strip-types",
+    "syntax-flow",
     ["transform-runtime", {
       "polyfill": true,
       "regenerator": true
     }]
   ],
-  "presets": ["env", "es2015"]
+  "presets": ["env", "flow"]
 }
