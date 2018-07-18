@@ -1,4 +1,5 @@
 {
+  "presets": ["env", "flow"],
   "plugins": [
     "transform-es2015-arrow-functions",
     "check-es2015-constants",
@@ -12,6 +13,5 @@
       "polyfill": true,
       "regenerator": true
     }]
-  ],
-  "presets": ["env", "flow"]
+  ]
 }
