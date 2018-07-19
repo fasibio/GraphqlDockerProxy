@@ -11,14 +11,14 @@ module.exports = {
   module: {
     rules: [
       {
-        test: path.resolve(__dirname, 'node_modules/JSONStream/index.js'),
+        test: /node_modules\/JSONStream\/index\.js$/,
         use: ['babel-loader', 'shebang-loader'],
       },
       {
         test: /\.js$/,
         exclude: [
           /node_modules/,
-          path.resolve(__dirname, 'node_modules/JSONStream/index.js')
+          path.resolve(__dirname, 'node_modules/JSONStream/index.js'),
         ],
         loader: ['babel-loader'],
       },
