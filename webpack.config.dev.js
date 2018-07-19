@@ -18,7 +18,6 @@ module.exports = {
         test: /\.js$/,
         exclude: [
           /node_modules/,
-          path.resolve(__dirname, 'node_modules/JSONStream/index.js'),
         ],
         loader: ['babel-loader'],
       },
