@@ -1,3 +1,16 @@
+  test:
+    stage: test
+    tags:
+      - dockerfasibio
+    image: node:9
+    script:
+      - npm install
+      - npm test
+    only:
+      - /^([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
+      - /^rc_([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
+      - master
+      
   build:
     stage: build
     tags: 
@@ -39,5 +52,6 @@
       - /^([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
       - /^rc_([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
   stages: 
+    - test
     - build
     - publish
