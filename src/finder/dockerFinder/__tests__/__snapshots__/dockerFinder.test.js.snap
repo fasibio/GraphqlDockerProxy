@@ -11,17 +11,19 @@ Object {
       "url": "http://123.122.123.123:9000/graphql",
     },
   ],
+  "tree": Array [
+    Object {
+      "__created": "20180101",
+      "__imageID": "twoTWO",
+      "namespace": "tree",
+      "typePrefix": "tree_",
+      "url": "http://123.122.123.123:9000/graphql",
+    },
+  ],
   "two": Array [
     Object {
       "__created": "20180101",
       "__imageID": "two",
-      "namespace": "two",
-      "typePrefix": "two_",
-      "url": "http://123.122.123.123:9000/graphql",
-    },
-    Object {
-      "__created": "20180101",
-      "__imageID": "twoTWO",
       "namespace": "two",
       "typePrefix": "two_",
       "url": "http://123.122.123.123:9000/graphql",

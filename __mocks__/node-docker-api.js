@@ -56,7 +56,7 @@ export class Docker{
         Labels: {
           'gqlProxy.token': 1234,
           'gqlProxy.url': ':9000/graphql',
-          'gqlProxy.namespace': 'two',
+          'gqlProxy.namespace': 'tree',
         },
         Created: '20180101',
         Image: 'twoTWO',

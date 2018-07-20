@@ -1,4 +1,11 @@
 import { DockerFinder } from '../dockerFinder'
+jest.mock('../../endpointsAvailable', () => {
+  return {
+    sortEndpointAndFindAvailableEndpoints: (data) => {
+      return Promise.resolve(data)
+    },
+  }
+})
 jest.mock('../../../properties', () => {
   return {
     token: () => {
@@ -21,5 +28,15 @@ describe('Tests the docḱerfinder Class', () => {
       const endpoints = await dockerFinder.getEndpoints()
       expect(endpoints).toMatchSnapshot()
     })
+  })
+
+  describe('tests handleRestart', () => {
+    it ('tests there does not need loadbalance no change at endpoints ', async() => {
+      const endpoints = await dockerFinder.getEndpoints()
+      const newEndpoints = await dockerFinder.handleRestart(endpoints)
+      expect(endpoints).toEqual(newEndpoints)
+    })
+
+
   })
 })

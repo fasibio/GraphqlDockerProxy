@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tests k8s login func getInClusterByUser tests returns valid json 1`] = `
+Object {
+  "auth": Object {
+    "pass": "mockpw",
+    "user": "mockuser",
+  },
+  "insecureSkipTlsVerify": true,
+  "url": "https://mockHost:mockport",
+}
+`;

@@ -1,38 +1,21 @@
 //@flow
-import { makeRemoteExecutableSchema, mergeSchemas, introspectSchema } from 'graphql-tools'
 import { graphqlExpress,
   graphiqlExpress,
 } from 'apollo-server-express'
 import express from 'express'
 import { weaveSchemas } from 'graphql-weaver'
-import { HttpLink } from 'apollo-link-http'
-import fetch from 'node-fetch'
 import * as bodyParser from 'body-parser'
 import { DockerFinder } from './finder/dockerFinder/dockerFinder'
 import { K8sFinder } from './finder/k8sFinder/k8sFinder'
-import { runtime, getPollingMs, printAllConfigs, adminPassword, adminUser, knownOldSchemas } from './properties'
-import type { Endpoints, Endpoint } from './finder/findEndpointsInterface'
+import { runtime, getPollingMs, printAllConfigs, adminPassword, adminUser } from './properties'
+import type { Endpoints } from './finder/findEndpointsInterface'
 import { sortEndpointAndFindAvailableEndpoints } from './finder/endpointsAvailable'
 import adminSchema from './admin/adminSchema'
 import basicAuth from 'express-basic-auth'
 import cluster from 'cluster'
-import { setContext } from 'apollo-link-context'
 // import deepcopy from 'deepcopy/cjs/index'
+import { getMergedInformation } from './schemaBuilder'
 
-
-const createRemoteSchema = async(url) => {
-  const http = new HttpLink({ uri: url, fetch })
-  const link = setContext((request, previousContext) => {
-    return previousContext.graphqlContext
-  }).concat(http)
-
-  const schema = await introspectSchema(link)
-  const executableSchema = makeRemoteExecutableSchema({
-    schema,
-    link,
-  })
-  return executableSchema
-}
 
 const weaverIt = async(endpoints) => {
   try {
@@ -43,19 +26,6 @@ const weaverIt = async(endpoints) => {
     console.log('WeaverIt goes Wrong', e)
   }
 
-}
-
-const getMergedInformation = async(namespace: Array<Endpoint>) => {
-  const schema = []
-
-  for (let i = 0; i < namespace.length; i++){
-    schema.push(await createRemoteSchema(namespace[i].url))
-  }
-
-  const merged = mergeSchemas({
-    schemas: schema,
-  })
-  return merged
 }
 
 
@@ -155,6 +125,7 @@ const start = async(endpoints : Endpoints) => {
     })
   )
 
+
   if (adminUser() !== ''){
     const users = {}
     users[adminUser()] = adminPassword()
@@ -163,7 +134,6 @@ const start = async(endpoints : Endpoints) => {
       challenge: true,
     }))
   }
-
   app.use('/admin/graphql', bodyParser.json(), graphqlExpress({
     context: {
       endpoints: await endpoints,
