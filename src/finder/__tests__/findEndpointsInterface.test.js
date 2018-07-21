@@ -9,4 +9,8 @@ describe('tests the parentFinderClass', () => {
   it('tests that handleRestart retrun the input', () => {
     expect(findendpoints.handleRestart('input')).toBe('input')
   })
+
+  it ('tests getEndpoints return a empty obj', () => {
+    expect(findendpoints.getEndpoints()).toEqual({})
+  })
 })
