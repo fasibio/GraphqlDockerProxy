@@ -4,6 +4,7 @@ module.exports = {
   globals: {
     idx: global.idx,
     collectCoverage: true,
+    'coverageReporters': ['json', 'html'],
     coverageDirectory: '/coverage',
     'collectCoverageFrom': [
       '**/*.{js,jsx}',

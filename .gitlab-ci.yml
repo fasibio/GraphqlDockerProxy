@@ -21,7 +21,7 @@
     dependencies:
       - test
     script:
-      - mv coverage/ public/
+      - mv coverage/lcov-report public/
     artifacts:
       paths:
         - public
