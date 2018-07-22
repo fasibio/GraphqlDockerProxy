@@ -15,19 +15,19 @@
       - master
     
   pages:
-  stage: deploy
-  tags:
-      - dockerfasibio
-  dependencies:
-    - rspec
-  script:
-    - mv coverage/ public/
-  artifacts:
-    paths:
-      - public
-    expire_in: 30 days
-  only:
-    - master
+    stage: testPages
+    tags:
+        - dockerfasibio
+    dependencies:
+      - test
+    script:
+      - mv coverage/ public/
+    artifacts:
+      paths:
+        - public
+      expire_in: 30 days
+    only:
+      - master
   build:
     stage: build
     tags: 
@@ -70,6 +70,6 @@
       - /^rc_([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
   stages: 
     - test
-    - pages
+    - testPages
     - build
     - publish
