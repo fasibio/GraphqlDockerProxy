@@ -65,6 +65,8 @@ export const printAllConfigs = () => {
   console.log('gqlProxyPollingMs:', getPollingMs())
   console.log('gqlProxyAdminUser:', adminUser())
   console.log('gqlProxyKnownOldSchemas', knownOldSchemas())
+  console.log('Version: ', getVersion())
+  console.log('Buildnumber: ', getBuildNumber())
   if (runtime() === 'docker'){
     console.log('dockerNetwork:', network())
     console.log('gqlProxyToken:', token())

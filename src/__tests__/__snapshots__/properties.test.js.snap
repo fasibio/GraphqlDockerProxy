@@ -1,0 +1,193 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tests Properties snapshot adminPassword default return 1`] = `""`;
+
+exports[`tests Properties snapshot adminPassword given envs 1`] = `"topSecretAdmin"`;
+
+exports[`tests Properties snapshot adminUser default return 1`] = `""`;
+
+exports[`tests Properties snapshot adminUser given envs 1`] = `"mockAdmin"`;
+
+exports[`tests Properties snapshot all properties 1`] = `
+Object {
+  "adminPassword": [Function],
+  "adminUser": [Function],
+  "getBuildNumber": [Function],
+  "getPollingMs": [Function],
+  "getVersion": [Function],
+  "k8sUser": [Function],
+  "k8sUserPassword": [Function],
+  "knownOldSchemas": [Function],
+  "kubernetesConfigurationKind": [Function],
+  "network": [Function],
+  "printAllConfigs": [Function],
+  "runtime": [Function],
+  "token": [Function],
+}
+`;
+
+exports[`tests Properties snapshot getBuildNumber default return 1`] = `null`;
+
+exports[`tests Properties snapshot getBuildNumber given envs 1`] = `"12345"`;
+
+exports[`tests Properties snapshot getPollingMs default return 1`] = `5000`;
+
+exports[`tests Properties snapshot getPollingMs given envs 1`] = `10124`;
+
+exports[`tests Properties snapshot getVersion default return 1`] = `null`;
+
+exports[`tests Properties snapshot getVersion given envs 1`] = `"0.0.0"`;
+
+exports[`tests Properties snapshot k8sUser default return 1`] = `""`;
+
+exports[`tests Properties snapshot k8sUser given envs 1`] = `"mocktesting"`;
+
+exports[`tests Properties snapshot k8sUserPassword default return 1`] = `""`;
+
+exports[`tests Properties snapshot k8sUserPassword given envs 1`] = `"topSecret"`;
+
+exports[`tests Properties snapshot knownOldSchemas default return 1`] = `false`;
+
+exports[`tests Properties snapshot knownOldSchemas given envs 1`] = `true`;
+
+exports[`tests Properties snapshot kubernetesConfigurationKind default return 1`] = `"fromKubeconfig"`;
+
+exports[`tests Properties snapshot kubernetesConfigurationKind given envs 1`] = `"getInCluster"`;
+
+exports[`tests Properties snapshot network default return 1`] = `"web"`;
+
+exports[`tests Properties snapshot network given envs 1`] = `"mock"`;
+
+exports[`tests Properties snapshot printAllConfigs default return 1`] = `
+Array [
+  "===================================",
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs default return 2`] = `
+Array [
+  "qglProxyRuntime:",
+  "docker",
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs default return 3`] = `
+Array [
+  "gqlProxyPollingMs:",
+  5000,
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs default return 4`] = `
+Array [
+  "gqlProxyAdminUser:",
+  "",
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs default return 5`] = `
+Array [
+  "gqlProxyKnownOldSchemas",
+  false,
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs default return 6`] = `
+Array [
+  "Version: ",
+  null,
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs default return 7`] = `
+Array [
+  "Buildnumber: ",
+  null,
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs default return 8`] = `
+Array [
+  "dockerNetwork:",
+  "web",
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs default return 9`] = `
+Array [
+  "gqlProxyToken:",
+  "",
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs default return 10`] = `
+Array [
+  "===================================",
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs default return 11`] = `undefined`;
+
+exports[`tests Properties snapshot printAllConfigs given envs 1`] = `
+Array [
+  "===================================",
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs given envs 2`] = `
+Array [
+  "qglProxyRuntime:",
+  "mockRuntime",
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs given envs 3`] = `
+Array [
+  "gqlProxyPollingMs:",
+  10124,
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs given envs 4`] = `
+Array [
+  "gqlProxyAdminUser:",
+  "mockAdmin",
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs given envs 5`] = `
+Array [
+  "gqlProxyKnownOldSchemas",
+  true,
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs given envs 6`] = `
+Array [
+  "Version: ",
+  "0.0.0",
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs given envs 7`] = `
+Array [
+  "Buildnumber: ",
+  "12345",
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs given envs 8`] = `
+Array [
+  "===================================",
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs given envs 9`] = `undefined`;
+
+exports[`tests Properties snapshot runtime default return 1`] = `"docker"`;
+
+exports[`tests Properties snapshot runtime given envs 1`] = `"mockRuntime"`;
+
+exports[`tests Properties snapshot token default return 1`] = `""`;
+
+exports[`tests Properties snapshot token given envs 1`] = `"123"`;
