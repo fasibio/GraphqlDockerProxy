@@ -1,4 +1,5 @@
 import * as properties from '../properties'
+import '../idx'
 global.console = {
   log: (...args) => {
     expect(args).toMatchSnapshot()
