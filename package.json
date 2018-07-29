@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "prepush": "npm test",
     "dev": "webpack -d --config webpack.config.dev.js --watch --watch-poll",
     "build": "webpack -d --config webpack.config.js",
     "start": "npm run build &&dockerNetwork=web gqlProxyToken=1234 node dist/bundle.js",
