@@ -58,6 +58,10 @@ export const adminPassword = () => {
   return idx(process, _ => _.env.gqlProxyAdminPassword) || ''
 }
 
+export const showPlayground = () => {
+  return idx(process, _ => _.env.gqlShowPlayground) || true
+}
+
 
 export const printAllConfigs = () => {
   console.log('===================================')
@@ -65,6 +69,7 @@ export const printAllConfigs = () => {
   console.log('gqlProxyPollingMs:', getPollingMs())
   console.log('gqlProxyAdminUser:', adminUser())
   console.log('gqlProxyKnownOldSchemas', knownOldSchemas())
+  console.log('gqlShowPlayground', showPlayground())
   console.log('Version: ', getVersion())
   console.log('Buildnumber: ', getBuildNumber())
   if (runtime() === 'docker'){

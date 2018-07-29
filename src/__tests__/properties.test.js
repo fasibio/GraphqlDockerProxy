@@ -20,6 +20,7 @@ describe('tests Properties', () => {
     gqlProxyPollingMs: 10124,
     gqlProxyAdminUser: 'mockAdmin',
     gqlProxyAdminPassword: 'topSecretAdmin',
+    gqlShowPlayground: false,
   }
   beforeAll(() => {
 

@@ -22,6 +22,7 @@ Object {
   "network": [Function],
   "printAllConfigs": [Function],
   "runtime": [Function],
+  "showPlayground": [Function],
   "token": [Function],
 }
 `;
@@ -94,39 +95,46 @@ Array [
 
 exports[`tests Properties snapshot printAllConfigs default return 6`] = `
 Array [
-  "Version: ",
-  null,
+  "gqlShowPlayground",
+  true,
 ]
 `;
 
 exports[`tests Properties snapshot printAllConfigs default return 7`] = `
 Array [
-  "Buildnumber: ",
+  "Version: ",
   null,
 ]
 `;
 
 exports[`tests Properties snapshot printAllConfigs default return 8`] = `
 Array [
+  "Buildnumber: ",
+  null,
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs default return 9`] = `
+Array [
   "dockerNetwork:",
   "web",
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs default return 9`] = `
+exports[`tests Properties snapshot printAllConfigs default return 10`] = `
 Array [
   "gqlProxyToken:",
   "",
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs default return 10`] = `
+exports[`tests Properties snapshot printAllConfigs default return 11`] = `
 Array [
   "===================================",
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs default return 11`] = `undefined`;
+exports[`tests Properties snapshot printAllConfigs default return 12`] = `undefined`;
 
 exports[`tests Properties snapshot printAllConfigs given envs 1`] = `
 Array [
@@ -164,29 +172,40 @@ Array [
 
 exports[`tests Properties snapshot printAllConfigs given envs 6`] = `
 Array [
+  "gqlShowPlayground",
+  true,
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs given envs 7`] = `
+Array [
   "Version: ",
   "0.0.0",
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs given envs 7`] = `
+exports[`tests Properties snapshot printAllConfigs given envs 8`] = `
 Array [
   "Buildnumber: ",
   "12345",
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs given envs 8`] = `
+exports[`tests Properties snapshot printAllConfigs given envs 9`] = `
 Array [
   "===================================",
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs given envs 9`] = `undefined`;
+exports[`tests Properties snapshot printAllConfigs given envs 10`] = `undefined`;
 
 exports[`tests Properties snapshot runtime default return 1`] = `"docker"`;
 
 exports[`tests Properties snapshot runtime given envs 1`] = `"mockRuntime"`;
+
+exports[`tests Properties snapshot showPlayground default return 1`] = `true`;
+
+exports[`tests Properties snapshot showPlayground given envs 1`] = `true`;
 
 exports[`tests Properties snapshot token default return 1`] = `""`;
 

@@ -55,8 +55,8 @@ You can do this with the following environment variables:
  - ```gqlProxyToken```: a token which verifies that the microservice belongs to the proxy 
 
  That's all!!
- Now you can open the proxy under http://127.0.0.1:3000/graphiql .
- The API is reachable under http://127.0.0.1:3000/graphql .
+ Now you can open the proxy playground under http://127.0.0.1:3000/graphql .
+ The API is reachable under http://127.0.0.1:3000/graphql too.
 
  At the moment it is an empty gateway. 
 
@@ -107,7 +107,7 @@ For example:
 }
 ```
 
-Or you can use the adminpage to see what has been included http://127.0.0.1:3000/admin/graphiq
+Or you can use the adminpage to see what has been included http://127.0.0.1:3000/admin/graphql (See the second tab at playground)
 
 ## Now Let's Scale the GraphQL Microservice !
 The proxy knows how to reference the same images with a round robin loadbalancer. 
@@ -305,6 +305,7 @@ Key | Available Values | Default | Description | Need for | Required
 |```gqlProxyK8sUserPassword```| string | no Default |  The password for the K8s user. This is only needed for configuration type ```getInClusterByUser```. |  kubernetes | false
 |```gqlProxyAdminUser```| string | empty string | The Basic Auth user for the admin page |  both | false
 |```gqlProxyAdminPassword```| string | empty string | The Basic Auth password for the admin page |  both | false
+|```gqlShowPlayground```| bool | true | toggle playground on and off |  both | true
 
 ### Possible Environment Variable Combinations for Docker
   - ```qglProxyRuntime```=docker

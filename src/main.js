@@ -5,7 +5,7 @@ import { weaveSchemas } from 'graphql-weaver'
 import * as bodyParser from 'body-parser'
 import { DockerFinder } from './finder/dockerFinder/dockerFinder'
 import { K8sFinder } from './finder/k8sFinder/k8sFinder'
-import { runtime, getPollingMs, printAllConfigs, adminPassword, adminUser } from './properties'
+import { runtime, getPollingMs, printAllConfigs, adminPassword, adminUser, showPlayground } from './properties'
 import type { Endpoints } from './finder/findEndpointsInterface'
 import { sortEndpointAndFindAvailableEndpoints } from './finder/endpointsAvailable'
 import adminSchema from './admin/adminSchema'
@@ -110,9 +110,9 @@ const start = async(endpoints : Endpoints) => {
   // oldSchema = deepcopy(schemaMerged)
   // }
   const app = express()
-  const apiServer = new ApolloServer({
-    schema: schemaMerged,
-    playground: {
+  let playground = false
+  if (showPlayground()){
+    playground = {
       tabs: [{
         endpoint: '/graphql',
 
@@ -125,7 +125,11 @@ const start = async(endpoints : Endpoints) => {
       },
       ],
 
-    },
+    }
+  }
+  const apiServer = new ApolloServer({
+    schema: schemaMerged,
+    playground: playground,
     introspection: true,
     context: (obj) => {
       return {
@@ -159,7 +163,7 @@ const start = async(endpoints : Endpoints) => {
   }
 
   const adminServer = new ApolloServer({
-    // playground: true,
+    playground: playground,
     introspection: true,
     context: {
       endpoints: await endpoints,
