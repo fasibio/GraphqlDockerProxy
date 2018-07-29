@@ -65,6 +65,9 @@
   },
   "pkg": {
     "scripts": "**/*.js"
+  }, 
+  "jest": {
+    "testURL": "http://localhost/"
   }
 
 }
