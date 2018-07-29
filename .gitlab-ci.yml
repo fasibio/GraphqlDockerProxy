@@ -6,6 +6,7 @@
     script:
       - npm install
       - npm test -- --coverage=true
+    coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
     artifacts:
       paths:
         - coverage/
