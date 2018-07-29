@@ -4,7 +4,7 @@ A generic Graphql Docker Proxy
 It's a GraphQL API Gateway. 
 
 [![Docker Build Status](https://img.shields.io/docker/build/fasibio/graphqldockerproxy.svg)](https://hub.docker.com/r/fasibio/graphqldockerproxy/) 
-
+[![coverage report](https://gitlab.com/fasibio/GraphqlDockerProxy/badges/master/coverage.svg)](https://gitlab.com/fasibio/GraphqlDockerProxy/commits/master)
 
 
 ![oh man get image not visible](/doc/assets/kontext.png?raw=true)
@@ -268,6 +268,12 @@ spec:
     app: swapi
 
 ```
+
+## Kubernetes no Permission to scan a namespace. 
+If the K8s User have no Permission to Scan a namespace, this will be added to a blacklist. 
+So this namespace will be no longer pulled. 
+You can clear the Blacklist add the admin page. 
+
 ## All About Namespaces<a name="allAboutNamespaces"></a>
 Namespaces are set by the GraphQl backend microservice, with the label ```gqlProxy.namespace```.
 If you need more than one GraphQL backend server in the same namespace, then give the same name in the label ```gqlProxy.namespace```. The proxy will merge the services. 

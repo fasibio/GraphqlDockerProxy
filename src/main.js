@@ -134,6 +134,11 @@ const start = async(endpoints : Endpoints) => {
       challenge: true,
     }))
   }
+  app.get('/health', (req, res) => {
+    res.status(200)
+    res.send('OK')
+
+  })
   app.use('/admin/graphql', bodyParser.json(), graphqlExpress({
     context: {
       endpoints: await endpoints,
