@@ -8,7 +8,7 @@
     "build": "webpack -d --config webpack.config.js",
     "start": "npm run build &&dockerNetwork=web gqlProxyToken=1234 node dist/bundle.js",
     "startDev": "dockerNetwork=web gqlProxyToken=1234 gqlProxyAdminUser=admin gqlProxyAdminPassword=test1234 nodemon dist/bundle.js",
-    "test": "jest",
+    "test": "jest .",
     "pkg-docker": "pkg dist/bundle.js --targets node9-alpine-x64 --output pkg/app",
     "pkg-docker-healthcheck": "pkg ./healthcheck.js --targets node9-alpine-x64 --output pkg/healthcheck"
   },
@@ -65,9 +65,6 @@
   },
   "pkg": {
     "scripts": "**/*.js"
-  }, 
-  "jest": {
-    "testURL": "http://localhost/"
   }
 
 }
