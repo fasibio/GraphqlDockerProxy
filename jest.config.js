@@ -5,7 +5,7 @@ module.exports = {
   testURL: 'http://localhost/',
   collectCoverage: true,
   'coverageReporters': ['json', 'html'],
-  coverageDirectory: '/coverage',
+  coverageDirectory: 'coverage',
   'collectCoverageFrom': [
     '**/*.{js,jsx}',
     '!**/node_modules/**',
