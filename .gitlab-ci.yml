@@ -86,3 +86,4 @@
     - testPages
     - build
     - publish
+    - cleanup
