@@ -69,6 +69,18 @@
     only:
       - /^([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
       - /^rc_([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
+  
+  cleanup:
+    stage: cleanup
+    tags: 
+      - dockerfasibio
+    image: docker
+    script:
+      - docker rmi $(docker images |grep 'fasibio/graphqldockerproxy')
+    only:
+      - /^([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
+      - /^rc_([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
+      - master
   stages: 
     - test
     - testPages
