@@ -1,7 +1,5 @@
 //@flow
-import { graphqlExpress,
-  graphiqlExpress,
-} from 'apollo-server-express'
+import { ApolloServer } from 'apollo-server-express'
 import express from 'express'
 import { weaveSchemas } from 'graphql-weaver'
 import * as bodyParser from 'body-parser'
@@ -112,18 +110,43 @@ const start = async(endpoints : Endpoints) => {
   // oldSchema = deepcopy(schemaMerged)
   // }
   const app = express()
-  app.use('/graphql', bodyParser.json(), (res, req) => {
-    graphqlExpress({ schema: schemaMerged,
-      context: {
-        headers: res.headers,
-      } })(res, req)
+  const apiServer = new ApolloServer({
+    schema: schemaMerged,
+    playground: {
+      tabs: [{
+        endpoint: '/graphql',
+
+      },
+      {
+        endpoint: '/admin/graphql',
+        headers: {
+          Authorization: 'Basic YOURBasicAuth',
+        },
+      },
+      ],
+
+    },
+    introspection: true,
+    context: (obj) => {
+      return {
+        context: {
+          headers: obj.res.req.headers,
+        },
+      }
+    },
   })
-  app.use(
-    '/graphiql',
-    graphiqlExpress({
-      endpointURL: '/graphql',
-    })
-  )
+  apiServer.applyMiddleware({
+    app,
+    path: '/graphql',
+    bodyParserConfig: bodyParser.json(),
+
+  })
+
+  app.get('/health', (req, res) => {
+    res.status(200)
+    res.send('OK')
+
+  })
 
 
   if (adminUser() !== ''){
@@ -134,24 +157,23 @@ const start = async(endpoints : Endpoints) => {
       challenge: true,
     }))
   }
-  app.get('/health', (req, res) => {
-    res.status(200)
-    res.send('OK')
 
-  })
-  app.use('/admin/graphql', bodyParser.json(), graphqlExpress({
+  const adminServer = new ApolloServer({
+    // playground: true,
+    introspection: true,
     context: {
       endpoints: await endpoints,
     },
     schema: adminSchema,
-  }))
-  app.use(
-    '/admin/graphiql',
-    graphiqlExpress({
-      endpointURL: '/admin/graphql',
-    })
-  )
-  console.log('Server running. Open http://localhost:3000/graphiql to run queries.')
+  })
+  adminServer.applyMiddleware({
+    app,
+    bodyParserConfig: bodyParser.json(),
+    path: '/admin/graphql',
+  })
+
+
+  console.log('Server running. Open http://localhost:3000/graphql to run queries.')
   return app.listen(3000)
 }
 
