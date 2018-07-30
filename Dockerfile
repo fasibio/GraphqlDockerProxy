@@ -17,4 +17,4 @@ COPY --from=build_job /src/pkg/healthcheck /src/healthcheck
 WORKDIR /src
 EXPOSE 3000
 CMD ["/src/app"]
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 CMD "./src/healthcheck"
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 CMD "/src/healthcheck"
