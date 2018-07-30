@@ -133,9 +133,7 @@ const start = async(endpoints : Endpoints) => {
     introspection: true,
     context: (obj) => {
       return {
-        context: {
-          headers: obj.res.req.headers,
-        },
+        headers: obj.res.req.headers,
       }
     },
   })
