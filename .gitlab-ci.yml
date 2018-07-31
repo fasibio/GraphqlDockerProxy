@@ -38,6 +38,21 @@
       - sh -x ./dockerize/buildDocker.sh latest
     only:
       - master
+
+  integrationTest:
+    stage: integrationtest
+    tags: 
+      - dockerfasibio
+    image: node:9
+    services:
+      - fasibio/graphqldockerproxy:$CI_COMMIT_REF_NAME
+    only:
+      - /^([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
+      - /^rc_([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
+    script:
+      - env
+      - curl http://fasibio__graphqldockerproxy:3000/health
+
   publish:
     stage: publish
     tags: 
@@ -94,5 +109,6 @@
     - test
     - testPages
     - build
+    - integrationtest
     - publish
     - cleanup
