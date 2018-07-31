@@ -1,7 +1,7 @@
 {
   "name": "grapqlproxy",
   "version": "1.0.0",
-  "description": "",
+  "description": "A generic Graphql Proxy",
   "main": "index.js",
   "scripts": {
     "prepush": "npm test",
@@ -13,7 +13,7 @@
     "pkg-docker": "pkg dist/bundle.js --targets node9-alpine-x64 --output pkg/app",
     "pkg-docker-healthcheck": "pkg ./healthcheck.js --targets node9-alpine-x64 --output pkg/healthcheck"
   },
-  "author": "",
+  "author": "fasibio",
   "license": "ISC",
   "dependencies": {
     "apollo-link-context": "1.0.8",
@@ -49,7 +49,6 @@
     "babel-preset-env": "1.7.0",
     "babel-preset-es2015": "6.24.1",
     "babel-preset-flow": "6.23.0",
-    "dotenv-webpack": "1.5.7",
     "electron": "2.0.5",
     "eslint": "5.2.0",
     "eslint-plugin-classes": "0.1.1",

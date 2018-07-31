@@ -4,8 +4,8 @@ A generic Graphql Docker Proxy
 It's a GraphQL API Gateway. 
 
 [![Docker Build Status](https://img.shields.io/docker/build/fasibio/graphqldockerproxy.svg)](https://hub.docker.com/r/fasibio/graphqldockerproxy/) 
-[![coverage report](https://gitlab.com/fasibio/GraphqlDockerProxy/badges/master/coverage.svg)](https://gitlab.com/fasibio/GraphqlDockerProxy/commits/master)
-
+[![pipeline status](https://gitlab.com/fasibio/GraphqlDockerProxy/badges/master/pipeline.svg)](https://gitlab.com/fasibio/GraphqlDockerProxy/commits/master)
+[![coverage report](https://gitlab.com/fasibio/GraphqlDockerProxy/badges/master/coverage.svg)](https://fasibio.gitlab.io/GraphqlDockerProxy)
 
 ![oh man get image not visible](/doc/assets/kontext.png?raw=true)
 
@@ -92,7 +92,7 @@ networks:
 
 Start the docker-compose file. 
 The proxy will automatically find the microservice and include it.
-Under http://127.0.0.1:3000/graphiql you can now see that swapi has wrapped your graphql microservice 
+Under http://127.0.0.1:3000/graphql you can now see that swapi has wrapped your graphql microservice 
 Inside this namespace you can make graphql requests. 
 For example:
 ```
@@ -305,7 +305,7 @@ Key | Available Values | Default | Description | Need for | Required
 |```gqlProxyK8sUserPassword```| string | no Default |  The password for the K8s user. This is only needed for configuration type ```getInClusterByUser```. |  kubernetes | false
 |```gqlProxyAdminUser```| string | empty string | The Basic Auth user for the admin page |  both | false
 |```gqlProxyAdminPassword```| string | empty string | The Basic Auth password for the admin page |  both | false
-|```gqlShowPlayground```| bool | true | toggle playground on and off |  both | true
+|```gqlShowPlayground```| bool | true | toggle playground ui on and off |  both | true
 
 ### Possible Environment Variable Combinations for Docker
   - ```qglProxyRuntime```=docker
