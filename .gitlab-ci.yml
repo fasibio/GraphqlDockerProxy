@@ -22,9 +22,9 @@
     image: ciricihq/gitlab-sonar-scanner
     variables:
       SONAR_URL: https://sonar.server2.fasibio.de
-      SONAR_ANALYSIS_MODE: publish
+      SONAR_ANALYSIS_MODE: issues
     script:
-      - sonar-gitlab-scanner -Dsonar.login=${sonarqubelogin}
+      - sonar-scanner -Dsonar.login=${sonarqubelogin}
     only:
       - /^([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
       - /^rc_([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
