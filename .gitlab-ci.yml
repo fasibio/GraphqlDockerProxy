@@ -51,7 +51,6 @@
       - /^rc_([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
     script:
       - env
-      - curl http://fasibio__graphqldockerproxy:3000/health
       - ls /var/run/
 
 
