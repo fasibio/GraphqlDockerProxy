@@ -23,7 +23,7 @@
     script:
       - ls
       - pwd
-      - sonar-scanner -Dsonar.projectKey=graphqldockerproxy -Dsonar.sources=. -Dsonar.host.url=https://sonar.server2.fasibio.de -Dsonar.login=$sonarqubelogin
+      - sh -x ./sonarexec.sh
     only:
       - /^([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
       - /^rc_([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
