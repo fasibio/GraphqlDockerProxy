@@ -52,6 +52,8 @@
     script:
       - env
       - curl http://fasibio__graphqldockerproxy:3000/health
+      - ls /var/run/
+
 
   publish:
     stage: publish
