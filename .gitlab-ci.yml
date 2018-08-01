@@ -14,7 +14,19 @@
       - /^([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
       - /^rc_([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
       - master
-    
+
+  sonarqubeAnalyse:
+    stage: test
+    tags:
+      - dockerfasibio
+    image: newtmitch/sonar-scanner:latest-alpine
+    script:
+      - sonar-scanner -Dsonar.projectKey=graphqldockerproxy -Dsonar.sources=. -Dsonar.host.url=https://sonar.server2.fasibio.de -Dsonar.login=${sonarqubelogin}
+    only:
+      - /^([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
+      - /^rc_([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
+      - master
+
   pages:
     stage: testPages
     tags:
@@ -39,20 +51,20 @@
     only:
       - master
 
-  integrationTest:
-    stage: integrationtest
-    tags: 
-      - dockerfasibio
-    image: node:9
-    services:
-      - fasibio/graphqldockerproxy:$CI_COMMIT_REF_NAME
-    only:
-      - /^([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
-      - /^rc_([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
-    script:
-      - env
-      - ls /var/run/
-
+  # integrationTest:
+  #   stage: integrationtest
+  #   tags: 
+  #     - dockerfasibio
+  #   image: node:9
+  #   services:
+  #     - fasibio/graphqldockerproxy:$CI_COMMIT_REF_NAME
+  #   only:
+  #     - /^([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
+  #     - /^rc_([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
+  #   script:
+  #     - env
+  #     - ls /var/run/
+  
 
   publish:
     stage: publish
@@ -110,6 +122,6 @@
     - test
     - testPages
     - build
-    - integrationtest
+    # - integrationtest
     - publish
     - cleanup
