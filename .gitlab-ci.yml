@@ -20,6 +20,9 @@
     tags:
       - dockerfasibio
     image: ciricihq/gitlab-sonar-scanner
+    artifacts:
+      paths:
+        - coverage/
     script:
       - cp coverage/clover.xml .
       - sh -x ./sonarexec.sh

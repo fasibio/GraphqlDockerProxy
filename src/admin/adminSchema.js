@@ -93,9 +93,9 @@ const resolvers = {
   },
 }
 
-const schema = makeExecutableSchema({
+const adminschema = makeExecutableSchema({
   typeDefs,
   resolvers,
 })
 
-export default schema
+export default adminschema
