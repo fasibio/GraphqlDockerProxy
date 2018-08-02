@@ -65,3 +65,4 @@ testfolder/*
 yarn-error.log
 out.txt
 pkg
+reports

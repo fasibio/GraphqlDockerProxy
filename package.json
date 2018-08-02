@@ -57,6 +57,7 @@
     "husky": "0.14.3",
     "jasmine-reporters": "2.2.1",
     "jest": "22.4.3",
+    "jest-sonar-reporter": "^2.0.0",
     "nodemon": "1.18.3",
     "pkg": "4.3.1",
     "shebang-loader": "0.0.1",
@@ -65,5 +66,10 @@
   },
   "pkg": {
     "scripts": "**/*.js"
+  },
+  "jestSonar": {
+    "reportPath": "reports",
+    "reportFile": "test-reporter.xml",
+    "indent": 4
   }
 }
