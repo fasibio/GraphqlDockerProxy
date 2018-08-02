@@ -16,13 +16,12 @@
       - master
 
   sonarqubeAnalyse:
-    stage: test
+    stage: sonar
     tags:
       - dockerfasibio
     image: ciricihq/gitlab-sonar-scanner
     script:
-      - ls
-      - pwd
+      - cp coverage/clover.xml .
       - sh -x ./sonarexec.sh
     only:
       - /^([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
