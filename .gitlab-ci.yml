@@ -122,6 +122,7 @@
   stages: 
     - test
     - testPages
+    - sonar
     - build
     # - integrationtest
     - publish
