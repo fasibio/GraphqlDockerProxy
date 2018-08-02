@@ -26,6 +26,7 @@
         - coverage/
         - reports/
     script:
+      - ls -al
       - cp coverage/clover.xml .
       - sh -x ./sonarexec.sh
     only:
