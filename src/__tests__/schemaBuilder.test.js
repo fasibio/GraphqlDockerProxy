@@ -1,4 +1,3 @@
-import { getMergedInformation, createRemoteSchema } from '../schemaBuilder'
 jest.mock('graphql-tools', () => {
   return {
     introspectSchema: () => {},
