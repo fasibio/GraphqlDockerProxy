@@ -24,10 +24,8 @@
     artifacts:
       paths:
         - coverage/
-        - reports/
     script:
       - ls -al
-      - cp coverage/clover.xml .
       - sh -x ./sonarexec.sh
     only:
       - /^([0-9]{0,3})\.([0-9]{0,3})\.([0-9]{0,3})$/
