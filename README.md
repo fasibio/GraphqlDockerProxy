@@ -286,7 +286,6 @@ At the moment it's not possible to have same queries, mutations or types for dif
 # Admin page / Metadata Page
 
 To see what the proxy has included and there is another graphql service under ```/admin/graphql``` as well. 
-There is also a graphiql service at ```/admin/graphiql```.
 Here you can see all of the namespaces and endpoint metadata for the included proxy nodes.
 If an endpoint being served by a loadbalancer, then you can also find the "real" endpoints. 
 
@@ -305,7 +304,7 @@ Key | Available Values | Default | Description | Need for | Required
 |```gqlProxyK8sUserPassword```| string | no Default |  The password for the K8s user. This is only needed for configuration type ```getInClusterByUser```. |  kubernetes | false
 |```gqlProxyAdminUser```| string | empty string | The Basic Auth user for the admin page |  both | false
 |```gqlProxyAdminPassword```| string | empty string | The Basic Auth password for the admin page |  both | false
-|```gqlShowPlayground```| bool | true | toggle playground ui on and off |  both | true
+|```gqlShowPlayground```| bool | true | toggle graphql playground ui on and off |  both | true
 
 ### Possible Environment Variable Combinations for Docker
   - ```qglProxyRuntime```=docker
