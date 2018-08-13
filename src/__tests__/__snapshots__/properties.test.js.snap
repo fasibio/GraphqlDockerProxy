@@ -12,6 +12,7 @@ exports[`tests Properties snapshot all properties 1`] = `
 Object {
   "adminPassword": [Function],
   "adminUser": [Function],
+  "getBodyParserLimit": [Function],
   "getBuildNumber": [Function],
   "getPollingMs": [Function],
   "getVersion": [Function],
@@ -26,6 +27,10 @@ Object {
   "token": [Function],
 }
 `;
+
+exports[`tests Properties snapshot getBodyParserLimit default return 1`] = `"1mb"`;
+
+exports[`tests Properties snapshot getBodyParserLimit given envs 1`] = `"1mb"`;
 
 exports[`tests Properties snapshot getBuildNumber default return 1`] = `null`;
 

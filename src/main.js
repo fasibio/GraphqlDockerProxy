@@ -5,7 +5,7 @@ import { weaveSchemas } from 'graphql-weaver'
 import * as bodyParser from 'body-parser'
 import { DockerFinder } from './finder/dockerFinder/dockerFinder'
 import { K8sFinder } from './finder/k8sFinder/k8sFinder'
-import { runtime, getPollingMs, printAllConfigs, adminPassword, adminUser, showPlayground } from './properties'
+import { runtime, getPollingMs, printAllConfigs, adminPassword, adminUser, showPlayground, getBodyParserLimit } from './properties'
 import type { Endpoints } from './finder/findEndpointsInterface'
 import { sortEndpointAndFindAvailableEndpoints } from './finder/endpointsAvailable'
 import adminSchema from './admin/adminSchema'
@@ -140,7 +140,7 @@ const start = async(endpoints : Endpoints) => {
   apiServer.applyMiddleware({
     app,
     path: '/graphql',
-    bodyParserConfig: bodyParser.json(),
+    bodyParserConfig: bodyParser.json({ limit: getBodyParserLimit() }),
 
   })
 

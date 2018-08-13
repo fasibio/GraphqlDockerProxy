@@ -63,6 +63,10 @@ export const showPlayground = () => {
 }
 
 
+export const getBodyParserLimit = () => {
+  return idx(process, _ => _.env.gqlBodyParserLimit) || '1mb'
+}
+
 export const printAllConfigs = () => {
   console.log('===================================')
   console.log('qglProxyRuntime:', runtime())
