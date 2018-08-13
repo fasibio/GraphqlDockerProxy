@@ -15,7 +15,7 @@ import basicAuth from 'express-basic-auth'
 import cluster from 'cluster'
 // import deepcopy from 'deepcopy/cjs/index'
 import { getMergedInformation } from './schemaBuilder'
-
+import { apolloUploadExpress } from 'apollo-upload-server'
 
 const weaverIt = async(endpoints) => {
   try {
@@ -112,8 +112,9 @@ const start = async(endpoints : Endpoints) => {
   // oldSchema = deepcopy(schemaMerged)
   // }
   const app = express()
-  app.use('/graphql', bodyParser.json(), (res, req) => {
+  app.use('/graphql', bodyParser.json(), apolloUploadExpress({}), (res, req) => {
     graphqlExpress({ schema: schemaMerged,
+
       context: {
         headers: res.headers,
       } })(res, req)
