@@ -140,7 +140,7 @@ const start = async(endpoints : Endpoints) => {
   apiServer.applyMiddleware({
     app,
     path: '/graphql',
-    bodyParserConfig: bodyParser.json({ limit: getBodyParserLimit() }),
+    bodyParserConfig: { limit: getBodyParserLimit() },
 
   })
 
