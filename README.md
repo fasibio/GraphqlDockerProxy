@@ -305,7 +305,7 @@ Key | Available Values | Default | Description | Need for | Required
 |```gqlProxyAdminUser```| string | empty string | The Basic Auth user for the admin page |  both | false
 |```gqlProxyAdminPassword```| string | empty string | The Basic Auth password for the admin page |  both | false
 |```gqlShowPlayground```| bool | true | toggle graphql playground ui on and off |  both | true
-
+|```gqlBodyParserLimit```| string| 1mb | Set the body size limit for big Data | - | false
 ### Possible Environment Variable Combinations for Docker
   - ```qglProxyRuntime```=docker
   - ```dockerNetwork```=web
