@@ -9,7 +9,9 @@ export const sortEndpointAndFindAvailableEndpoints = async(endpoints :Endpoints)
     const oneNamespace = endpoints[namespace]
     for (let i = 0; i < oneNamespace.length; i++){
       const one = oneNamespace[i]
-      const result = await fetch(one.url + queryStr).then(res => {
+      const result = await fetch(one.url + queryStr, {
+        timeout: 2000,
+      }).then(res => {
         return {
           status: res.status,
           ok: res.ok,
