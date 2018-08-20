@@ -68,8 +68,8 @@ export class DockerFinder extends FindEndpoints{
   /**
  * Schaut ob es sich um eine absolute url handelt.(Startet mit http(s)://)
  * Wenn nicht sucht sie die ip des netzwerkes raus. (Relative URL z.B.: :{port}{suburl}(:3001/graphql))
- * 
- * 
+ *
+ *
  */
  updateUrl = (url:string, sockData:any) :string => {
    if (url.startsWith('http')){

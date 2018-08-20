@@ -15,7 +15,7 @@ export const getBuildNumber = () => {
 }
 
 /**
- * Available values: docker & kubernetes
+ * Available values: docker & kubernetes && kubernetesWatch
  */
 export const runtime = () => {
   return idx(process, _ => _.env.qglProxyRuntime) || 'docker'

@@ -6,7 +6,8 @@ export type Endpoint = {
   typePrefix: string,
   __created: string,
   __imageID: string,
-  __burnd: ?boolean
+  __burnd: ?boolean,
+  __deploymentName_ : string,
 }
 
 export type Endpoints = {
@@ -22,7 +23,7 @@ class FindEndpoints{
   }
 
   /**
-   * If getEndpoints have different to the past here you can do extra handling like loadbalacing etc... 
+   * If getEndpoints have different to the past here you can do extra handling like loadbalacing etc...
    */
   handleRestart = (endpoints: Endpoints) : Endpoints => {
     return endpoints

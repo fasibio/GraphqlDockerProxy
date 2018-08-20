@@ -88,7 +88,7 @@ export class K8sFinder extends FindEndpoints{
         }
       } catch (e){
         addNamespaceToBlacklist(k8sNamespace)
-        //no loging because user have no permisson 
+        //no loging because user have no permission
         // console.log('error by reading namespace:' + k8sNamespace + ' ', e)
       }
 

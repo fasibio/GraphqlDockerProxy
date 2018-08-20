@@ -9,7 +9,7 @@ metadata:
   namespace: starwars
 spec:
   minReadySeconds: 20
-  replicas: 2
+  replicas: 1
   revisionHistoryLimit: 32
   template:
     metadata:
@@ -35,7 +35,7 @@ apiVersion: v1
 metadata:
   annotations:
     gqlProxy.token: '1234'
-    gqlProxy.url: ':9001/graphql'
+    gqlProxy.url: ':9002/graphql'
     gqlProxy.namespace: 'swapi'
   labels:
     name: swapi

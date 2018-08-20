@@ -5,6 +5,7 @@ import { weaveSchemas } from 'graphql-weaver'
 import * as bodyParser from 'body-parser'
 import { DockerFinder } from './finder/dockerFinder/dockerFinder'
 import { K8sFinder } from './finder/k8sFinder/k8sFinder'
+import { K8sWatcher } from './watcher/k8s/K8sWatcher'
 import { runtime, getPollingMs, printAllConfigs, adminPassword, adminUser, showPlayground, getBodyParserLimit } from './properties'
 import type { Endpoints } from './finder/findEndpointsInterface'
 import { sortEndpointAndFindAvailableEndpoints } from './finder/endpointsAvailable'
@@ -14,7 +15,10 @@ import cluster from 'cluster'
 // import deepcopy from 'deepcopy/cjs/index'
 import { getMergedInformation } from './schemaBuilder'
 
-
+process.on('unhandledRejection', (reason, p) => {
+  console.log('Unhandled Rejection at: Promise', p, 'reason:', reason)
+  // application specific logging, throwing an error, or other logic here
+})
 const weaverIt = async(endpoints) => {
   try {
     return await weaveSchemas({
@@ -32,20 +36,35 @@ const run = async() => {
   console.log('Start IT')
   console.log('With Configuration: ')
   printAllConfigs()
-  let server = null
-  let lastEndPoints : string = ''
-  let finder
 
   switch (runtime()){
     case 'kubernetes':{
-      finder = new K8sFinder()
+      runPoller(new K8sFinder())
       break
     }
     case 'docker': {
-      finder = new DockerFinder()
+      runPoller(new DockerFinder())
+      break
+    }
+
+    case 'kubernetesWatch': {
+      const watcher = new K8sWatcher()
+      watcher.setDataUpdatedListener((data) => {
+        console.log('endpoints: ', data)
+      })
+      watcher.watchEndpoint()
     }
 
   }
+
+
+}
+
+
+const runPoller = (finder) => {
+  let lastEndPoints : string = ''
+  let server = null
+
   setInterval(async() => {
     try {
       let endpoints : Endpoints = await finder.getEndpoints()
@@ -78,9 +97,7 @@ const run = async() => {
     }
 
   }, getPollingMs())
-
 }
-
 // const oldSchema = null
 
 const start = async(endpoints : Endpoints) => {
