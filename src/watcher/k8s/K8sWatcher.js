@@ -48,14 +48,25 @@ export class K8sWatcher {
     deploymentsStream.pipe(deploymentsJsonStream)
     deploymentsJsonStream.on('data', deployment => {
       const name = deployment.object.spec.template.metadata.labels.app || ''
-      if (this.deploymentsNames[name] !== undefined){
 
+      if (this.deploymentsNames[name] !== undefined){
         for (const one in this.endpoints){
           const oneEndpoint = this.endpoints[one]
           for (let i = 0 ; i < oneEndpoint.length; i++){
             if (oneEndpoint[i].__deploymentName === name){
-              oneEndpoint[i].__created = deployment.object.metadata.creationTimestamp
-              this.__callDataUpdateListener()
+              switch (deployment.type){
+                case 'MODIFIED':
+                case 'ADDED': {
+                  oneEndpoint[i].__created = deployment.object.metadata.creationTimestamp + ' ' + deployment.object.metadata.resourceVersion
+                  this.__callDataUpdateListener()
+                  break
+                }
+                case 'DELETED':{
+                  this.__deleteEndpoint(one, name)
+                  this.__callDataUpdateListener()
+                  break
+                }
+              }
             }
           }
         }
@@ -83,11 +94,16 @@ export class K8sWatcher {
   }
 
   __deleteEndpoint = (namespace: string, deploymentName: string) => {
-    console.log('delete', namespace, deploymentName)
+    if (this.endpoints[namespace] == undefined){
+      return
+    }
     for (let i = 0 ; i < this.endpoints[namespace].length; i++){
       if (this.endpoints[namespace][i].__deploymentName == deploymentName){
-        this.endpoints[namespace].slice(i, 1)
+        this.endpoints[namespace].splice(i, 1)
       }
+    }
+    if (this.endpoints[namespace].length === 0){
+      delete this.endpoints[namespace]
     }
   }
   __watchServicesForNamespace = (namespaceName: string) => {
@@ -98,7 +114,6 @@ export class K8sWatcher {
     const servicesJsonStream = new JSONStream()
     servicesStream.pipe(servicesJsonStream)
     servicesJsonStream.on('data', async service => {
-      console.log('services', service.type)
       const item = service.object
       switch (service.type){
         case 'MODIFIED':
@@ -106,10 +121,11 @@ export class K8sWatcher {
           if (idx(item, _ => _.metadata.annotations[clientLabels.TOKEN]) == token()){
             const url = this.updateUrl(item.metadata.annotations[clientLabels.URL], service.object)
             const namespace = item.metadata.annotations[clientLabels.NAMESPACE]
+            const deploymentName = item.spec.selector.app
+            this.__deleteEndpoint(namespace, deploymentName)
             if (this.endpoints[namespace] == undefined){
               this.endpoints[namespace] = []
             }
-            const deploymentName = item.spec.selector.app
             const deployments = await this.client.apis.apps.v1beta2.namespaces(namespaceName).deployments.get()
             const compareDeployments = deployments.body.items.filter((one) => {
               return one.spec.template.metadata.labels.app == deploymentName
@@ -117,9 +133,9 @@ export class K8sWatcher {
             this.deploymentsNames[deploymentName] = true
             let __created = ''
             compareDeployments.forEach((one) => {
-              __created += one.metadata.creationTimestamp
+              __created += one.metadata.creationTimestamp + ' ' + one.metadata.resourceVersion
             })
-            this.__deleteEndpoint(namespace, deploymentName)
+
             this.endpoints[namespace].push({
               url,
               namespace,
@@ -137,7 +153,9 @@ export class K8sWatcher {
           if (idx(item, _ => _.metadata.annotations[clientLabels.TOKEN]) == token()){
             const namespace = item.metadata.annotations[clientLabels.NAMESPACE]
             const deploymentName = item.spec.selector.app
+            console.log('delete service', namespace, deploymentName)
             this.__deleteEndpoint(namespace, deploymentName)
+            console.log('delete service no data', this.endpoints)
             this.__callDataUpdateListener()
 
           }

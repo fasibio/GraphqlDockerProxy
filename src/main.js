@@ -49,8 +49,9 @@ const run = async() => {
 
     case 'kubernetesWatch': {
       const watcher = new K8sWatcher()
-      watcher.setDataUpdatedListener((data) => {
-        console.log('endpoints: ', data)
+      watcher.setDataUpdatedListener((endpoints) => {
+
+        startWatcher(watcher, endpoints)
       })
       watcher.watchEndpoint()
     }
@@ -60,10 +61,36 @@ const run = async() => {
 
 }
 
+//start and restart by listener
+let lastEndPoints : string = ''
+let server = null
+const startWatcher = async(watcher, endpoints) => {
 
+  endpoints = await sortEndpointAndFindAvailableEndpoints(endpoints)
+  if (JSON.stringify(endpoints) !== lastEndPoints){
+    console.log('Changes Found restart Server')
+    if (server != null){
+      server.close()
+    }
+
+    lastEndPoints = JSON.stringify(endpoints)
+    // $FlowFixMe: suppressing this error until we can refactor
+    cluster.schedulingPolicy = cluster.SCHED_RR
+    if (cluster.isMaster){
+      var cpuCount = require('os').cpus().length
+      for (var i = 0; i < cpuCount; i += 1) {
+        console.log('START SLAVE')
+        cluster.fork()
+      }
+    } else {
+      server = await start(endpoints)
+    }
+
+  } else {
+    console.log('no Change at endpoints does not need a restart')
+  }
+}
 const runPoller = (finder) => {
-  let lastEndPoints : string = ''
-  let server = null
 
   setInterval(async() => {
     try {
