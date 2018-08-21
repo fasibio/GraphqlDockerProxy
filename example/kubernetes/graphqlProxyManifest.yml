@@ -1,0 +1,59 @@
+---
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  labels:
+    app:     api
+  name:      api
+  namespace: graphqlproxy
+spec:
+  minReadySeconds: 20
+  replicas: 1
+  revisionHistoryLimit: 32
+  template:
+    metadata:
+      name: api
+      labels:
+        app: api
+    spec:
+      terminationGracePeriodSeconds: 1
+      containers:
+      - env:
+        - name: gqlProxyToken
+          value: "1234"
+        - name: qglProxyRuntime
+          value: kubernetesWatch
+        - name: gqlProxyAdminUser
+          value: admin
+        - name: gqlProxyAdminPassword
+          value: delirantIstiRomani
+        - name: gqlBodyParserLimit
+          value: 5mb
+        image: fasibio/graphqldockerproxy:rc_0.0.12
+        imagePullPolicy: Always
+        readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 90
+            periodSeconds: 60
+            timeoutSeconds: 1
+        name: api
+        ports:
+        - containerPort: 3000
+          name: http-port
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    name: api
+  name:      api
+  namespace: graphqlproxy
+spec:
+  ports:
+    - port: 3000
+      targetPort: 3000
+      name: http
+  selector:
+    app: api
