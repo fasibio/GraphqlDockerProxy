@@ -220,6 +220,9 @@ const start = async(endpoints : Endpoints) => {
 
 
   console.log('Server running. Open http://localhost:3000/graphql to run queries.')
+  if (server != null){
+    server.close()
+  }
   return app.listen(3000)
 }
 
