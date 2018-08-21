@@ -49,7 +49,11 @@ export class K8sWatcher {
     deploymentsJsonStream.on('data', deployment => {
       const name = idx(deployment, _ => _.object.spec.template.metadata.labels.app) || ''
       if (name == ''){
-        console.log('deployment obj is missing attributes ', namespaceName, deployment)
+        if (deployment.status == 'Failure'){
+          console.log('no Permission for Namspace', namespaceName)
+        } else {
+          console.log('deployment obj is missing attributes ', namespaceName, deployment)
+        }
       }
       if (this.deploymentsNames[name] !== undefined){
         for (const one in this.endpoints){
@@ -92,7 +96,14 @@ export class K8sWatcher {
   }
 
   __callDataUpdateListener = () => {
-    this.dataUpdatedListener(this.endpoints)
+    const realEndpoint = this.endpoints
+    for (const one in realEndpoint){
+      if (realEndpoint[one].length == 0){
+        delete realEndpoint[one]
+      }
+
+    }
+    this.dataUpdatedListener(realEndpoint)
   }
 
   __deleteEndpoint = (namespace: string, deploymentName: string) => {
@@ -124,10 +135,8 @@ export class K8sWatcher {
             const url = this.updateUrl(item.metadata.annotations[clientLabels.URL], service.object)
             const namespace = item.metadata.annotations[clientLabels.NAMESPACE]
             const deploymentName = item.spec.selector.app
-            this.__deleteEndpoint(namespace, deploymentName)
-            if (this.endpoints[namespace] == undefined){
-              this.endpoints[namespace] = []
-            }
+
+
             const deployments = await this.client.apis.apps.v1beta2.namespaces(namespaceName).deployments.get()
             const compareDeployments = deployments.body.items.filter((one) => {
               return one.spec.template.metadata.labels.app == deploymentName
@@ -137,7 +146,10 @@ export class K8sWatcher {
             compareDeployments.forEach((one) => {
               __created += one.metadata.creationTimestamp + ' ' + one.metadata.resourceVersion
             })
-
+            this.__deleteEndpoint(namespace, deploymentName)
+            if (this.endpoints[namespace] === undefined){
+              this.endpoints[namespace] = []
+            }
             this.endpoints[namespace].push({
               url,
               namespace,

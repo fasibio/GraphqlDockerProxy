@@ -50,7 +50,6 @@ const run = async() => {
     case 'kubernetesWatch': {
       const watcher = new K8sWatcher()
       watcher.setDataUpdatedListener((endpoints) => {
-
         startWatcher(watcher, endpoints)
       })
       watcher.watchEndpoint()
@@ -132,6 +131,7 @@ const start = async(endpoints : Endpoints) => {
   const weaverEndpoints = []
 
   for (const one in endpoints){
+    console.log(weaverEndpoints)
     weaverEndpoints.push({
       namespace: one,
       typePrefix: one + '_',
