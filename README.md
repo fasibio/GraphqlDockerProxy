@@ -175,7 +175,7 @@ spec:
         - name: kubernetesConfigurationKind
           value: getInCluster
         - name: qglProxyRuntime
-          value: kubernetes
+          value: kubernetesWatch
         image: fasibio/graphqldockerproxy
         name: api
         ports:
@@ -295,22 +295,34 @@ Set the environment variables, ```gqlProxyAdminUser``` and ```gqlProxyAdminPassw
 
 Key | Available Values | Default | Description | Need for | Required 
 --- | --- | --- | --- | --- | ---
-| ```qglProxyRuntime``` | ```docker``` or ```kubernetes``` | ```docker``` | tells the proxy run to in a docker image or in a kubernetes "world" | docker and kubernetes | true 
-|```dockerNetwork``` | string | none | the network where the backend GraphQL-Server is shared with the proxy| docker | for docker
-| ```gqlProxyToken``` | string | empty string | a token which verifies that the microservice belongs to the proxy | both | false but better you set it
-|```kubernetesConfigurationKind``` | ```fromKubeconfig``` or ```getInCluster``` or ```getInClusterByUser``` | ```fromKubeconfig``` | How the proxy finds the Kubernetes API config. | kubernetes | false
-|```gqlProxyPollingMs```| int | 5000 | The polling time to check for changes |  both | false
-|```gqlProxyK8sUser```| string | no Default | The K8s user. This is only needed for configuration type ```getInClusterByUser```. |  kubernetes | false
-|```gqlProxyK8sUserPassword```| string | no Default |  The password for the K8s user. This is only needed for configuration type ```getInClusterByUser```. |  kubernetes | false
-|```gqlProxyAdminUser```| string | empty string | The Basic Auth user for the admin page |  both | false
-|```gqlProxyAdminPassword```| string | empty string | The Basic Auth password for the admin page |  both | false
-|```gqlShowPlayground```| bool | true | toggle graphql playground ui on and off |  both | true
-|```gqlBodyParserLimit```| string| 1mb | Set the body size limit for big Data | - | false
+| ```qglProxyRuntime``` | ```docker``` or ```kubernetes``` or ```kubernetesWatch``` | ```docker``` | tells the proxy run to in a docker image or in a kubernetes "world" | docker and kubernetes | true 
+|```dockerNetwork``` | string | none | the network where the backend GraphQL-Server is shared with the proxy|  ```docker``` | for docker
+| ```gqlProxyToken``` | string | empty string | a token which verifies that the microservice belongs to the proxy |  ```docker``` or ```kubernetes``` or ```kubernetesWatch``` | false but better you set it
+|```kubernetesConfigurationKind``` | ```fromKubeconfig``` or ```getInCluster``` or ```getInClusterByUser``` | ```fromKubeconfig``` | How the proxy finds the Kubernetes API config. | ```kubernetes``` or ```kubernetesWatch``` | false
+|```gqlProxyPollingMs```| int | 5000 | The polling time to check for changes |  ```docker``` or ```kubernetes``` | false
+|```gqlProxyK8sUser```| string | no Default | The K8s user. This is only needed for configuration type ```getInClusterByUser```. |  ```kubernetes``` or ```kubernetesWatch``` | false
+|```gqlProxyK8sUserPassword```| string | no Default |  The password for the K8s user. This is only needed for configuration type ```getInClusterByUser```. |  ```kubernetes``` or ```kubernetesWatch``` | false
+|```gqlProxyAdminUser```| string | empty string | The Basic Auth user for the admin page |  ```docker``` or ```kubernetes``` or ```kubernetesWatch``` | false
+|```gqlProxyAdminPassword```| string | empty string | The Basic Auth password for the admin page |  ```docker``` or ```kubernetes``` or ```kubernetesWatch``` | false
+|```gqlShowPlayground```| bool | true | toggle graphql playground ui on and off |  ```docker``` or ```kubernetes``` or ```kubernetesWatch``` | true
+|```gqlBodyParserLimit```| string| 1mb | Set the body size limit for big Data | ```docker``` or ```kubernetes``` or ```kubernetesWatch``` | false
 ### Possible Environment Variable Combinations for Docker
   - ```qglProxyRuntime```=docker
   - ```dockerNetwork```=web
 
 ### Possible Environment Variable Combinations for Kubernetes
+
+### Watching: 
+  #### For a User in the Pod
+  - ```qglProxyRuntime```=kubernetesWatch
+  - ```kubernetesConfigurationKind```=getInCluster
+
+  #### For an Explicit User
+  - ```qglProxyRuntime```=kubernetesWatch
+  - ```kubernetesConfigurationKind```=getInClusterByUser
+  - ```gqlProxyK8sUser```=myK8sUser
+  - ```gqlProxyK8sUserPassword```=thePassword
+### Polling (the old, bad way)
 
 #### For a User in the Pod
   - ```qglProxyRuntime```=kubernetes
