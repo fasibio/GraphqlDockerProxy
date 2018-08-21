@@ -47,8 +47,10 @@ export class K8sWatcher {
     const deploymentsJsonStream = new JSONStream()
     deploymentsStream.pipe(deploymentsJsonStream)
     deploymentsJsonStream.on('data', deployment => {
-      const name = deployment.object.spec.template.metadata.labels.app || ''
-
+      const name = idx(deployment, _ => _.object.spec.template.metadata.labels.app) || ''
+      if (name == ''){
+        console.log('deployment obj is missing attributes ', namespaceName, deployment)
+      }
       if (this.deploymentsNames[name] !== undefined){
         for (const one in this.endpoints){
           const oneEndpoint = this.endpoints[one]
