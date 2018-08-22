@@ -7,7 +7,7 @@ export type Endpoint = {
   __created: string,
   __imageID: string,
   __burnd: ?boolean,
-  __deploymentName_ : string,
+  __deploymentName : ?string,
 }
 
 export type Endpoints = {

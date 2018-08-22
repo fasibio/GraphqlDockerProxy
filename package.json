@@ -9,6 +9,7 @@
     "build": "webpack -d --config webpack.config.js",
     "start": "npm run build &&dockerNetwork=web gqlProxyToken=1234 node dist/bundle.js",
     "startDev": "dockerNetwork=web gqlProxyToken=1234 gqlProxyAdminUser=admin gqlProxyAdminPassword=test1234 nodemon dist/bundle.js",
+    "startDevDockerWatcher": "qglProxyRuntime=dockerWatch dockerNetwork=web gqlProxyToken=1234 gqlProxyAdminUser=admin gqlProxyAdminPassword=test1234 nodemon dist/bundle.js",
     "startDevK8sWatcher": "gqlProxyToken=1234 qglProxyRuntime=kubernetesWatch nodemon dist/bundle.js",
     "test": "jest .",
     "pkg-docker": "pkg dist/bundle.js --targets node9-alpine-x64 --output pkg/app",
@@ -31,6 +32,7 @@
     "json-stream": "^1.0.0",
     "kubernetes-client": "5.3.0",
     "node-docker-api": "1.1.22",
+    "node-docker-monitor": "^1.0.11",
     "node-fetch": "2.2.0",
     "sleep-promise": "^8.0.1",
     "winston": "^3.0.0"

@@ -18,7 +18,7 @@ export const getLogLevel = () => {
   return idx(process, _ => _.env.winstonLogLevel) || 'info'
 }
 /**
- * Available values: docker & kubernetes && kubernetesWatch
+ * Available values: docker & kubernetes && kubernetesWatch && dockerWatch
  */
 export const runtime = () => {
   return idx(process, _ => _.env.qglProxyRuntime) || 'docker'

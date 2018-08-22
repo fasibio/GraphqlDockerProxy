@@ -13,7 +13,7 @@ import adminSchema from './admin/adminSchema'
 import basicAuth from 'express-basic-auth'
 import cluster from 'cluster'
 import cloner from 'cloner'
-
+import { DockerWatcher } from './watcher/docker/DockerWatcher'
 // import deepcopy from 'deepcopy/cjs/index'
 import { getMergedInformation } from './schemaBuilder'
 
@@ -87,7 +87,11 @@ const run = async() => {
       //   })
       //   watcher.watchEndpoint()
       // }
-
+      break
+    }
+    case 'dockerWatch':{
+      const dockerWatcher = new DockerWatcher()
+      dockerWatcher.watchEndpoint()
     }
 
   }
