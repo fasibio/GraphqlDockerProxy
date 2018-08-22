@@ -51,25 +51,39 @@ const run = async() => {
     }
 
     case 'kubernetesWatch': {
+      winston.info('Start IT')
+      winston.info('With Configuration: ')
+      printAllConfigs()
+      const watcher = new K8sWatcher()
+      let myEndpoints = {}
+      watcher.setDataUpdatedListener((endpoints) => {
+        winston.info('Watcher called new endpoints ')
+        myEndpoints = endpoints
+      })
+      setInterval(() => {
+        startWatcher(myEndpoints)
+      }, getPollingMs())
+      watcher.watchEndpoint()
+
       // $FlowFixMe: suppressing this error until we can refactor
-      cluster.schedulingPolicy = cluster.SCHED_RR
-      if (cluster.isMaster){
-        winston.info('Start IT')
-        winston.info('With Configuration: ')
-        printAllConfigs()
-        var cpuCount = require('os').cpus().length
-        for (var i = 0; i < cpuCount; i += 1) {
-          winston.info('START SLAVE')
-          cluster.fork()
-        }
-      } else {
-        winston.info('Slave is start watching')
-        const watcher = new K8sWatcher()
-        watcher.setDataUpdatedListener((endpoints) => {
-          startWatcher(watcher, endpoints)
-        })
-        watcher.watchEndpoint()
-      }
+      // cluster.schedulingPolicy = cluster.SCHED_RR
+      // if (cluster.isMaster){
+      //   winston.info('Start IT')
+      //   winston.info('With Configuration: ')
+      //   printAllConfigs()
+      //   var cpuCount = require('os').cpus().length
+      //   for (var i = 0; i < cpuCount; i += 1) {
+      //     winston.info('START SLAVE')
+      //     cluster.fork()
+      //   }
+      // } else {
+      //   winston.info('Slave is start watching')
+      //   const watcher = new K8sWatcher()
+      //   watcher.setDataUpdatedListener((endpoints) => {
+      //     startWatcher(watcher, endpoints)
+      //   })
+      //   watcher.watchEndpoint()
+      // }
 
     }
 
@@ -81,8 +95,7 @@ const run = async() => {
 //start and restart by listener
 let lastEndPoints : string = ''
 let server = null
-const startWatcher = async(watcher, endpoints) => {
-
+const startWatcher = async(endpoints) => {
   endpoints = await sortEndpointAndFindAvailableEndpoints(endpoints)
   if (JSON.stringify(endpoints) !== lastEndPoints){
     winston.info('Changes Found restart Server')

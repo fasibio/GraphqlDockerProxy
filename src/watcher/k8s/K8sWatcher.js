@@ -103,14 +103,9 @@ export class K8sWatcher {
       }
 
     }
-    const isAllAvailable = await allEndpointsAvailable(realEndpoint)
-    if (!isAllAvailable){
-      winston.warn('Some endpoints are not available so this will delete from the endpoints', { endpoints: realEndpoint })
 
-      this.dataUpdatedListener(sortEndpointAndFindAvailableEndpoints(realEndpoint))
-    } else {
-      this.dataUpdatedListener(realEndpoint)
-    }
+    this.dataUpdatedListener(realEndpoint)
+
   }
 
   __deleteEndpoint = (namespace: string, deploymentName: string) => {

@@ -30,7 +30,7 @@ export const allEndpointsAvailable = async(endpoints :Endpoints): Endpoints => {
             }
           })
         if (!result.ok){
-          winston.warn('Endpoint not Available: ', one)
+          winston.warn('allEndpointsAvailable: Endpoint not Available: ', one)
           allEndpointsAvailable = false
         }
 
