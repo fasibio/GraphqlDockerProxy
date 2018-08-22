@@ -1,5 +1,6 @@
 import { K8sWatcher } from '../K8sWatcher'
 import { Readable } from 'stream'
+import '../../../idx'
 
 describe('tests the K8sWatcher', () => {
 
