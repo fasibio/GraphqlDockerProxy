@@ -18,7 +18,7 @@ class FindEndpoints{
 
   constructor(){}
   getEndpoints = (): Endpoints => {
-    console.log('you have to override getEndpoints')
+    winston.error('you have to override getEndpoints')
     return {}
   }
 

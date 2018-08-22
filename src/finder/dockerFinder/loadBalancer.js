@@ -38,7 +38,7 @@ const getNextPortNumber = () => {
 
 export const closeAllServer = () => {
   lBserver.forEach(one => {
-    console.log('close load balancer', one._connectionKey)
+    winston.info('close load balancer', one._connectionKey)
     one.close()
   })
   nextPortNumber = 0

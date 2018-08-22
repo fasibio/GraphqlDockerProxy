@@ -1,7 +1,12 @@
 import { K8sWatcher } from '../K8sWatcher'
 import { Readable } from 'stream'
 import '../../../idx'
-
+jest.mock('../../../finder/endpointsAvailable', () => {
+  return {
+    allEndpointsAvailable: () => true,
+    sortEndpointAndFindAvailableEndpoints: (endpoints) => endpoints,
+  }
+})
 describe('tests the K8sWatcher', () => {
 
   let k8sWatcher = null
@@ -50,7 +55,8 @@ describe('tests the K8sWatcher', () => {
       k8sWatcher.endpoints = endpoints
     })
 
-    it('by ADDING deyployment', () => {
+    it('by ADDING deyployment', async() => {
+      expect.assertions(1)
       const callMockFunc = jest.fn()
       k8sWatcher.setDataUpdatedListener(callMockFunc)
       k8sWatcher.deploymentsNames = {
@@ -76,7 +82,7 @@ describe('tests the K8sWatcher', () => {
           },
         },
       }
-      mockedStream.emit('data', JSON.stringify(mockStreamObj))
+      await mockedStream.emit('data', JSON.stringify(mockStreamObj))
 
       expect(callMockFunc).toBeCalledWith({
         swapi:
@@ -92,7 +98,9 @@ describe('tests the K8sWatcher', () => {
       })
     })
 
-    it('by MODIFIED deyployment', () => {
+    it('by MODIFIED deyployment', async() => {
+      expect.assertions(1)
+
       const callMockFunc = jest.fn()
       k8sWatcher.setDataUpdatedListener(callMockFunc)
       k8sWatcher.deploymentsNames = {
@@ -118,7 +126,7 @@ describe('tests the K8sWatcher', () => {
           },
         },
       }
-      mockedStream.emit('data', JSON.stringify(mockStreamObj))
+      await mockedStream.emit('data', JSON.stringify(mockStreamObj))
 
       expect(callMockFunc).toBeCalledWith({
         swapi:
@@ -134,7 +142,9 @@ describe('tests the K8sWatcher', () => {
       })
     })
 
-    it('by DELETED deyployment', () => {
+    it('by DELETED deyployment', async() => {
+      expect.assertions(1)
+
       const callMockFunc = jest.fn()
       k8sWatcher.setDataUpdatedListener(callMockFunc)
       k8sWatcher.deploymentsNames = {
@@ -160,7 +170,7 @@ describe('tests the K8sWatcher', () => {
           },
         },
       }
-      mockedStream.emit('data', JSON.stringify(mockStreamObj))
+      await mockedStream.emit('data', JSON.stringify(mockStreamObj))
 
       expect(callMockFunc).toBeCalledWith({})
     })

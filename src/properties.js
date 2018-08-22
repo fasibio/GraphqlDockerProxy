@@ -14,6 +14,9 @@ export const getBuildNumber = () => {
   return idx(process, _ => _.env.BUILD_NUMBER)
 }
 
+export const getLogLevel = () => {
+  return idx(process, _ => _.env.winstonLogLevel) || 'info'
+}
 /**
  * Available values: docker & kubernetes && kubernetesWatch
  */
@@ -69,6 +72,7 @@ export const getBodyParserLimit = () => {
 
 export const printAllConfigs = () => {
   console.log('===================================')
+  console.log('LogLevel:', getLogLevel())
   console.log('qglProxyRuntime:', runtime())
   console.log('gqlProxyPollingMs:', getPollingMs())
   console.log('gqlProxyAdminUser:', adminUser())

@@ -16,7 +16,7 @@ import cluster from 'cluster'
 import { getMergedInformation } from './schemaBuilder'
 
 process.on('unhandledRejection', (reason, p) => {
-  console.log('Unhandled Rejection at: Promise', p, 'reason:', reason)
+  winston.error('Unhandled Rejection at: Promise', p, 'reason:', reason)
   // application specific logging, throwing an error, or other logic here
 })
 const weaverIt = async(endpoints) => {
@@ -25,7 +25,7 @@ const weaverIt = async(endpoints) => {
       endpoints,
     })
   } catch (e){
-    console.log('WeaverIt goes Wrong', e)
+    winston.error('WeaverIt goes Wrong', e)
   }
 
 }
@@ -36,15 +36,15 @@ const run = async() => {
 
   switch (runtime()){
     case 'kubernetes':{
-      console.log('Start IT')
-      console.log('With Configuration: ')
+      winston.info('Start IT')
+      winston.info('With Configuration: ')
       printAllConfigs()
       runPoller(new K8sFinder())
       break
     }
     case 'docker': {
-      console.log('Start IT')
-      console.log('With Configuration: ')
+      winston.info('Start IT')
+      winston.info('With Configuration: ')
       printAllConfigs()
       runPoller(new DockerFinder())
       break
@@ -54,16 +54,16 @@ const run = async() => {
       // $FlowFixMe: suppressing this error until we can refactor
       cluster.schedulingPolicy = cluster.SCHED_RR
       if (cluster.isMaster){
-        console.log('Start IT')
-        console.log('With Configuration: ')
+        winston.info('Start IT')
+        winston.info('With Configuration: ')
         printAllConfigs()
         var cpuCount = require('os').cpus().length
         for (var i = 0; i < cpuCount; i += 1) {
-          console.log('START SLAVE')
+          winston.info('START SLAVE')
           cluster.fork()
         }
       } else {
-        console.log('Slave is start watching')
+        winston.info('Slave is start watching')
         const watcher = new K8sWatcher()
         watcher.setDataUpdatedListener((endpoints) => {
           startWatcher(watcher, endpoints)
@@ -85,7 +85,7 @@ const startWatcher = async(watcher, endpoints) => {
 
   endpoints = await sortEndpointAndFindAvailableEndpoints(endpoints)
   if (JSON.stringify(endpoints) !== lastEndPoints){
-    console.log('Changes Found restart Server')
+    winston.info('Changes Found restart Server')
     if (server != null){
       server.close()
     }
@@ -104,7 +104,7 @@ const startWatcher = async(watcher, endpoints) => {
     // }
 
   } else {
-    console.log('no Change at endpoints does not need a restart')
+    winston.info('no Change at endpoints does not need a restart')
   }
 }
 const runPoller = (finder) => {
@@ -114,7 +114,7 @@ const runPoller = (finder) => {
       let endpoints : Endpoints = await finder.getEndpoints()
       endpoints = await sortEndpointAndFindAvailableEndpoints(endpoints)
       if (JSON.stringify(endpoints) !== lastEndPoints){
-        console.log('Changes Found restart Server')
+        winston.info('Changes Found restart Server')
         if (server != null){
           server.close()
         }
@@ -125,7 +125,7 @@ const runPoller = (finder) => {
         if (cluster.isMaster){
           var cpuCount = require('os').cpus().length
           for (var i = 0; i < cpuCount; i += 1) {
-            console.log('START SLAVE')
+            winston.info('START SLAVE')
             cluster.fork()
           }
         } else {
@@ -133,10 +133,10 @@ const runPoller = (finder) => {
         }
 
       } else {
-        console.log('no Change at endpoints does not need a restart')
+        winston.info('no Change at endpoints does not need a restart')
       }
     } catch (e){
-      console.log('GLOBAL ERROR', e)
+      winston.error('GLOBAL ERROR', e)
       lastEndPoints = ''
     }
 
@@ -145,7 +145,7 @@ const runPoller = (finder) => {
 // const oldSchema = null
 
 const start = async(endpoints : Endpoints) => {
-  console.log('endpoints:', endpoints)
+  winston.info('loading endpoints:', { endpoints })
   const weaverEndpoints = []
 
   for (const one in endpoints){
@@ -236,7 +236,7 @@ const start = async(endpoints : Endpoints) => {
   })
 
 
-  console.log('Server running. Open http://localhost:3000/graphql to run queries.')
+  winston.info('Server running. Open http://localhost:3000/graphql to run queries.')
   if (server != null){
     server.close()
   }

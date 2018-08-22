@@ -14,6 +14,7 @@ Object {
   "adminUser": [Function],
   "getBodyParserLimit": [Function],
   "getBuildNumber": [Function],
+  "getLogLevel": [Function],
   "getPollingMs": [Function],
   "getVersion": [Function],
   "k8sUser": [Function],
@@ -35,6 +36,10 @@ exports[`tests Properties snapshot getBodyParserLimit given envs 1`] = `"1mb"`;
 exports[`tests Properties snapshot getBuildNumber default return 1`] = `null`;
 
 exports[`tests Properties snapshot getBuildNumber given envs 1`] = `"12345"`;
+
+exports[`tests Properties snapshot getLogLevel default return 1`] = `"info"`;
+
+exports[`tests Properties snapshot getLogLevel given envs 1`] = `"info"`;
 
 exports[`tests Properties snapshot getPollingMs default return 1`] = `5000`;
 
@@ -72,74 +77,81 @@ Array [
 
 exports[`tests Properties snapshot printAllConfigs default return 2`] = `
 Array [
+  "LogLevel:",
+  "info",
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs default return 3`] = `
+Array [
   "qglProxyRuntime:",
   "docker",
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs default return 3`] = `
+exports[`tests Properties snapshot printAllConfigs default return 4`] = `
 Array [
   "gqlProxyPollingMs:",
   5000,
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs default return 4`] = `
+exports[`tests Properties snapshot printAllConfigs default return 5`] = `
 Array [
   "gqlProxyAdminUser:",
   "",
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs default return 5`] = `
+exports[`tests Properties snapshot printAllConfigs default return 6`] = `
 Array [
   "gqlProxyKnownOldSchemas",
   false,
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs default return 6`] = `
+exports[`tests Properties snapshot printAllConfigs default return 7`] = `
 Array [
   "gqlShowPlayground",
   true,
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs default return 7`] = `
+exports[`tests Properties snapshot printAllConfigs default return 8`] = `
 Array [
   "Version: ",
   null,
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs default return 8`] = `
+exports[`tests Properties snapshot printAllConfigs default return 9`] = `
 Array [
   "Buildnumber: ",
   null,
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs default return 9`] = `
+exports[`tests Properties snapshot printAllConfigs default return 10`] = `
 Array [
   "dockerNetwork:",
   "web",
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs default return 10`] = `
+exports[`tests Properties snapshot printAllConfigs default return 11`] = `
 Array [
   "gqlProxyToken:",
   "",
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs default return 11`] = `
+exports[`tests Properties snapshot printAllConfigs default return 12`] = `
 Array [
   "===================================",
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs default return 12`] = `undefined`;
+exports[`tests Properties snapshot printAllConfigs default return 13`] = `undefined`;
 
 exports[`tests Properties snapshot printAllConfigs given envs 1`] = `
 Array [
@@ -149,60 +161,67 @@ Array [
 
 exports[`tests Properties snapshot printAllConfigs given envs 2`] = `
 Array [
+  "LogLevel:",
+  "info",
+]
+`;
+
+exports[`tests Properties snapshot printAllConfigs given envs 3`] = `
+Array [
   "qglProxyRuntime:",
   "mockRuntime",
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs given envs 3`] = `
+exports[`tests Properties snapshot printAllConfigs given envs 4`] = `
 Array [
   "gqlProxyPollingMs:",
   10124,
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs given envs 4`] = `
+exports[`tests Properties snapshot printAllConfigs given envs 5`] = `
 Array [
   "gqlProxyAdminUser:",
   "mockAdmin",
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs given envs 5`] = `
+exports[`tests Properties snapshot printAllConfigs given envs 6`] = `
 Array [
   "gqlProxyKnownOldSchemas",
   true,
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs given envs 6`] = `
+exports[`tests Properties snapshot printAllConfigs given envs 7`] = `
 Array [
   "gqlShowPlayground",
   true,
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs given envs 7`] = `
+exports[`tests Properties snapshot printAllConfigs given envs 8`] = `
 Array [
   "Version: ",
   "0.0.0",
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs given envs 8`] = `
+exports[`tests Properties snapshot printAllConfigs given envs 9`] = `
 Array [
   "Buildnumber: ",
   "12345",
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs given envs 9`] = `
+exports[`tests Properties snapshot printAllConfigs given envs 10`] = `
 Array [
   "===================================",
 ]
 `;
 
-exports[`tests Properties snapshot printAllConfigs given envs 10`] = `undefined`;
+exports[`tests Properties snapshot printAllConfigs given envs 11`] = `undefined`;
 
 exports[`tests Properties snapshot runtime default return 1`] = `"docker"`;
 

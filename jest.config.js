@@ -1,5 +1,4 @@
 require('./src/idx')
-
 module.exports = {
   verbose: true,
   testURL: 'http://localhost/',
@@ -11,7 +10,12 @@ module.exports = {
   //   '!**/node_modules/**',
   //   '!**/vendor/**',
   // ],
+  setupFiles: [
+    './src/idx',
+    './src/jestlogger',
+  ],
   globals: {
     idx: global.idx,
+    winston: {},
   },
 }

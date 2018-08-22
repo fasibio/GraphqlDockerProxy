@@ -4,7 +4,7 @@ const config = require('kubernetes-client').config
 import JSONStream from 'json-stream'
 import { getInClusterByUser } from './getInClusterByUser'
 import * as clientLabels from '../../finder/clientLabels'
-
+import { allEndpointsAvailable, sortEndpointAndFindAvailableEndpoints } from '../../finder/endpointsAvailable'
 import { token, kubernetesConfigurationKind } from '../../properties'
 import type { Endpoints } from '../../finder/findEndpointsInterface'
 declare function idx(obj: any, callBack: any):any
@@ -50,9 +50,9 @@ export class K8sWatcher {
       const name = idx(deployment, _ => _.object.spec.template.metadata.labels.app) || ''
       if (name == ''){
         if (deployment.status == 'Failure'){
-          console.log('no Permission for Namspace', namespaceName)
+          winston.warn('no Permission for Namspace', namespaceName)
         } else {
-          console.log('deployment obj is missing attributes ', namespaceName, deployment)
+          winston.warn('deployment obj is missing attributes ', namespaceName, deployment)
         }
       }
       if (this.deploymentsNames[name] !== undefined){
@@ -95,7 +95,7 @@ export class K8sWatcher {
     }
   }
 
-  __callDataUpdateListener = () => {
+  __callDataUpdateListener = async() => {
     const realEndpoint = this.endpoints
     for (const one in realEndpoint){
       if (realEndpoint[one].length == 0){
@@ -103,7 +103,15 @@ export class K8sWatcher {
       }
 
     }
-    this.dataUpdatedListener(realEndpoint)
+    const isAllAvailable = await allEndpointsAvailable(realEndpoint)
+    if (!isAllAvailable){
+      winston.warn('Some endpoints are not available so this will delete from the endpoints', { endpoints: realEndpoint })
+
+      this.dataUpdatedListener(sortEndpointAndFindAvailableEndpoints(realEndpoint))
+    } else {
+      console.log('hier!!!', isAllAvailable, this.dataUpdatedListener)
+      this.dataUpdatedListener(realEndpoint)
+    }
   }
 
   __deleteEndpoint = (namespace: string, deploymentName: string) => {
@@ -167,9 +175,9 @@ export class K8sWatcher {
           if (idx(item, _ => _.metadata.annotations[clientLabels.TOKEN]) == token()){
             const namespace = item.metadata.annotations[clientLabels.NAMESPACE]
             const deploymentName = item.spec.selector.app
-            console.log('delete service', namespace, deploymentName)
+            winston.debug('delete service', namespace, deploymentName)
             this.__deleteEndpoint(namespace, deploymentName)
-            console.log('delete service no data', this.endpoints)
+            winston.debug('delete service no data', this.endpoints)
             this.__callDataUpdateListener()
 
           }
@@ -187,20 +195,20 @@ export class K8sWatcher {
   watchEndpoint = async() => {
 
 
-    console.log('Load K8s')
+    winston.info('Load K8s')
     switch (kubernetesConfigurationKind()){
       case 'fromKubeconfig': {
-        console.log('Load fromKubeconfig')
+        winston.info('Load fromKubeconfig')
         this.client = new Client({ config: config.fromKubeconfig() })
         break
       }
       case 'getInCluster': {
-        console.log('Load getInCluster')
+        winston.info('Load getInCluster')
         this.client = new Client({ config: config.getInCluster() })
         break
       }
       case 'getInClusterByUser':{
-        console.log('Load getIntClusterByUser')
+        winston.info('Load getIntClusterByUser')
         this.client = new Client({ config: getInClusterByUser() })
       }
     }
@@ -226,7 +234,7 @@ export class K8sWatcher {
         }
       })
     } catch (err){
-      console.error('Error by watchEndpoints', err)
+      winston.error('Error by watchEndpoints', err)
     }
 
   }

@@ -3,7 +3,8 @@
 [include]
 
 [libs]
-./idx.js
+./src/idx.js
+./src/logger.js
 [lints]
 
 [options]

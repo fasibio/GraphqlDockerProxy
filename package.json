@@ -30,7 +30,9 @@
     "json-stream": "^1.0.0",
     "kubernetes-client": "5.3.0",
     "node-docker-api": "1.1.22",
-    "node-fetch": "2.2.0"
+    "node-fetch": "2.2.0",
+    "sleep-promise": "^8.0.1",
+    "winston": "^3.0.0"
   },
   "devDependencies": {
     "babel-cli": "6.26.0",

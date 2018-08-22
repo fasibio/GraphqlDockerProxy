@@ -23,6 +23,7 @@ module.exports = {
     "classes",
   ],
   "globals": {
+    "winston": true,
     "idx": true,
     "process": true,
   },
