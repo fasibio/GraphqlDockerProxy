@@ -9,7 +9,7 @@ metadata:
   namespace: starwars
 spec:
   minReadySeconds: 20
-  replicas: 1
+  replicas: 2
   revisionHistoryLimit: 32
   template:
     metadata:
@@ -19,7 +19,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 1
       containers:
-        - image: bfillmer/graphql-swapi
+        - image: alpine #bfillmer/graphql-swapi
           imagePullPolicy: Always
           name: swapi
           ports:

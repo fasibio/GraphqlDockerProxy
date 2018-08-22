@@ -12,6 +12,8 @@ import { sortEndpointAndFindAvailableEndpoints } from './finder/endpointsAvailab
 import adminSchema from './admin/adminSchema'
 import basicAuth from 'express-basic-auth'
 import cluster from 'cluster'
+import cloner from 'cloner'
+
 // import deepcopy from 'deepcopy/cjs/index'
 import { getMergedInformation } from './schemaBuilder'
 
@@ -60,10 +62,11 @@ const run = async() => {
         winston.info('Watcher called new endpoints ')
         myEndpoints = endpoints
       })
-      setInterval(() => {
-        startWatcher(myEndpoints)
-      }, getPollingMs())
+
       watcher.watchEndpoint()
+      setInterval(() => {
+        startWatcher(cloner.deep.copy(myEndpoints))
+      }, getPollingMs())
 
       // $FlowFixMe: suppressing this error until we can refactor
       // cluster.schedulingPolicy = cluster.SCHED_RR

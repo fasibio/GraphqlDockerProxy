@@ -1,6 +1,8 @@
 //@flow
 const Client = require('kubernetes-client').Client
 const config = require('kubernetes-client').config
+import cloner from 'cloner'
+
 import JSONStream from 'json-stream'
 import { getInClusterByUser } from './getInClusterByUser'
 import * as clientLabels from '../../finder/clientLabels'
@@ -47,18 +49,20 @@ export class K8sWatcher {
     const deploymentsJsonStream = new JSONStream()
     deploymentsStream.pipe(deploymentsJsonStream)
     deploymentsJsonStream.on('data', deployment => {
+
       const name = idx(deployment, _ => _.object.spec.template.metadata.labels.app) || ''
       if (name == ''){
         if (deployment.status == 'Failure'){
-          winston.warn('no Permission for Namspace', namespaceName)
+          winston.warn('no Permission for Namspace' + namespaceName)
         } else {
-          winston.warn('deployment obj is missing attributes ', namespaceName, deployment)
+          winston.warn('deployment obj is missing attributes ', { namespaceName, deployment })
         }
       }
       if (this.deploymentsNames[name] !== undefined){
         for (const one in this.endpoints){
           const oneEndpoint = this.endpoints[one]
           for (let i = 0 ; i < oneEndpoint.length; i++){
+
             if (oneEndpoint[i].__deploymentName === name){
               switch (deployment.type){
                 case 'MODIFIED':
@@ -96,7 +100,7 @@ export class K8sWatcher {
   }
 
   __callDataUpdateListener = async() => {
-    const realEndpoint = this.endpoints
+    const realEndpoint = cloner.deep.copy(this.endpoints)
     for (const one in realEndpoint){
       if (realEndpoint[one].length == 0){
         delete realEndpoint[one]
