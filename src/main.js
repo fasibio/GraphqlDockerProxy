@@ -33,26 +33,44 @@ const weaverIt = async(endpoints) => {
 
 const run = async() => {
 
-  console.log('Start IT')
-  console.log('With Configuration: ')
-  printAllConfigs()
 
   switch (runtime()){
     case 'kubernetes':{
+      console.log('Start IT')
+      console.log('With Configuration: ')
+      printAllConfigs()
       runPoller(new K8sFinder())
       break
     }
     case 'docker': {
+      console.log('Start IT')
+      console.log('With Configuration: ')
+      printAllConfigs()
       runPoller(new DockerFinder())
       break
     }
 
     case 'kubernetesWatch': {
-      const watcher = new K8sWatcher()
-      watcher.setDataUpdatedListener((endpoints) => {
-        startWatcher(watcher, endpoints)
-      })
-      watcher.watchEndpoint()
+      // $FlowFixMe: suppressing this error until we can refactor
+      cluster.schedulingPolicy = cluster.SCHED_RR
+      if (cluster.isMaster){
+        console.log('Start IT')
+        console.log('With Configuration: ')
+        printAllConfigs()
+        var cpuCount = require('os').cpus().length
+        for (var i = 0; i < cpuCount; i += 1) {
+          console.log('START SLAVE')
+          cluster.fork()
+        }
+      } else {
+        console.log('Slave is start watching')
+        const watcher = new K8sWatcher()
+        watcher.setDataUpdatedListener((endpoints) => {
+          startWatcher(watcher, endpoints)
+        })
+        watcher.watchEndpoint()
+      }
+
     }
 
   }
@@ -74,16 +92,16 @@ const startWatcher = async(watcher, endpoints) => {
 
     lastEndPoints = JSON.stringify(endpoints)
     // $FlowFixMe: suppressing this error until we can refactor
-    cluster.schedulingPolicy = cluster.SCHED_RR
-    if (cluster.isMaster){
-      var cpuCount = require('os').cpus().length
-      for (var i = 0; i < cpuCount; i += 1) {
-        console.log('START SLAVE')
-        cluster.fork()
-      }
-    } else {
-      server = await start(endpoints)
-    }
+    // cluster.schedulingPolicy = cluster.SCHED_RR
+    // if (cluster.isMaster){
+    //   var cpuCount = require('os').cpus().length
+    //   for (var i = 0; i < cpuCount; i += 1) {
+    //     console.log('START SLAVE')
+    //     cluster.fork()
+    //   }
+    // } else {
+    server = await start(endpoints)
+    // }
 
   } else {
     console.log('no Change at endpoints does not need a restart')
@@ -127,11 +145,10 @@ const runPoller = (finder) => {
 // const oldSchema = null
 
 const start = async(endpoints : Endpoints) => {
-
+  console.log('endpoints:', endpoints)
   const weaverEndpoints = []
 
   for (const one in endpoints){
-    console.log(weaverEndpoints)
     weaverEndpoints.push({
       namespace: one,
       typePrefix: one + '_',
