@@ -109,7 +109,6 @@ export class K8sWatcher {
 
       this.dataUpdatedListener(sortEndpointAndFindAvailableEndpoints(realEndpoint))
     } else {
-      console.log('hier!!!', isAllAvailable, this.dataUpdatedListener)
       this.dataUpdatedListener(realEndpoint)
     }
   }

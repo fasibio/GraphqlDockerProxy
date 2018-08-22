@@ -16,7 +16,7 @@ import cluster from 'cluster'
 import { getMergedInformation } from './schemaBuilder'
 
 process.on('unhandledRejection', (reason, p) => {
-  winston.error('Unhandled Rejection at: Promise', p, 'reason:', reason)
+  console.error('Unhandled Rejection at: Promise', p, 'reason:', reason)
   // application specific logging, throwing an error, or other logic here
 })
 const weaverIt = async(endpoints) => {
