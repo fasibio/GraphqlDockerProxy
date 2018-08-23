@@ -1,7 +1,23 @@
-require('./src/idx')
 module.exports = {
   verbose: true,
   testURL: 'http://localhost/',
+  "collectCoverageFrom": [
+    "**/*.{ts,tsx}",
+    "!dist/**/*"
+  ],
+  "transform": {
+    "^.+\\.tsx?$": "ts-jest"
+  },
+  "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(tsx?)$",
+
+  "moduleFileExtensions": [
+    "ts",
+    "tsx",
+    "js",
+    "jsx",
+    "json",
+    "node"
+  ],
   // collectCoverage: true,
   // 'coverageReporters': ['json', 'html'],
   coverageDirectory: 'coverage',
@@ -11,8 +27,8 @@ module.exports = {
   //   '!**/vendor/**',
   // ],
   setupFiles: [
-    './src/idx',
-    './src/jestlogger',
+    './src/idx.ts',
+    './src/jestlogger.ts',
   ],
   globals: {
     idx: global.idx,

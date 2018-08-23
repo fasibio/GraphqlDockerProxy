@@ -1,7 +1,7 @@
 FROM node:6 as build_job
 ADD . /src
 WORKDIR /src
-RUN npm install && npm run build && mkdir /src/pkg
+RUN npm install && mkdir /src/pkg
 RUN npm run pkg-docker && npm run pkg-docker-healthcheck
 
 FROM alpine:3.5

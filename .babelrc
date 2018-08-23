@@ -1,17 +1,9 @@
 {
-  "presets": ["env", "flow"],
+  "presets": ["es2015"],
   "plugins": [
-    "transform-es2015-arrow-functions",
-    "check-es2015-constants",
-    "transform-es2015-block-scoping",
-    "syntax-async-functions",
-    "transform-regenerator",
-    "transform-class-properties",
-    "transform-flow-strip-types",
-    "syntax-flow",
-    ["transform-runtime", {
-      "polyfill": true,
-      "regenerator": true
-    }]
-  ]
+    "syntax-trailing-function-commas"
+  ],
+  "retainLines": true,
+  "sourceMaps": true
 }
+

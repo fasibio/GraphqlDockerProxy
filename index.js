@@ -1,6 +1,5 @@
 // require('babel-core/register')
 // require('babel-polyfill')
+require('babel-core/register')
 
-require('./src/idx.js')
-require('./src/logger')
-require('./src/main.js')
+require('./src/main')
