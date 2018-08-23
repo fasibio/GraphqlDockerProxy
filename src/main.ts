@@ -17,7 +17,6 @@ import  { Endpoints } from './finder/findEndpointsInterface';
 import { sortEndpointAndFindAvailableEndpoints } from './finder/endpointsAvailable';
 import adminSchema from './admin/adminSchema';
 import * as basicAuth from 'express-basic-auth';
-import * as cluster from 'cluster';
 import cloner from 'cloner';
 import { DockerWatcher } from './watcher/docker/DockerWatcher';
 // import deepcopy from 'deepcopy/cjs/index'
