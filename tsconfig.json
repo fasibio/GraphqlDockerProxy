@@ -1,4 +1,8 @@
 {
+    "exclude": [
+        "__mocks__",
+        "**/*.test.ts"
+    ],
     "compilerOptions": {
         "target": "es5",
         "lib": [
@@ -6,5 +10,6 @@
         ],
         "rootDir": "./src",
         "outDir": "dist"
+        
     }
 }

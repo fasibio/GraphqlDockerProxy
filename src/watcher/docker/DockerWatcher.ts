@@ -1,28 +1,13 @@
 
-import { Endpoints } from '../../finder/findEndpointsInterface';
-import cloner from 'cloner';
 import * as clientLabels from '../../finder/clientLabels';
 import { token, network } from '../../properties';
 import { WatcherInterface } from '../WatcherInterface';
 import * as monitor from 'node-docker-monitor';
 
 export class DockerWatcher extends WatcherInterface{
-  endpoints : Endpoints = {};
 
   constructor() {
     super();
-  }
-  callDataUpdateListener = async() => {
-    const realEndpoint = cloner.deep.copy(this.endpoints);
-    for (const one in realEndpoint) {
-      if (realEndpoint[one].length === 0) {
-        delete realEndpoint[one];
-      }
-
-    }
-    console.log(realEndpoint);
-    this.dataUpdatedListener(realEndpoint);
-
   }
 
   /**
@@ -36,20 +21,6 @@ export class DockerWatcher extends WatcherInterface{
     }
     return 'http://' + sockData.NetworkSettings.Networks[network()].IPAddress + url;
 
-  }
-
-  deleteEndpoint = (namespace: string, deploymentName: string) => {
-    if (this.endpoints[namespace] === undefined) {
-      return;
-    }
-    for (let i = 0 ; i < this.endpoints[namespace].length; i = i + 1) {
-      if (this.endpoints[namespace][i].__deploymentName === deploymentName) {
-        this.endpoints[namespace].splice(i, 1);
-      }
-    }
-    if (this.endpoints[namespace].length === 0) {
-      delete this.endpoints[namespace];
-    }
   }
 
   onContainerUp = (container: any) => {

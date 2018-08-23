@@ -1,19 +1,16 @@
 // @flow
 const Client = require('kubernetes-client').Client;
 const config = require('kubernetes-client').config;
-import * as cloner from 'cloner';
 
 import * as JSONStream from 'json-stream';
 import { WatcherInterface } from '../WatcherInterface';
 import { getInClusterByUser } from './getInClusterByUser';
 import * as clientLabels from '../../finder/clientLabels';
 import { token, kubernetesConfigurationKind } from '../../properties';
-import  { Endpoints } from '../../finder/findEndpointsInterface';
 declare function idx(obj: any, callBack: any):any;
 export class K8sWatcher extends WatcherInterface{
   streams = {};
   client: any = {};
-  endpoints: Endpoints = {};
   deploymentsNames = {};
   constructor() {
     super();
@@ -133,32 +130,6 @@ export class K8sWatcher extends WatcherInterface{
 
   }
 
-  callDataUpdateListener = async() => {
-    const realEndpoint = cloner.deep.copy(this.endpoints);
-    for (const one in realEndpoint) {
-      if (realEndpoint[one].length === 0) {
-        delete realEndpoint[one];
-      }
-
-    }
-    console.log(realEndpoint);
-    this.dataUpdatedListener(realEndpoint);
-
-  }
-
-  deleteEndpoint = (namespace: string, deploymentName: string) => {
-    if (this.endpoints[namespace] === undefined) {
-      return;
-    }
-    for (let i = 0 ; i < this.endpoints[namespace].length; i = i + 1) {
-      if (this.endpoints[namespace][i].__deploymentName === deploymentName) {
-        this.endpoints[namespace].splice(i, 1);
-      }
-    }
-    if (this.endpoints[namespace].length === 0) {
-      delete this.endpoints[namespace];
-    }
-  }
   watchServicesForNamespace = (namespaceName: string) => {
 
     // Sertvices of Namespace

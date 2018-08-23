@@ -24,6 +24,7 @@ import { DockerWatcher } from './watcher/docker/DockerWatcher';
 import { getMergedInformation } from './schemaBuilder';
 require('./idx');
 require('./logger');
+
 process.on('unhandledRejection', (reason, p) => {
   console.error('Unhandled Rejection at: Promise', p, 'reason:', reason);
   // application specific logging, throwing an error, or other logic here
@@ -38,40 +39,40 @@ const weaverIt = async(endpoints) => {
   }
 
 };
-
+let foundedEndpoints: Endpoints = {};
 const run = async() => {
-
+  winston.info('Start IT');
+  winston.info('With Configuration: ');
+  printAllConfigs();
+  let handleRestart = (endpoint: Endpoints) => {
+    return Promise.resolve(endpoint);
+  };
   switch (runtime()){
     case 'kubernetes': {
-      winston.info('Start IT');
-      winston.info('With Configuration: ');
-      printAllConfigs();
-      runPoller(new K8sFinder());
+      const k8sFinder = new K8sFinder();
+      setInterval(async() => {
+        foundedEndpoints = await k8sFinder.getEndpoints();
+      },          getPollingMs());
+      handleRestart = k8sFinder.handleRestart;
       break;
     }
     case 'docker': {
-      winston.info('Start IT');
-      winston.info('With Configuration: ');
-      printAllConfigs();
-      runPoller(new DockerFinder());
+      const dockerFinder = new DockerFinder();
+      setInterval(async() => {
+        foundedEndpoints = await dockerFinder.getEndpoints();
+      },          getPollingMs());
+      handleRestart = dockerFinder.handleRestart;
       break;
     }
 
     case 'kubernetesWatch': {
-      winston.info('Start IT');
-      winston.info('With Configuration: ');
-      printAllConfigs();
       const watcher = new K8sWatcher();
-      let myEndpoints = {};
       watcher.setDataUpdatedListener((endpoints) => {
         winston.info('Watcher called new endpoints ');
-        myEndpoints = endpoints;
+        foundedEndpoints = endpoints;
       });
 
       watcher.watchEndpoint();
-      setInterval(() => {
-        startWatcher(cloner.deep.copy(myEndpoints));
-      },          getPollingMs());
 
       break;
     }
@@ -81,13 +82,18 @@ const run = async() => {
     }
 
   }
+  setInterval(() => {
+    startWatcher(cloner.deep.copy(foundedEndpoints), handleRestart);
+  },          getPollingMs());
 
 };
 
 // start and restart by listener
 let lastEndPoints : string = '';
 let server = null;
-const startWatcher = async(end: Endpoints) => {
+
+const startWatcher = async(end: Endpoints,
+                           handleRestart:(endpoints:Endpoints) => Promise<Endpoints>) => {
   const endpoints = await sortEndpointAndFindAvailableEndpoints(end);
   if (JSON.stringify(endpoints) !== lastEndPoints) {
     winston.info('Changes Found restart Server');
@@ -105,47 +111,47 @@ const startWatcher = async(end: Endpoints) => {
     //     cluster.fork()
     //   }
     // } else {
-    server = await start(endpoints);
+    server = await start(await handleRestart(endpoints));
     // }
 
   } else {
     winston.info('no Change at endpoints does not need a restart');
   }
 };
-const runPoller = (finder) => {
+// const runPoller = (finder) => {
 
-  setInterval(async() => {
-    try {
-      let endpoints : Endpoints = await finder.getEndpoints();
-      endpoints = await sortEndpointAndFindAvailableEndpoints(endpoints);
-      if (JSON.stringify(endpoints) !== lastEndPoints) {
-        winston.info('Changes Found restart Server');
-        if (server != null) {
-          server.close();
-        }
+//   setInterval(async() => {
+//     try {
+//       let endpoints : Endpoints = await finder.getEndpoints();
+//       endpoints = await sortEndpointAndFindAvailableEndpoints(endpoints);
+//       if (JSON.stringify(endpoints) !== lastEndPoints) {
+//         winston.info('Changes Found restart Server');
+//         if (server != null) {
+//           server.close();
+//         }
 
-        lastEndPoints = JSON.stringify(endpoints);
-        process.env.NODE_CLUSTER_SCHED_POLICY = 'rr';
-        if (cluster.isMaster) {
-          const cpuCount = require('os').cpus().length;
-          for (let i = 0; i < cpuCount; i += 1) {
-            winston.info('START SLAVE');
-            cluster.fork();
-          }
-        } else {
-          server = await start(await finder.handleRestart(endpoints));
-        }
+//         lastEndPoints = JSON.stringify(endpoints);
+//         process.env.NODE_CLUSTER_SCHED_POLICY = 'rr';
+//         if (cluster.isMaster) {
+//           const cpuCount = require('os').cpus().length;
+//           for (let i = 0; i < cpuCount; i += 1) {
+//             winston.info('START SLAVE');
+//             cluster.fork();
+//           }
+//         } else {
+//           server = await start(await finder.handleRestart(endpoints));
+//         }
 
-      } else {
-        winston.info('no Change at endpoints does not need a restart');
-      }
-    } catch (e) {
-      winston.error('GLOBAL ERROR', e);
-      lastEndPoints = '';
-    }
+//       } else {
+//         winston.info('no Change at endpoints does not need a restart');
+//       }
+//     } catch (e) {
+//       winston.error('GLOBAL ERROR', e);
+//       lastEndPoints = '';
+//     }
 
-  },          getPollingMs());
-};
+//   },          getPollingMs());
+// };
 // const oldSchema = null
 
 const start = async(endpoints : Endpoints) => {
