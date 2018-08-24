@@ -15,7 +15,7 @@ export const getBuildNumber = () => {
 };
 
 export const getLogLevel = () => {
-  return idx(process, _ => _.env.winstonLogLevel) || 'debug';
+  return idx(process, _ => _.env.winstonLogLevel) || 'info';
 };
 
 /**
@@ -30,6 +30,13 @@ export const getLogFormat = () => {
  */
 export const runtime = () => {
   return idx(process, _ => _.env.qglProxyRuntime) || 'docker';
+};
+
+/**
+ * Starting Slaves for each CPU
+ */
+export const getEnableClustering = () => {
+  return idx(process, _ => _.env.enableClustering) || false;
 };
 
 /**

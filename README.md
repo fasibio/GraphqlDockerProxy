@@ -308,6 +308,8 @@ Key | Available Values | Default | Description | Need for | Required
 |```gqlBodyParserLimit```| string| 1mb | Set the body size limit for big Data | ```docker``` or ```kubernetes``` or ```kubernetesWatch``` | false
 |```winstonLogLevel```| string| ```info``` | Set standart loglevel for winston e.g: ```debug```, ```info```, ```warn``` ```error``` | all | false
 |```winstonLogStyle```| string| ```simple``` | Set the style to logging for winston ```simple``` or ```json``` | all | false
+|```enableClustering```| bool | ```false``` | Staring a cluster set a proxy for each cpu kernel. (sometimes can bring more boost) | all | false
+
 ### Possible Environment Variable Combinations for Docker
   - ```qglProxyRuntime```=docker
   - ```dockerNetwork```=web

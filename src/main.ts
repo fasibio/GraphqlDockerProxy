@@ -12,6 +12,7 @@ import {
   adminUser,
   showPlayground,
   getBodyParserLimit,
+  getEnableClustering,
 } from './properties';
 
 import  { Endpoints } from './interpreter/endpoints';
@@ -258,5 +259,20 @@ const start = async(endpoints : Endpoints) => {
 //   }
 // } else {
   // winston.info('START Slave');
-run();
+
 // }
+
+if (getEnableClustering()) {
+  process.env['NODE_CLUSTER_SCHED_POLICY'] = 'rr';
+  if (cluster.isMaster) {
+    const cpuCount = require('os').cpus().length;
+    for (let i = 0; i < cpuCount; i += 1) {
+      cluster.fork();
+    }
+  } else {
+    winston.info('START Slave');
+    run();
+  }
+} else {
+  run();
+}
