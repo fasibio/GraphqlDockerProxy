@@ -5,7 +5,7 @@ export const sortEndpointAndFindAvailableEndpoints =
 async(endpoints :Endpoints): Promise<Endpoints> => {
   for (const namespace in endpoints) {
     const oneNamespace = endpoints[namespace];
-    for (let i = 0; i < oneNamespace.length; i = + 1) {
+    for (let i = 0; i < oneNamespace.length; i = i + 1) {
       const one = oneNamespace[i];
       const result = await fetch(one.url + queryStr, {
         timeout: 2000,
@@ -15,7 +15,8 @@ async(endpoints :Endpoints): Promise<Endpoints> => {
           ok: res.ok,
         };
       })
-        .catch(() => {
+        .catch((err) => {
+          winston.debug('Error by fetching', { err, url: one.url });
           return {
             status: 404,
             ok: false,
