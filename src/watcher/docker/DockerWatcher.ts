@@ -26,14 +26,13 @@ export class DockerWatcher extends WatcherInterface{
   onContainerUp = (container: any) => {
     if (container.Labels[clientLabels.TOKEN] === token()) {
       const url = container.Labels[clientLabels.URL];
-      const namespace = container.Labels[clientLabels.NAMESPACE];
+      const namespace :string = container.Labels[clientLabels.NAMESPACE];
       const deploymentName = container.Id;
       this.deleteEndpoint(namespace, deploymentName);
 
       if (this.endpoints[namespace] === undefined) {
         this.endpoints[namespace] = [];
       }
-      // $FlowFixMe: suppressing this error until we can refactor
       this.endpoints[namespace].push({
         namespace,
         url: this.updateUrl(url, container),

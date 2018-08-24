@@ -78,6 +78,10 @@ const run = async() => {
     case 'dockerWatch': {
       const dockerWatcher = new DockerWatcher();
       dockerWatcher.watchEndpoint();
+      dockerWatcher.setDataUpdatedListener((endpoints) => {
+        winston.info('Watcher called new endpoints ');
+        foundedEndpoints = endpoints;
+      });
     }
 
   }
