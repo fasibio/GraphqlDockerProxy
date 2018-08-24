@@ -156,7 +156,7 @@ const startWatcher = async(end: Endpoints,
 // const oldSchema = null
 
 const start = async(endpoints : Endpoints) => {
-  winston.info('loading endpoints:', { endpoints });
+  winston.info('loading endpoints', { endpoints });
   const weaverEndpoints = [];
 
   for (const one in endpoints) {

@@ -38,7 +38,7 @@ export class K8sWatcher extends WatcherInterface{
       const deploymentName = idx(pods, _ => _.object.metadata.labels.app) || '';
       if (deploymentName === '') {
         if (pods.status === 'Failure') {
-          winston.warn('no Permission for Namspace' + namespaceName);
+          winston.warn('no Permission for Namspace ' + namespaceName);
         } else {
           winston.warn('pod obj is missing object.metadata.labels.app will be ignored');
         }
