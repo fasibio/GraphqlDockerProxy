@@ -53,9 +53,7 @@ export class K8sWatcher extends WatcherInterface{
               switch (pods.type){
                 case 'MODIFIED':
                 case 'ADDED': {
-                  oneEndpoint[i].__created = oneEndpoint[i].__created +
-                   pods.object.metadata.creationTimestamp + ' '
-                   + pods.object.metadata.resourceVersion;
+                  oneEndpoint[i].__created = this.getDateString();
                   this.callDataUpdateListener();
                   break;
                 }
@@ -98,8 +96,7 @@ export class K8sWatcher extends WatcherInterface{
               switch (deployment.type){
                 case 'MODIFIED':
                 case 'ADDED': {
-                  oneEndpoint[i].__created = deployment.object.metadata.creationTimestamp
-                  + ' ' + deployment.object.metadata.resourceVersion;
+                  oneEndpoint[i].__created = this.getDateString();
                   await this.callDataUpdateListener();
                   break;
                 }
@@ -122,6 +119,10 @@ export class K8sWatcher extends WatcherInterface{
     }
     return 'http://' + sockData.metadata.name + '.' + sockData.metadata.namespace + url;
 
+  }
+
+  getDateString = () => {
+    return new Date().toString();
   }
 
   watchServicesForNamespace = (namespaceName: string) => {
@@ -148,10 +149,6 @@ export class K8sWatcher extends WatcherInterface{
               return one.spec.template.metadata.labels.app === deploymentName;
             });
             this.deploymentsNames[deploymentName] = true;
-            let created = '';
-            compareDeployments.forEach((one) => {
-              created += one.metadata.creationTimestamp + ' ' + one.metadata.resourceVersion;
-            });
             this.deleteEndpoint(namespace, deploymentName);
             if (this.endpoints[namespace] === undefined) {
               this.endpoints[namespace] = [];
@@ -160,7 +157,7 @@ export class K8sWatcher extends WatcherInterface{
               url,
               namespace,
               typePrefix: namespace + '_',
-              __created: created,
+              __created: this.getDateString() ,
               __imageID: '',
               __deploymentName: deploymentName,
             });
