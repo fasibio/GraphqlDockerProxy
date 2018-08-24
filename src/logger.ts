@@ -30,7 +30,7 @@ global.winston = winston.createLogger({
   // format: winston.format.simple(),
 
   format: winston.format.combine(
-    workingClusterFormat(),
+    // workingClusterFormat(),
     winston.format.timestamp(),
     logFormat,
   ),

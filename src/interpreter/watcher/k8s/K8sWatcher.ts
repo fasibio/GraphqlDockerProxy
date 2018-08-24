@@ -35,7 +35,6 @@ export class K8sWatcher extends WatcherInterface{
     podsStream.pipe(podsJSONStream);
 
     podsJSONStream.on('data', (pods) => {
-      winston.debug('stream send new pods');
       const deploymentName = idx(pods, _ => _.object.metadata.labels.app) || '';
       if (deploymentName === '') {
         if (pods.status === 'Failure') {
@@ -45,6 +44,7 @@ export class K8sWatcher extends WatcherInterface{
         }
       }
       if (this.deploymentsNames[deploymentName] !== undefined) {
+        winston.debug('stream send new pods for: ' + deploymentName);
         for (const one in this.endpoints) {
           const oneEndpoint = this.endpoints[one];
           for (let i = 0 ; i < oneEndpoint.length; i = i + 1) {
@@ -84,7 +84,7 @@ export class K8sWatcher extends WatcherInterface{
     const deploymentsJsonStream = new JSONStream();
     deploymentsStream.pipe(deploymentsJsonStream);
     deploymentsJsonStream.on('data', async(deployment) => {
-      winston.debug('stream send new deployments');
+
       const name = idx(deployment, _ => _.object.spec.template.metadata.labels.app) || '';
       if (name === '') {
         if (deployment.status === 'Failure') {
@@ -94,6 +94,7 @@ export class K8sWatcher extends WatcherInterface{
         }
       }
       if (this.deploymentsNames[name] !== undefined) {
+        winston.debug('stream send new deployments for: ' + name);
         for (const one in this.endpoints) {
           const oneEndpoint = this.endpoints[one];
           for (let i = 0 ; i < oneEndpoint.length; i = i + 1) {
@@ -140,7 +141,6 @@ export class K8sWatcher extends WatcherInterface{
     const servicesJsonStream = new JSONStream();
     servicesStream.pipe(servicesJsonStream);
     servicesJsonStream.on('data', async (service) => {
-      winston.debug('stream send new namespaces');
 
       const item = service.object;
       switch (service.type){
@@ -150,6 +150,7 @@ export class K8sWatcher extends WatcherInterface{
             const url = this.updateUrl(item.metadata.annotations[clientLabels.URL], service.object);
             const namespace = item.metadata.annotations[clientLabels.NAMESPACE];
             const deploymentName = item.spec.selector.app;
+            winston.debug('stream send new namespaces for:' + deploymentName);
 
             const deployments = await this.client.apis.apps.v1beta2
                                 .namespaces(namespaceName).deployments.get();

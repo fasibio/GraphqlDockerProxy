@@ -15,7 +15,7 @@ export const getBuildNumber = () => {
 };
 
 export const getLogLevel = () => {
-  return idx(process, _ => _.env.winstonLogLevel) || 'info';
+  return idx(process, _ => _.env.winstonLogLevel) || 'debug';
 };
 
 /**

@@ -250,13 +250,13 @@ const start = async(endpoints : Endpoints) => {
   }
   return app.listen(3000);
 };
-process.env['NODE_CLUSTER_SCHED_POLICY'] = 'rr';
-if (cluster.isMaster) {
-  const cpuCount = require('os').cpus().length;
-  for (let i = 0; i < cpuCount; i += 1) {
-    cluster.fork();
-  }
-} else {
-  winston.info('START Slave');
-  run();
-}
+// process.env['NODE_CLUSTER_SCHED_POLICY'] = 'rr';
+// if (cluster.isMaster) {
+//   const cpuCount = require('os').cpus().length;
+//   for (let i = 0; i < cpuCount; i += 1) {
+//     cluster.fork();
+//   }
+// } else {
+  // winston.info('START Slave');
+run();
+// }
