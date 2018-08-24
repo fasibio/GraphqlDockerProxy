@@ -44,7 +44,7 @@ export class K8sWatcher extends WatcherInterface{
         }
       }
       if (this.deploymentsNames[deploymentName] !== undefined) {
-        winston.debug('stream send new pods for: ' + deploymentName);
+        winston.debug('stream send new pods for: ' + deploymentName, { pods });
         for (const one in this.endpoints) {
           const oneEndpoint = this.endpoints[one];
           for (let i = 0 ; i < oneEndpoint.length; i = i + 1) {
@@ -56,11 +56,6 @@ export class K8sWatcher extends WatcherInterface{
                   oneEndpoint[i].__created = oneEndpoint[i].__created +
                    pods.object.metadata.creationTimestamp + ' '
                    + pods.object.metadata.resourceVersion;
-                  this.callDataUpdateListener();
-                  break;
-                }
-                case 'DELETED': {
-                  this.deleteEndpoint(one, deploymentName);
                   this.callDataUpdateListener();
                   break;
                 }
@@ -108,11 +103,6 @@ export class K8sWatcher extends WatcherInterface{
                   await this.callDataUpdateListener();
                   break;
                 }
-                case 'DELETED': {
-                  this.deleteEndpoint(one, name);
-                  this.callDataUpdateListener();
-                  break;
-                }
               }
             }
           }
@@ -150,7 +140,7 @@ export class K8sWatcher extends WatcherInterface{
             const url = this.updateUrl(item.metadata.annotations[clientLabels.URL], service.object);
             const namespace = item.metadata.annotations[clientLabels.NAMESPACE];
             const deploymentName = item.spec.selector.app;
-            winston.debug('stream send new namespaces for:' + deploymentName);
+            winston.debug('stream send new namespaces for:' + deploymentName, { service });
 
             const deployments = await this.client.apis.apps.v1beta2
                                 .namespaces(namespaceName).deployments.get();
