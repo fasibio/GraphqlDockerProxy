@@ -94,7 +94,7 @@ export class K8sWatcher extends WatcherInterface{
         }
       }
       if (this.deploymentsNames[name] !== undefined) {
-        winston.debug('stream send new deployments for: ' + name);
+        winston.debug('stream send new deployments for: ' + name, { deployment });
         for (const one in this.endpoints) {
           const oneEndpoint = this.endpoints[one];
           for (let i = 0 ; i < oneEndpoint.length; i = i + 1) {

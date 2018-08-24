@@ -70,7 +70,7 @@ const run = async() => {
     case 'kubernetesWatch': {
       const watcher = new K8sWatcher();
       watcher.setDataUpdatedListener((endpoints) => {
-        winston.info('Watcher called new endpoints ');
+        winston.info('Watcher called new endpoints ', { endpoints });
         foundedEndpoints = endpoints;
       });
 
