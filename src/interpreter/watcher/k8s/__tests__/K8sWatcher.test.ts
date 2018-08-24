@@ -15,7 +15,7 @@ describe('tests the K8sWatcher', () => {
   let k8sWatcher = null;
   let endpoints = {};
   beforeEach(() => {
-    const DATE_TO_USE = new Date('2016');
+    const DATE_TO_USE = new Date('1995-12-17T03:24:00');
     const _Date = Date;
     global.Date = jest.fn(() => DATE_TO_USE);
     k8sWatcher = new K8sWatcher();
@@ -25,7 +25,7 @@ describe('tests the K8sWatcher', () => {
         { url: 'http://swapi.starwars:9002/graphql',
           namespace: 'swapi',
           typePrefix: 'swapi_',
-          __created: 'Fri Jan 01 2016 01:00:00 GMT+0100 (CET)',
+          __created: 'Sun Dec 17 1995 03:24:00 GMT+0100 (CET)',
           __imageID: '',
           __deploymentName: 'swapi',
         },
@@ -96,7 +96,7 @@ describe('tests the K8sWatcher', () => {
           { url: 'http://swapi.starwars:9002/graphql',
             namespace: 'swapi',
             typePrefix: 'swapi_',
-            __created: 'Fri Jan 01 2016 01:00:00 GMT+0100 (CET)',
+            __created: 'Sun Dec 17 1995 03:24:00 GMT+0100 (CET)',
             __imageID: '',
             __deploymentName: 'swapi',
           },
@@ -140,7 +140,7 @@ describe('tests the K8sWatcher', () => {
           { url: 'http://swapi.starwars:9002/graphql',
             namespace: 'swapi',
             typePrefix: 'swapi_',
-            __created: 'Fri Jan 01 2016 01:00:00 GMT+0100 (CET)',
+            __created: 'Sun Dec 17 1995 03:24:00 GMT+0100 (CET)',
             __imageID: '',
             __deploymentName: 'swapi',
           },
