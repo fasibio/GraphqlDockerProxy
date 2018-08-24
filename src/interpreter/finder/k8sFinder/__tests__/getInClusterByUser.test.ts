@@ -1,5 +1,5 @@
 import { getInClusterByUser } from '../getInClusterByUser';
-jest.mock('../../../properties', () => {
+jest.mock('../../../../properties', () => {
   return {
     k8sUser: () => 'mockuser',
     k8sUserPassword: () => 'mockpw',

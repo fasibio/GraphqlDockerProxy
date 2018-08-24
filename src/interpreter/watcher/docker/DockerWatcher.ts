@@ -1,6 +1,6 @@
 
-import * as clientLabels from '../../finder/clientLabels';
-import { token, network } from '../../properties';
+import * as clientLabels from '../../clientLabels';
+import { token, network } from '../../../properties';
 import { WatcherInterface } from '../WatcherInterface';
 import * as monitor from 'node-docker-monitor';
 

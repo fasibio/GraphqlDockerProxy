@@ -2,7 +2,7 @@ import { HttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import { makeRemoteExecutableSchema, mergeSchemas, introspectSchema } from 'graphql-tools';
 import fetch from 'node-fetch';
-import  { Endpoint } from './finder/findEndpointsInterface';
+import  { Endpoint } from './interpreter/endpoints';
 
 export const createRemoteSchema = async(url) => {
   const http = new HttpLink({ fetch, uri: url  });

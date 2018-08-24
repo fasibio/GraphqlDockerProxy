@@ -1,6 +1,6 @@
 import schema from '../adminSchema';
-import { clearAll } from '../../finder/k8sFinder/blacklist';
-jest.mock('../../finder/k8sFinder/blacklist', () => {
+import { clearAll } from '../../interpreter/finder/k8sFinder/blacklist';
+jest.mock('../../interpreter/finder/k8sFinder/blacklist', () => {
   return {
     getBlacklist: () => {
       return [

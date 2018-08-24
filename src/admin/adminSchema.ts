@@ -1,5 +1,5 @@
 import { makeExecutableSchema } from 'graphql-tools';
-import { getBlacklist, clearAll } from '../finder/k8sFinder/blacklist';
+import { getBlacklist, clearAll } from '../interpreter/finder/k8sFinder/blacklist';
 import { getBuildNumber, getVersion, getPollingMs } from '../properties';
 
 const typeDefs = `

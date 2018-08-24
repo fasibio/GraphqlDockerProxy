@@ -2,9 +2,10 @@
 // @flow
 const Client = require('kubernetes-client').Client;
 const config = require('kubernetes-client').config;
-import * as clientLabels from '../clientLabels';
-import { FindEndpoints, Endpoints } from '../findEndpointsInterface';
-import { token, kubernetesConfigurationKind } from '../../properties';
+import * as clientLabels from '../../clientLabels';
+import { FindEndpoints } from '../findEndpointsInterface';
+import { Endpoints } from '../../endpoints';
+import { token, kubernetesConfigurationKind } from '../../../properties';
 import { getInClusterByUser } from './getInClusterByUser';
 import { addNamespaceToBlacklist, isNamespaceAtBlacklist } from './blacklist';
 declare function idx(obj: any, callBack: any):any;

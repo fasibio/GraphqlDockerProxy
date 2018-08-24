@@ -1,5 +1,5 @@
 import { DockerFinder } from '../dockerFinder';
-jest.mock('../../endpointsAvailable', () => {
+jest.mock('../../../endpointsAvailable', () => {
   return {
     sortEndpointAndFindAvailableEndpoints: (data) => {
       return Promise.resolve(data);
@@ -20,7 +20,7 @@ jest.mock('../loadBalancer', () => {
     },
   };
 });
-jest.mock('../../../properties', () => {
+jest.mock('../../../../properties', () => {
   return {
     token: () => {
       return '1234';

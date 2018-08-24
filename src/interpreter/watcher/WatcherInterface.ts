@@ -1,6 +1,6 @@
 
 // @flow
-import { Endpoints } from '../finder/findEndpointsInterface';
+import { Endpoints } from '../endpoints';
 import * as cloner from 'cloner';
 
 type dataUpdatedListener = (data: Endpoints) => void;
@@ -28,9 +28,7 @@ class WatcherInterface{
       }
 
     }
-    console.log(realEndpoint);
     this.dataUpdatedListener(realEndpoint);
-
   }
 
   deleteEndpoint = (namespace: string, uniqueIdentifier: string) => {

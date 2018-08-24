@@ -5,8 +5,8 @@ const config = require('kubernetes-client').config;
 import * as JSONStream from 'json-stream';
 import { WatcherInterface } from '../WatcherInterface';
 import { getInClusterByUser } from './getInClusterByUser';
-import * as clientLabels from '../../finder/clientLabels';
-import { token, kubernetesConfigurationKind } from '../../properties';
+import * as clientLabels from '../../clientLabels';
+import { token, kubernetesConfigurationKind } from '../../../properties';
 declare function idx(obj: any, callBack: any):any;
 export class K8sWatcher extends WatcherInterface{
   streams = {};
@@ -33,7 +33,9 @@ export class K8sWatcher extends WatcherInterface{
     const podsStream = this.client.api.v1.watch.namespaces(namespaceName).pods.getStream();
     const podsJSONStream = new JSONStream();
     podsStream.pipe(podsJSONStream);
+
     podsJSONStream.on('data', (pods) => {
+      winston.debug('stream send new pods');
       const deploymentName = idx(pods, _ => _.object.metadata.labels.app) || '';
       if (deploymentName === '') {
         if (pods.status === 'Failure') {
@@ -82,12 +84,13 @@ export class K8sWatcher extends WatcherInterface{
     const deploymentsJsonStream = new JSONStream();
     deploymentsStream.pipe(deploymentsJsonStream);
     deploymentsJsonStream.on('data', async(deployment) => {
+      winston.debug('stream send new deployments');
       const name = idx(deployment, _ => _.object.spec.template.metadata.labels.app) || '';
       if (name === '') {
         if (deployment.status === 'Failure') {
-          winston.warn('no Permission for Namspace' + namespaceName);
+          winston.info('no Permission for Namspace' + namespaceName);
         } else {
-          winston.warn('deployment obj is missing attributes. missing labels app will be ignored');
+          winston.info('deployment obj is missing attributes. missing labels app. will be ignored');
         }
       }
       if (this.deploymentsNames[name] !== undefined) {
@@ -137,6 +140,8 @@ export class K8sWatcher extends WatcherInterface{
     const servicesJsonStream = new JSONStream();
     servicesStream.pipe(servicesJsonStream);
     servicesJsonStream.on('data', async (service) => {
+      winston.debug('stream send new namespaces');
+
       const item = service.object;
       switch (service.type){
         case 'MODIFIED':

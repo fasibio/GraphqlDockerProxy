@@ -1,9 +1,10 @@
 import { Docker } from 'node-docker-api';
-import { token, network } from '../../properties';
+import { token, network } from '../../../properties';
 import { loadANewLoadBalaceMiddleware, closeAllServer } from './loadBalancer';
-import { FindEndpoints, Endpoints } from '../findEndpointsInterface';
-import * as clientLabels from '../clientLabels';
-import { sortEndpointAndFindAvailableEndpoints } from '../endpointsAvailable';
+import { FindEndpoints } from '../findEndpointsInterface';
+import { Endpoints } from '../../endpoints';
+import * as clientLabels from '../../clientLabels';
+import { sortEndpointAndFindAvailableEndpoints } from '../../endpointsAvailable';
 export class DockerFinder extends FindEndpoints{
   constructor() {
     super();

@@ -17,6 +17,14 @@ export const getBuildNumber = () => {
 export const getLogLevel = () => {
   return idx(process, _ => _.env.winstonLogLevel) || 'info';
 };
+
+/**
+ * How to show the logs .
+ * Values: simple or json
+ */
+export const getLogFormat = () => {
+  return idx(process, _ => _.env.winstonLogStyle) || 'simple';
+};
 /**
  * Available values: docker & kubernetes && kubernetesWatch && dockerWatch
  */

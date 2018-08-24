@@ -1,7 +1,7 @@
 import { K8sWatcher } from '../K8sWatcher';
 import { Readable } from 'stream';
-import '../../../idx';
-jest.mock('../../../finder/endpointsAvailable', () => {
+
+jest.mock('../../../endpointsAvailable', () => {
   return {
     allEndpointsAvailable: () => true,
     sortEndpointAndFindAvailableEndpoints: (endpoints) => {

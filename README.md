@@ -306,6 +306,8 @@ Key | Available Values | Default | Description | Need for | Required
 |```gqlProxyAdminPassword```| string | empty string | The Basic Auth password for the admin page |  ```docker``` or ```kubernetes``` or ```kubernetesWatch``` | false
 |```gqlShowPlayground```| bool | true | toggle graphql playground ui on and off |  ```docker``` or ```kubernetes``` or ```kubernetesWatch``` | true
 |```gqlBodyParserLimit```| string| 1mb | Set the body size limit for big Data | ```docker``` or ```kubernetes``` or ```kubernetesWatch``` | false
+|```winstonLogLevel```| string| ```info``` | Set standart loglevel for winston e.g: ```debug```, ```info```, ```warn``` ```error``` | all | false
+|```winstonLogStyle```| string| ```simple``` | Set the style to logging for winston ```simple``` or ```json``` | all | false
 ### Possible Environment Variable Combinations for Docker
   - ```qglProxyRuntime```=docker
   - ```dockerNetwork```=web
@@ -339,7 +341,7 @@ Key | Available Values | Default | Description | Need for | Required
   - ```gqlProxyPollingMs```=10000
   - ```gqlProxyAdminUser```=myAdminPageUser
   - ```gqlProxyAdminPassword```=adminPassword
-
+ 
 
  ## Available Labels/Annotations for all GraphQL Endpoints
 

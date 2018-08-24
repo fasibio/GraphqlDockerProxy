@@ -1,7 +1,6 @@
 import fetch from 'node-fetch';
-import  { Endpoints } from './findEndpointsInterface';
+import  { Endpoints } from './endpoints';
 const queryStr = '?query=%7B__schema%7Btypes%7Bname%7D%7D%7D';
-
 export const sortEndpointAndFindAvailableEndpoints =
 async(endpoints :Endpoints): Promise<Endpoints> => {
   for (const namespace in endpoints) {
@@ -23,7 +22,7 @@ async(endpoints :Endpoints): Promise<Endpoints> => {
           };
         });
       if (!result.ok) {
-        winston.warn('Endpoint not Available: ', one);
+        winston.warn('Endpoint not Available: ', { url: one.url , namespace: one.namespace });
         oneNamespace.splice(i, 1);
       }
 

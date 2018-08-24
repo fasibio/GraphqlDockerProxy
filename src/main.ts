@@ -1,9 +1,9 @@
 import { ApolloServer } from 'apollo-server-express';
 import * as express from 'express';
 import { weaveSchemas } from 'graphql-weaver';
-import { DockerFinder } from './finder/dockerFinder/dockerFinder';
-import { K8sFinder } from './finder/k8sFinder/k8sFinder';
-import { K8sWatcher } from './watcher/k8s/K8sWatcher';
+import { DockerFinder } from './interpreter/finder/dockerFinder/dockerFinder';
+import { K8sFinder } from './interpreter/finder/k8sFinder/k8sFinder';
+import { K8sWatcher } from './interpreter/watcher/k8s/K8sWatcher';
 import {
   runtime,
   getPollingMs,
@@ -13,12 +13,14 @@ import {
   showPlayground,
   getBodyParserLimit,
 } from './properties';
-import  { Endpoints } from './finder/findEndpointsInterface';
-import { sortEndpointAndFindAvailableEndpoints } from './finder/endpointsAvailable';
+
+import  { Endpoints } from './interpreter/endpoints';
+import { sortEndpointAndFindAvailableEndpoints } from './interpreter/endpointsAvailable';
 import adminSchema from './admin/adminSchema';
+import * as cluster from 'cluster';
 import * as basicAuth from 'express-basic-auth';
-import cloner from 'cloner';
-import { DockerWatcher } from './watcher/docker/DockerWatcher';
+import * as cloner from 'cloner';
+import { DockerWatcher } from './interpreter/watcher/docker/DockerWatcher';
 // import deepcopy from 'deepcopy/cjs/index'
 import { getMergedInformation } from './schemaBuilder';
 require('./idx');
@@ -100,12 +102,7 @@ const startWatcher = async(end: Endpoints,
   const endpoints = await sortEndpointAndFindAvailableEndpoints(end);
   if (JSON.stringify(endpoints) !== lastEndPoints) {
     winston.info('Changes Found restart Server');
-    if (server != null) {
-      server.close();
-    }
-
     lastEndPoints = JSON.stringify(endpoints);
-    // $FlowFixMe: suppressing this error until we can refactor
     // cluster.schedulingPolicy = cluster.SCHED_RR
     // if (cluster.isMaster){
     //   var cpuCount = require('os').cpus().length
@@ -118,7 +115,7 @@ const startWatcher = async(end: Endpoints,
     // }
 
   } else {
-    winston.info('no Change at endpoints does not need a restart');
+    winston.debug('no Change at endpoints does not need a restart');
   }
 };
 // const runPoller = (finder) => {
@@ -253,5 +250,13 @@ const start = async(endpoints : Endpoints) => {
   }
   return app.listen(3000);
 };
-
-run();
+process.env['NODE_CLUSTER_SCHED_POLICY'] = 'rr';
+if (cluster.isMaster) {
+  const cpuCount = require('os').cpus().length;
+  for (let i = 0; i < cpuCount; i += 1) {
+    cluster.fork();
+  }
+} else {
+  winston.info('START Slave');
+  run();
+}

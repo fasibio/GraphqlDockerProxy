@@ -1,5 +1,28 @@
 import * as winston from 'winston';
-const { getLogLevel } = require('./properties');
+import { getLogLevel, getLogFormat } from'./properties';
+import * as cluster from 'cluster';
+
+let logFormat = winston.format.simple();
+switch (getLogFormat()){
+  case 'simple': {
+    logFormat = winston.format.simple();
+    break;
+  }
+  case 'json': {
+    logFormat = winston.format.json();
+    break;
+  }
+
+}
+
+const workingClusterFormat = winston.format((info) => {
+  if (cluster.isMaster) {
+    info.serverRole = 'master';
+  } else {
+    info.serverRole = 'slave: ' + cluster.worker.id;
+  }
+  return info;
+});
 
 global.winston = winston.createLogger({
   level: getLogLevel(),
@@ -7,8 +30,9 @@ global.winston = winston.createLogger({
   // format: winston.format.simple(),
 
   format: winston.format.combine(
-    winston.format.simple(),
+    workingClusterFormat(),
     winston.format.timestamp(),
+    logFormat,
   ),
   transports: [
     new winston.transports.Console(),

@@ -1,4 +1,4 @@
-import { k8sUser, k8sUserPassword } from '../../properties';
+import { k8sUser, k8sUserPassword } from '../../../properties';
 
 export const getInClusterByUser = () => {
 
