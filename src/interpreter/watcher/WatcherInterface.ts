@@ -12,6 +12,9 @@ class WatcherInterface{
 
   dataUpdatedListener: dataUpdatedListener;
 
+  handleRestart = (datas: Endpoints) :Promise<Endpoints> => {
+    return Promise.resolve(datas);
+  }
   watchEndpoint = () => {
     winston.error('you have to override watchEndpoint');
   }

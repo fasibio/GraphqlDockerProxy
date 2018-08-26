@@ -1,10 +1,9 @@
 import { Docker } from 'node-docker-api';
 import { token, network } from '../../../properties';
-import { loadANewLoadBalaceMiddleware, closeAllServer } from './loadBalancer';
+import { foundEquals } from '../../loadBalancer';
 import { FindEndpoints } from '../findEndpointsInterface';
 import { Endpoints } from '../../endpoints';
 import * as clientLabels from '../../clientLabels';
-import { sortEndpointAndFindAvailableEndpoints } from '../../endpointsAvailable';
 export class DockerFinder extends FindEndpoints{
   constructor() {
     super();
@@ -15,51 +14,7 @@ export class DockerFinder extends FindEndpoints{
   }
 
   foundEquals = async(datas: Endpoints) :Promise<Endpoints> => {
-    const data = await sortEndpointAndFindAvailableEndpoints(datas);
-    closeAllServer();
-    for (const one in data) {
-      const namespace = data[one];
-      for (let i = 0, l = namespace.length; i < l; i = i + 1) {
-        const lbData = {};
-        const searchingElement = namespace[i];
-        if (searchingElement.__burnd === undefined) {
-          for (let j = i + 1; j < l; j = j + 1) {
-            const testingElement = namespace[j];
-
-            if (searchingElement.__imageID === testingElement.__imageID) {
-              if (lbData[searchingElement.__imageID] === undefined) {
-                lbData[searchingElement.__imageID] = [];
-              }
-              lbData[searchingElement.__imageID].push(testingElement);
-              namespace[j].__burnd = true;
-            // namespace.splice(j)
-            }
-
-          }
-          if (lbData[searchingElement.__imageID] !== undefined) {
-            lbData[searchingElement.__imageID].push(searchingElement);
-            const lbResult = loadANewLoadBalaceMiddleware(lbData[searchingElement.__imageID]);
-            namespace[i].url = lbResult.url;
-            namespace[i].__loadbalance = {
-              count: namespace.length,
-              endpoints: lbResult.clients,
-            };
-
-          }
-        }
-        const newNamespaces = [];
-        for (const oneBurable in namespace) {
-          if (!namespace[oneBurable].__burnd) {
-            newNamespaces.push(namespace[oneBurable]);
-          }
-        }
-        data[one] = newNamespaces;
-
-      }
-
-    }
-
-    return data;
+    return await foundEquals(datas);
   }
 
   /**

@@ -83,8 +83,10 @@ const run = async() => {
       dockerWatcher.watchEndpoint();
       dockerWatcher.setDataUpdatedListener((endpoints) => {
         winston.info('Watcher called new endpoints ');
+        console.log(endpoints);
         foundedEndpoints = endpoints;
       });
+      handleRestart = dockerWatcher.handleRestart;
     }
 
   }

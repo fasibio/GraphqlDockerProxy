@@ -3,7 +3,8 @@ import * as clientLabels from '../../clientLabels';
 import { token, network } from '../../../properties';
 import { WatcherInterface } from '../WatcherInterface';
 import * as monitor from 'node-docker-monitor';
-
+import { Endpoints } from '../../endpoints';
+import { foundEquals } from '../../loadBalancer';
 export class DockerWatcher extends WatcherInterface{
 
   constructor() {
@@ -25,9 +26,11 @@ export class DockerWatcher extends WatcherInterface{
 
   onContainerUp = (container: any) => {
     if (container.Labels[clientLabels.TOKEN] === token()) {
-      const url = container.Labels[clientLabels.URL];
+      console.log('onContainerUp');
       const namespace :string = container.Labels[clientLabels.NAMESPACE];
+
       const deploymentName = container.Id;
+      const url = this.updateUrl(container.Labels[clientLabels.URL], container);
       this.deleteEndpoint(namespace, deploymentName);
 
       if (this.endpoints[namespace] === undefined) {
@@ -35,7 +38,7 @@ export class DockerWatcher extends WatcherInterface{
       }
       this.endpoints[namespace].push({
         namespace,
-        url: this.updateUrl(url, container),
+        url,
         typePrefix: namespace + '_',
         __created: container.Created,
         __imageID: container.Image,
@@ -45,10 +48,32 @@ export class DockerWatcher extends WatcherInterface{
     }
   }
 
-  onContainerDown = (container) => {};
+  handleRestart = async(datas:Endpoints) : Promise<Endpoints> => {
+    console.log('hier');
+    return await foundEquals(datas);
+  }
+
+  onContainerDown = (container) => {
+    console.log('down!!!', container.Id);
+    if (container.Labels[clientLabels.TOKEN] === token()) {
+      const deploymentName = container.Id;
+      for (const one in this.endpoints) {
+        const oneNamespace = this.endpoints[one];
+        for (let i = 0 ; i < oneNamespace.length; i = i + 1) {
+          const oneEndpoint = oneNamespace[i];
+          if (oneEndpoint.__deploymentName === deploymentName) {
+            this.deleteEndpoint(container.Labels[clientLabels.NAMESPACE], deploymentName);
+          }
+        }
+
+      }
+      this.callDataUpdateListener();
+    }
+  }
   watchEndpoint = () => {
+
     monitor({
-      onMonitorStarted: () => {},
+      onMonitorStarted: () => { },
       onMonitorStopped: () => {},
       onContainerUp: this.onContainerUp,
       onContainerDown: this.onContainerDown,

@@ -145,11 +145,11 @@ export class K8sWatcher extends WatcherInterface{
             const deploymentName = item.spec.selector.app;
             winston.debug('stream send new namespaces for:' + deploymentName, { service });
 
-            const deployments = await this.client.apis.apps.v1beta2
-                                .namespaces(namespaceName).deployments.get();
-            const compareDeployments = deployments.body.items.filter((one) => {
-              return one.spec.template.metadata.labels.app === deploymentName;
-            });
+            // const deployments = await this.client.apis.apps.v1beta2
+            //                     .namespaces(namespaceName).deployments.get();
+            // deployments.body.items.filter((one) => {
+            //   return one.spec.template.metadata.labels.app === deploymentName;
+            // });
             this.deploymentsNames[deploymentName] = true;
             this.deleteEndpoint(namespace, deploymentName);
             if (this.endpoints[namespace] === undefined) {
