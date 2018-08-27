@@ -1,43 +1,43 @@
 export const network = () => {
-  return process.env.dockerNetwork || 'web';
-};
+  return process.env.dockerNetwork || 'web'
+}
 
 export const token = () => {
-  return idx(process, _ => _.env.gqlProxyToken) || '';
-};
+  return idx(process, _ => _.env.gqlProxyToken) || ''
+}
 
 export const getVersion = () => {
-  return idx(process, _ => _.env.VERSION);
-};
+  return idx(process, _ => _.env.VERSION)
+}
 
 export const getBuildNumber = () => {
-  return idx(process, _ => _.env.BUILD_NUMBER);
-};
+  return idx(process, _ => _.env.BUILD_NUMBER)
+}
 
 export const getLogLevel = () => {
-  return idx(process, _ => _.env.winstonLogLevel) || 'info';
-};
+  return idx(process, _ => _.env.winstonLogLevel) || 'info'
+}
 
 /**
  * How to show the logs .
  * Values: simple or json
  */
 export const getLogFormat = () => {
-  return idx(process, _ => _.env.winstonLogStyle) || 'simple';
-};
+  return idx(process, _ => _.env.winstonLogStyle) || 'simple'
+}
 /**
  * Available values: docker & kubernetes && kubernetesWatch && dockerWatch
  */
 export const runtime = () => {
-  return idx(process, _ => _.env.qglProxyRuntime) || 'docker';
-};
+  return idx(process, _ => _.env.qglProxyRuntime) || 'docker'
+}
 
 /**
  * Starting Slaves for each CPU
  */
 export const getEnableClustering = () => {
-  return idx(process, _ => _.env.enableClustering) || false;
-};
+  return idx(process, _ => _.env.enableClustering) || false
+}
 
 /**
  * true or false (false  = default)
@@ -45,64 +45,64 @@ export const getEnableClustering = () => {
  * WIP Not produktionable
  */
 export const knownOldSchemas = () => {
-  return idx(process, _ => _.env.gqlProxyKnownOldSchemas) || false;
-};
+  return idx(process, _ => _.env.gqlProxyKnownOldSchemas) || false
+}
 
 export const kubernetesConfigurationKind = () => {
   // $kubernetesConfigurationKind
   /**
    * fromKubeconfig, getInCluster, getInClusterByUser
    */
-  return idx(process, _ => _.env.kubernetesConfigurationKind) || 'fromKubeconfig';
-};
+  return idx(process, _ => _.env.kubernetesConfigurationKind) || 'fromKubeconfig'
+}
 
 export const k8sUser = () => {
-  return idx(process, _ => _.env.gqlProxyK8sUser) || '';
-};
+  return idx(process, _ => _.env.gqlProxyK8sUser) || ''
+}
 
 export const k8sUserPassword = () => {
-  return idx(process, _ => _.env.gqlProxyK8sUserPassword) || '';
-};
+  return idx(process, _ => _.env.gqlProxyK8sUserPassword) || ''
+}
 
 export const getPollingMs = () => {
-  return idx(process, _ => _.env.gqlProxyPollingMs) || 5000;
-};
+  return idx(process, _ => _.env.gqlProxyPollingMs) || 5000
+}
 
 export const adminUser = () => {
-  return idx(process, _ => _.env.gqlProxyAdminUser) || '';
-};
+  return idx(process, _ => _.env.gqlProxyAdminUser) || ''
+}
 
 export const adminPassword = () => {
-  return idx(process, _ => _.env.gqlProxyAdminPassword) || '';
-};
+  return idx(process, _ => _.env.gqlProxyAdminPassword) || ''
+}
 
 export const showPlayground = () => {
-  return idx(process, _ => _.env.gqlShowPlayground) || true;
-};
+  return idx(process, _ => _.env.gqlShowPlayground) || true
+}
 
 export const getBodyParserLimit = () => {
-  return idx(process, _ => _.env.gqlBodyParserLimit) || '1mb';
-};
+  return idx(process, _ => _.env.gqlBodyParserLimit) || '1mb'
+}
 
 export const printAllConfigs = () => {
-  console.log('===================================');
-  console.log('LogLevel:', getLogLevel());
-  console.log('qglProxyRuntime:', runtime());
-  console.log('gqlProxyPollingMs:', getPollingMs());
-  console.log('gqlProxyAdminUser:', adminUser());
-  console.log('gqlProxyKnownOldSchemas', knownOldSchemas());
-  console.log('gqlShowPlayground', showPlayground());
-  console.log('Version: ', getVersion());
-  console.log('Buildnumber: ', getBuildNumber());
+  console.log('===================================')
+  console.log('LogLevel:', getLogLevel())
+  console.log('qglProxyRuntime:', runtime())
+  console.log('gqlProxyPollingMs:', getPollingMs())
+  console.log('gqlProxyAdminUser:', adminUser())
+  console.log('gqlProxyKnownOldSchemas', knownOldSchemas())
+  console.log('gqlShowPlayground', showPlayground())
+  console.log('Version: ', getVersion())
+  console.log('Buildnumber: ', getBuildNumber())
   if (runtime() === 'docker') {
-    console.log('dockerNetwork:', network());
-    console.log('gqlProxyToken:', token());
+    console.log('dockerNetwork:', network())
+    console.log('gqlProxyToken:', token())
   } else if (runtime() === 'kubernetes') {
-    console.log('kubernetesConfigurationKind:', kubernetesConfigurationKind());
+    console.log('kubernetesConfigurationKind:', kubernetesConfigurationKind())
     if (kubernetesConfigurationKind() === 'getInClusterByUser') {
-      console.log('gqlProxyK8sUser:', k8sUser());
-      console.log('gqlProxyK8sUserPassword:', '********');
+      console.log('gqlProxyK8sUser:', k8sUser())
+      console.log('gqlProxyK8sUserPassword:', '********')
     }
   }
-  console.log('===================================');
-};
+  console.log('===================================')
+}

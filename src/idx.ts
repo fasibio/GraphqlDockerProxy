@@ -1,18 +1,18 @@
 
 declare module NodeJS  {
   interface Global {
-    idx: (obj: any, callBack: (obj: any) => any) => any;
-    winston: any;
+    idx: (obj: any, callBack: (obj: any) => any) => any
+    winston: any
   }
 }
 global.idx = (obj, callBack) => {
   try {
-    const res = callBack(obj);
+    const res = callBack(obj)
     if (res === undefined) {
-      return null;
+      return null
     }
-    return res;
+    return res
   } catch (e) {
-    return null;
+    return null
   }
-};
+}

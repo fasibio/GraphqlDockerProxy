@@ -1,10 +1,10 @@
-import { Endpoints } from '../endpoints';
+import { Endpoints } from '../endpoints'
 class FindEndpoints{
 
   constructor() {}
   getEndpoints = (): Promise<Endpoints> => {
-    winston.error('you have to override getEndpoints');
-    return Promise.resolve({});
+    winston.error('you have to override getEndpoints')
+    return Promise.resolve({})
   }
 
   /**
@@ -12,9 +12,9 @@ class FindEndpoints{
    * here you can do extra handling like loadbalacing etc...
    */
   handleRestart = (endpoints: Endpoints) : Promise<Endpoints> => {
-    return Promise.resolve(endpoints);
+    return Promise.resolve(endpoints)
   }
 
 }
 
-export { FindEndpoints };
+export { FindEndpoints }

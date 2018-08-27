@@ -1,4 +1,4 @@
-import * as winston from 'winston';
+import * as winston from 'winston'
 global.winston = winston.createLogger({
   level: 'info',
 
@@ -11,4 +11,4 @@ global.winston = winston.createLogger({
   transports: [
     new winston.transports.Console(),
   ],
-});
+})

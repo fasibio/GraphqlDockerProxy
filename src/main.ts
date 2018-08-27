@@ -1,9 +1,9 @@
-import { ApolloServer } from 'apollo-server-express';
-import * as express from 'express';
-import { weaveSchemas } from 'graphql-weaver';
-import { DockerFinder } from './interpreter/finder/dockerFinder/dockerFinder';
-import { K8sFinder } from './interpreter/finder/k8sFinder/k8sFinder';
-import { K8sWatcher } from './interpreter/watcher/k8s/K8sWatcher';
+import { ApolloServer } from 'apollo-server-express'
+import * as express from 'express'
+import { weaveSchemas } from 'graphql-weaver'
+import { DockerFinder } from './interpreter/finder/dockerFinder/dockerFinder'
+import { K8sFinder } from './interpreter/finder/k8sFinder/k8sFinder'
+import { K8sWatcher } from './interpreter/watcher/k8s/K8sWatcher'
 import {
   runtime,
   getPollingMs,
@@ -13,99 +13,99 @@ import {
   showPlayground,
   getBodyParserLimit,
   getEnableClustering,
-} from './properties';
+} from './properties'
 
-import  { Endpoints } from './interpreter/endpoints';
-import { sortEndpointAndFindAvailableEndpoints } from './interpreter/endpointsAvailable';
-import adminSchema from './admin/adminSchema';
-import * as cluster from 'cluster';
-import * as basicAuth from 'express-basic-auth';
-import * as cloner from 'cloner';
-import { DockerWatcher } from './interpreter/watcher/docker/DockerWatcher';
+import  { Endpoints } from './interpreter/endpoints'
+import { sortEndpointAndFindAvailableEndpoints } from './interpreter/endpointsAvailable'
+import adminSchema from './admin/adminSchema'
+import * as cluster from 'cluster'
+import * as basicAuth from 'express-basic-auth'
+import * as cloner from 'cloner'
+import { DockerWatcher } from './interpreter/watcher/docker/DockerWatcher'
 // import deepcopy from 'deepcopy/cjs/index'
-import { getMergedInformation } from './schemaBuilder';
-require('./idx');
-require('./logger');
+import { getMergedInformation } from './schemaBuilder'
+require('./idx')
+require('./logger')
 
 process.on('unhandledRejection', (reason, p) => {
-  console.error('Unhandled Rejection at: Promise', p, 'reason:', reason);
+  console.error('Unhandled Rejection at: Promise', p, 'reason:', reason)
   // application specific logging, throwing an error, or other logic here
-});
+})
 const weaverIt = async(endpoints) => {
   try {
     return await weaveSchemas({
       endpoints,
-    });
+    })
   } catch (e) {
-    winston.error('WeaverIt goes Wrong', e);
+    winston.error('WeaverIt goes Wrong', e)
   }
 
-};
-let foundedEndpoints: Endpoints = {};
+}
+let foundedEndpoints: Endpoints = {}
 const run = async() => {
-  winston.info('Start IT');
-  winston.info('With Configuration: ');
-  printAllConfigs();
+  winston.info('Start IT')
+  winston.info('With Configuration: ')
+  printAllConfigs()
   let handleRestart = (endpoint: Endpoints) => {
-    return Promise.resolve(endpoint);
-  };
+    return Promise.resolve(endpoint)
+  }
   switch (runtime()){
     case 'kubernetes': {
-      const k8sFinder = new K8sFinder();
+      const k8sFinder = new K8sFinder()
       setInterval(async() => {
-        foundedEndpoints = await k8sFinder.getEndpoints();
-      },          getPollingMs());
-      handleRestart = k8sFinder.handleRestart;
-      break;
+        foundedEndpoints = await k8sFinder.getEndpoints()
+      },          getPollingMs())
+      handleRestart = k8sFinder.handleRestart
+      break
     }
     case 'docker': {
-      const dockerFinder = new DockerFinder();
+      const dockerFinder = new DockerFinder()
       setInterval(async() => {
-        foundedEndpoints = await dockerFinder.getEndpoints();
-      },          getPollingMs());
-      handleRestart = dockerFinder.handleRestart;
-      break;
+        foundedEndpoints = await dockerFinder.getEndpoints()
+      },          getPollingMs())
+      handleRestart = dockerFinder.handleRestart
+      break
     }
 
     case 'kubernetesWatch': {
-      const watcher = new K8sWatcher();
+      const watcher = new K8sWatcher()
       watcher.setDataUpdatedListener((endpoints) => {
-        winston.info('Watcher called new endpoints ', { endpoints });
-        foundedEndpoints = endpoints;
-      });
+        winston.info('Watcher called new endpoints ', { endpoints })
+        foundedEndpoints = endpoints
+      })
 
-      watcher.watchEndpoint();
+      watcher.watchEndpoint()
 
-      break;
+      break
     }
     case 'dockerWatch': {
-      const dockerWatcher = new DockerWatcher();
-      dockerWatcher.watchEndpoint();
+      const dockerWatcher = new DockerWatcher()
+      dockerWatcher.watchEndpoint()
       dockerWatcher.setDataUpdatedListener((endpoints) => {
-        winston.info('Watcher called new endpoints ');
-        console.log(endpoints);
-        foundedEndpoints = endpoints;
-      });
-      handleRestart = dockerWatcher.handleRestart;
+        winston.info('Watcher called new endpoints ')
+        console.log(endpoints)
+        foundedEndpoints = endpoints
+      })
+      handleRestart = dockerWatcher.handleRestart
     }
 
   }
   setInterval(() => {
-    startWatcher(cloner.deep.copy(foundedEndpoints), handleRestart);
-  },          getPollingMs());
+    startWatcher(cloner.deep.copy(foundedEndpoints), handleRestart)
+  },          getPollingMs())
 
-};
+}
 
 // start and restart by listener
-let lastEndPoints : string = '';
-let server = null;
+let lastEndPoints : string = ''
+let server = null
 
 const startWatcher = async(end: Endpoints,
                            handleRestart:(endpoints:Endpoints) => Promise<Endpoints>) => {
-  const endpoints = await sortEndpointAndFindAvailableEndpoints(end);
+  const endpoints = await sortEndpointAndFindAvailableEndpoints(end)
   if (JSON.stringify(endpoints) !== lastEndPoints) {
-    winston.info('Changes Found restart Server');
-    lastEndPoints = JSON.stringify(endpoints);
+    winston.info('Changes Found restart Server')
+    lastEndPoints = JSON.stringify(endpoints)
     // cluster.schedulingPolicy = cluster.SCHED_RR
     // if (cluster.isMaster){
     //   var cpuCount = require('os').cpus().length
@@ -114,13 +114,13 @@ const startWatcher = async(end: Endpoints,
     //     cluster.fork()
     //   }
     // } else {
-    server = await start(await handleRestart(endpoints));
+    server = await start(await handleRestart(endpoints))
     // }
 
   } else {
-    winston.debug('no Change at endpoints does not need a restart');
+    winston.debug('no Change at endpoints does not need a restart')
   }
-};
+}
 // const runPoller = (finder) => {
 
 //   setInterval(async() => {
@@ -158,18 +158,18 @@ const startWatcher = async(end: Endpoints,
 // const oldSchema = null
 
 const start = async(endpoints : Endpoints) => {
-  winston.info('loading endpoints', { endpoints });
-  const weaverEndpoints = [];
+  winston.info('loading endpoints', { endpoints })
+  const weaverEndpoints = []
 
   for (const one in endpoints) {
     weaverEndpoints.push({
       namespace: one,
       typePrefix: one + '_',
       schema: await getMergedInformation(endpoints[one]),
-    });
+    })
   }
-  const schema = await weaverIt(weaverEndpoints);
-  let schemaMerged = null;
+  const schema = await weaverIt(weaverEndpoints)
+  let schemaMerged = null
   // if (knownOldSchemas() == 'true'){
 
   //   if (oldSchema != null){
@@ -178,13 +178,13 @@ const start = async(endpoints : Endpoints) => {
   //       schemas: [schema, oldSchema],
   //     })
   //   } else {
-  schemaMerged = schema;
+  schemaMerged = schema
   // }
 
   // oldSchema = deepcopy(schemaMerged)
   // }
-  const app = express();
-  let playground: any = false;
+  const app = express()
+  let playground: any = false
   if (showPlayground()) {
     playground = {
       tabs: [{
@@ -199,7 +199,7 @@ const start = async(endpoints : Endpoints) => {
         },
       ],
 
-    };
+    }
   }
   const apiServer = new ApolloServer({
     playground,
@@ -208,29 +208,29 @@ const start = async(endpoints : Endpoints) => {
     context: (obj) => {
       return {
         headers: obj.res.req.headers,
-      };
+      }
     },
-  });
+  })
   apiServer.applyMiddleware({
     app,
     path: '/graphql',
     bodyParserConfig: { limit: getBodyParserLimit() },
 
-  });
+  })
 
   app.get('/health', (req, res) => {
-    res.status(200);
-    res.send('OK');
+    res.status(200)
+    res.send('OK')
 
-  });
+  })
 
   if (adminUser() !== '') {
-    const users = {};
-    users[adminUser()] = adminPassword();
+    const users = {}
+    users[adminUser()] = adminPassword()
     app.use(basicAuth({
       users,
       challenge: true,
-    }));
+    }))
   }
 
   const adminServer = new ApolloServer({
@@ -240,19 +240,19 @@ const start = async(endpoints : Endpoints) => {
       endpoints: await endpoints,
     },
     schema: adminSchema,
-  });
+  })
   adminServer.applyMiddleware({
     app,
     bodyParserConfig: true,
     path: '/admin/graphql',
-  });
+  })
 
-  winston.info('Server running. Open http://localhost:3000/graphql to run queries.');
+  winston.info('Server running. Open http://localhost:3000/graphql to run queries.')
   if (server != null) {
-    server.close();
+    server.close()
   }
-  return app.listen(3000);
-};
+  return app.listen(3000)
+}
 // process.env['NODE_CLUSTER_SCHED_POLICY'] = 'rr';
 // if (cluster.isMaster) {
 //   const cpuCount = require('os').cpus().length;
@@ -265,16 +265,16 @@ const start = async(endpoints : Endpoints) => {
 // }
 
 if (getEnableClustering()) {
-  process.env['NODE_CLUSTER_SCHED_POLICY'] = 'rr';
+  process.env['NODE_CLUSTER_SCHED_POLICY'] = 'rr'
   if (cluster.isMaster) {
-    const cpuCount = require('os').cpus().length;
+    const cpuCount = require('os').cpus().length
     for (let i = 0; i < cpuCount; i += 1) {
-      cluster.fork();
+      cluster.fork()
     }
   } else {
-    winston.info('START Slave');
-    run();
+    winston.info('START Slave')
+    run()
   }
 } else {
-  run();
+  run()
 }

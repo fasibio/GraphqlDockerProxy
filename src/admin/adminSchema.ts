@@ -1,6 +1,6 @@
-import { makeExecutableSchema } from 'graphql-tools';
-import { getBlacklist, clearAll } from '../interpreter/finder/k8sFinder/blacklist';
-import { getBuildNumber, getVersion, getPollingMs } from '../properties';
+import { makeExecutableSchema } from 'graphql-tools'
+import { getBlacklist, clearAll } from '../interpreter/finder/k8sFinder/blacklist'
+import { getBuildNumber, getVersion, getPollingMs } from '../properties'
 
 const typeDefs = `
   type namespace{
@@ -37,14 +37,14 @@ const typeDefs = `
     configuration: Configuration
   }
 
-`;
+`
 const mappingEndpoint = (endpoint) => {
   return endpoint.map((one) => {
     let data = {
       url: one.url,
       created: one.__created,
       imageID: one.__imageID,
-    };
+    }
     if (one.__loadbalance) {
       data = Object.assign({}, data, {
         loadBalance: {
@@ -52,11 +52,11 @@ const mappingEndpoint = (endpoint) => {
           endpoints: mappingEndpoint(one.__loadbalance.endpoints),
         },
 
-      });
+      })
     }
-    return data;
-  });
-};
+    return data
+  })
+}
 const resolvers = {
   Query: {
     configuration: () => {
@@ -64,39 +64,39 @@ const resolvers = {
         version: getVersion(),
         buildNumber: getBuildNumber(),
         pollingTimeMS: getPollingMs(),
-      };
+      }
     },
     kubernetes: () => {
       return {
         blacklist: () => {
-          return getBlacklist();
+          return getBlacklist()
         },
         clearBlackList: () => {
-          clearAll();
-          return true;
+          clearAll()
+          return true
         },
-      };
+      }
     },
     namespaces: (one, two, context) => {
-      const result = [];
-      const endpoints = context.endpoints;
+      const result = []
+      const endpoints = context.endpoints
 
       for (const one in endpoints) {
-        const oneEndpoint = endpoints[one];
+        const oneEndpoint = endpoints[one]
         const oneValue = {
           name: one,
           endpoints: mappingEndpoint(oneEndpoint),
-        };
-        result.push(oneValue);
+        }
+        result.push(oneValue)
       }
-      return result;
+      return result
     },
   },
-};
+}
 
 const adminschema = makeExecutableSchema({
   typeDefs,
   resolvers,
-});
+})
 
-export default adminschema;
+export default adminschema

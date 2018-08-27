@@ -1,71 +1,71 @@
 // @flow
-const Client = require('kubernetes-client').Client;
-const config = require('kubernetes-client').config;
+const Client = require('kubernetes-client').Client
+const config = require('kubernetes-client').config
 
-import * as JSONStream from 'json-stream';
-import { WatcherInterface } from '../WatcherInterface';
-import { getInClusterByUser } from './getInClusterByUser';
-import * as clientLabels from '../../clientLabels';
-import { token, kubernetesConfigurationKind } from '../../../properties';
-declare function idx(obj: any, callBack: any):any;
+import * as JSONStream from 'json-stream'
+import { WatcherInterface } from '../WatcherInterface'
+import { getInClusterByUser } from './getInClusterByUser'
+import * as clientLabels from '../../clientLabels'
+import { token, kubernetesConfigurationKind } from '../../../properties'
+declare function idx(obj: any, callBack: any):any
 export class K8sWatcher extends WatcherInterface{
-  streams = {};
-  client: any = {};
-  deploymentsNames = {};
+  streams = {}
+  client: any = {}
+  deploymentsNames = {}
   constructor() {
-    super();
+    super()
 
   }
 
   abortServicesForNamespace = (namespaceName : string) => {
-    this.streams[namespaceName].service.abort();
+    this.streams[namespaceName].service.abort()
   }
 
   abortDeploymentsForNamespace = (namespaceName: string) => {
-    this.streams[namespaceName].deployment.abort();
+    this.streams[namespaceName].deployment.abort()
   }
 
   abortPodsForNamespace = (namespaceName: string) => {
-    this.streams[namespaceName].pods.abort();
+    this.streams[namespaceName].pods.abort()
   }
 
   watchPodsForNamespace = (namespaceName: string) => {
-    const podsStream = this.client.api.v1.watch.namespaces(namespaceName).pods.getStream();
-    const podsJSONStream = new JSONStream();
-    podsStream.pipe(podsJSONStream);
+    const podsStream = this.client.api.v1.watch.namespaces(namespaceName).pods.getStream()
+    const podsJSONStream = new JSONStream()
+    podsStream.pipe(podsJSONStream)
 
     podsJSONStream.on('data', (pods) => {
-      const deploymentName = idx(pods, _ => _.object.metadata.labels.app) || '';
+      const deploymentName = idx(pods, _ => _.object.metadata.labels.app) || ''
       if (deploymentName === '') {
         if (pods.status === 'Failure') {
-          winston.warn('no Permission for Namspace ' + namespaceName);
+          winston.warn('no Permission for Namspace ' + namespaceName)
         } else {
-          winston.warn('pod obj is missing object.metadata.labels.app will be ignored');
+          winston.warn('pod obj is missing object.metadata.labels.app will be ignored')
         }
       }
       if (this.deploymentsNames[deploymentName] !== undefined) {
-        winston.debug('stream send new pods for: ' + deploymentName, { pods });
+        winston.debug('stream send new pods for: ' + deploymentName, { pods })
         for (const one in this.endpoints) {
-          const oneEndpoint = this.endpoints[one];
+          const oneEndpoint = this.endpoints[one]
           for (let i = 0 ; i < oneEndpoint.length; i = i + 1) {
 
             if (oneEndpoint[i].__deploymentName === deploymentName) {
               switch (pods.type){
                 case 'MODIFIED':
                 case 'ADDED': {
-                  oneEndpoint[i].__created = this.getDateString();
-                  this.callDataUpdateListener();
-                  break;
+                  oneEndpoint[i].__created = this.getDateString()
+                  this.callDataUpdateListener()
+                  break
                 }
               }
             }
           }
         }
       }
-    });
+    })
     this.streams[namespaceName] = {
       pods: podsStream,
-    };
+    }
 
   }
 
@@ -73,87 +73,87 @@ export class K8sWatcher extends WatcherInterface{
 
     // Deployments of Namespace
     const deploymentsStream = this.client.apis.apps.v1beta2.watch
-                              .namespaces(namespaceName).deployments.getStream();
-    const deploymentsJsonStream = new JSONStream();
-    deploymentsStream.pipe(deploymentsJsonStream);
+                              .namespaces(namespaceName).deployments.getStream()
+    const deploymentsJsonStream = new JSONStream()
+    deploymentsStream.pipe(deploymentsJsonStream)
     deploymentsJsonStream.on('data', async(deployment) => {
 
-      const name = idx(deployment, _ => _.object.spec.template.metadata.labels.app) || '';
+      const name = idx(deployment, _ => _.object.spec.template.metadata.labels.app) || ''
       if (name === '') {
         if (deployment.status === 'Failure') {
-          winston.info('no Permission for Namspace' + namespaceName);
+          winston.info('no Permission for Namspace' + namespaceName)
         } else {
-          winston.info('deployment obj is missing attributes. missing labels app. will be ignored');
+          winston.info('deployment obj is missing attributes. missing labels app. will be ignored')
         }
       }
       if (this.deploymentsNames[name] !== undefined) {
-        winston.debug('stream send new deployments for: ' + name, { deployment });
+        winston.debug('stream send new deployments for: ' + name, { deployment })
         for (const one in this.endpoints) {
-          const oneEndpoint = this.endpoints[one];
+          const oneEndpoint = this.endpoints[one]
           for (let i = 0 ; i < oneEndpoint.length; i = i + 1) {
 
             if (oneEndpoint[i].__deploymentName === name) {
               switch (deployment.type){
                 case 'MODIFIED':
                 case 'ADDED': {
-                  oneEndpoint[i].__created = this.getDateString();
-                  await this.callDataUpdateListener();
-                  break;
+                  oneEndpoint[i].__created = this.getDateString()
+                  await this.callDataUpdateListener()
+                  break
                 }
               }
             }
           }
         }
       }
-    });
+    })
 
     this.streams[namespaceName] = {
       deployment: deploymentsStream,
-    };
+    }
 
   }
 
   updateUrl = (url:string, sockData:any) :string => {
     if (url.startsWith('http')) {
-      return url;
+      return url
     }
-    return 'http://' + sockData.metadata.name + '.' + sockData.metadata.namespace + url;
+    return 'http://' + sockData.metadata.name + '.' + sockData.metadata.namespace + url
 
   }
 
   getDateString = () => {
-    const date = new Date();
+    const date = new Date()
     return date.getDay() + '' + date.getMonth() + '' + date.getFullYear() + date.getHours() + ''
-    + date.getMinutes() + '' + date.getSeconds() + '' + date.getMilliseconds();
+    + date.getMinutes() + '' + date.getSeconds() + '' + date.getMilliseconds()
   }
 
   watchServicesForNamespace = (namespaceName: string) => {
 
     // Sertvices of Namespace
-    const servicesStream = this.client.api.v1.watch.namespaces(namespaceName).services.getStream();
-    const servicesJsonStream = new JSONStream();
-    servicesStream.pipe(servicesJsonStream);
+    const servicesStream = this.client.api.v1.watch.namespaces(namespaceName).services.getStream()
+    const servicesJsonStream = new JSONStream()
+    servicesStream.pipe(servicesJsonStream)
     servicesJsonStream.on('data', async (service) => {
 
-      const item = service.object;
+      const item = service.object
       switch (service.type){
         case 'MODIFIED':
         case 'ADDED': {
           if (idx(item, _ => _.metadata.annotations[clientLabels.TOKEN]) + '' === token()) {
-            const url = this.updateUrl(item.metadata.annotations[clientLabels.URL], service.object);
-            const namespace = item.metadata.annotations[clientLabels.NAMESPACE];
-            const deploymentName = item.spec.selector.app;
-            winston.debug('stream send new namespaces for:' + deploymentName, { service });
+            const url = this.updateUrl(item.metadata.annotations[clientLabels.URL], service.object)
+            const namespace = item.metadata.annotations[clientLabels.NAMESPACE]
+            const deploymentName = item.spec.selector.app
+            winston.debug('stream send new namespaces for:' + deploymentName, { service })
 
             // const deployments = await this.client.apis.apps.v1beta2
             //                     .namespaces(namespaceName).deployments.get();
             // deployments.body.items.filter((one) => {
             //   return one.spec.template.metadata.labels.app === deploymentName;
             // });
-            this.deploymentsNames[deploymentName] = true;
-            this.deleteEndpoint(namespace, deploymentName);
+            this.deploymentsNames[deploymentName] = true
+            this.deleteEndpoint(namespace, deploymentName)
             if (this.endpoints[namespace] === undefined) {
-              this.endpoints[namespace] = [];
+              this.endpoints[namespace] = []
             }
             this.endpoints[namespace].push({
               url,
@@ -162,76 +162,76 @@ export class K8sWatcher extends WatcherInterface{
               __created: this.getDateString() ,
               __imageID: '',
               __deploymentName: deploymentName,
-            });
-            this.callDataUpdateListener();
+            })
+            this.callDataUpdateListener()
 
           }
-          break;
+          break
         }
         case 'DELETED': {
           if (idx(item, _ => _.metadata.annotations[clientLabels.TOKEN]) === token()) {
-            const namespace = item.metadata.annotations[clientLabels.NAMESPACE];
-            const deploymentName = item.spec.selector.app;
-            winston.debug('delete service', namespace, deploymentName);
-            this.deleteEndpoint(namespace, deploymentName);
-            winston.debug('delete service no data', this.endpoints);
-            this.callDataUpdateListener();
+            const namespace = item.metadata.annotations[clientLabels.NAMESPACE]
+            const deploymentName = item.spec.selector.app
+            winston.debug('delete service', namespace, deploymentName)
+            this.deleteEndpoint(namespace, deploymentName)
+            winston.debug('delete service no data', this.endpoints)
+            this.callDataUpdateListener()
 
           }
         }
       }
-    });
+    })
 
     this.streams[namespaceName] = {
       service: servicesStream,
-    };
+    }
 
   }
 
   watchEndpoint = async() => {
 
-    winston.info('Load K8s');
+    winston.info('Load K8s')
     switch (kubernetesConfigurationKind()){
       case 'fromKubeconfig': {
-        winston.info('Load fromKubeconfig');
-        this.client = new Client({ config: config.fromKubeconfig() });
-        break;
+        winston.info('Load fromKubeconfig')
+        this.client = new Client({ config: config.fromKubeconfig() })
+        break
       }
       case 'getInCluster': {
-        winston.info('Load getInCluster');
-        this.client = new Client({ config: config.getInCluster() });
-        break;
+        winston.info('Load getInCluster')
+        this.client = new Client({ config: config.getInCluster() })
+        break
       }
       case 'getInClusterByUser': {
-        winston.info('Load getIntClusterByUser');
-        this.client = new Client({ config: getInClusterByUser() });
+        winston.info('Load getIntClusterByUser')
+        this.client = new Client({ config: getInClusterByUser() })
       }
     }
-    await this.client.loadSpec();
+    await this.client.loadSpec()
     try {
-      const namespaceStream = this.client.api.v1.watch.namespaces.getStream();
-      const namespaceJsonStream = new JSONStream();
-      namespaceStream.pipe(namespaceJsonStream);
+      const namespaceStream = this.client.api.v1.watch.namespaces.getStream()
+      const namespaceJsonStream = new JSONStream()
+      namespaceStream.pipe(namespaceJsonStream)
       namespaceJsonStream.on('data', (object) => {
-        const name = object.object.metadata.name;
+        const name = object.object.metadata.name
         switch (object.type){
           case 'ADDED': {
-            this.watchServicesForNamespace(name);
-            this.watchDeploymentsForNamespace(name);
-            this.watchPodsForNamespace(name);
-            break;
+            this.watchServicesForNamespace(name)
+            this.watchDeploymentsForNamespace(name)
+            this.watchPodsForNamespace(name)
+            break
           }
           case 'DELETED': {
-            this.abortServicesForNamespace(name);
-            this.abortDeploymentsForNamespace(name);
-            this.abortPodsForNamespace(name);
-            break;
+            this.abortServicesForNamespace(name)
+            this.abortDeploymentsForNamespace(name)
+            this.abortPodsForNamespace(name)
+            break
 
           }
         }
-      });
+      })
     } catch (err) {
-      winston.error('Error by watchEndpoints', err);
+      winston.error('Error by watchEndpoints', err)
     }
 
   }

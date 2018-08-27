@@ -1,42 +1,42 @@
 export class Namespaces {
-  namespaceNames = {};
+  namespaceNames = {}
   constructor() {
   }
 
   isNameExist = (name) => {
-    return this.namespaceNames[name] !== undefined;
+    return this.namespaceNames[name] !== undefined
   }
 
   addNameToList = (name, value) => {
-    this.namespaceNames[name] = value;
+    this.namespaceNames[name] = value
   }
 
   getList = () => {
-    return this.namespaceNames;
+    return this.namespaceNames
   }
 
   hasAllInList = (list) => {
     if (list.length < Object.keys(this.namespaceNames).length) {
-      return false;
+      return false
     }
     for (const one in list) {
-      const oneItem = list[one];
+      const oneItem = list[one]
       if (!this.isNameExist(oneItem)) {
-        return false;
+        return false
       }
     }
-    return true;
+    return true
   }
 
   addAllToList = (list, value) => {
     for (const one in list) {
-      const oneItem = list[one];
-      this.addNameToList(oneItem, value);
+      const oneItem = list[one]
+      this.addNameToList(oneItem, value)
     }
   }
 
   clear = () => {
-    this.namespaceNames = {};
+    this.namespaceNames = {}
   }
 
 }

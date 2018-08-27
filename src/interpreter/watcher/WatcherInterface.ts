@@ -1,52 +1,52 @@
 
 // @flow
-import { Endpoints } from '../endpoints';
-import * as cloner from 'cloner';
+import { Endpoints } from '../endpoints'
+import * as cloner from 'cloner'
 
-type dataUpdatedListener = (data: Endpoints) => void;
+type dataUpdatedListener = (data: Endpoints) => void
 
 class WatcherInterface{
-  endpoints: Endpoints = {};
+  endpoints: Endpoints = {}
 
   constructor() {}
 
-  dataUpdatedListener: dataUpdatedListener;
+  dataUpdatedListener: dataUpdatedListener
 
   handleRestart = (datas: Endpoints) :Promise<Endpoints> => {
-    return Promise.resolve(datas);
+    return Promise.resolve(datas)
   }
   watchEndpoint = () => {
-    winston.error('you have to override watchEndpoint');
+    winston.error('you have to override watchEndpoint')
   }
 
   setDataUpdatedListener = (listener:dataUpdatedListener) => {
-    this.dataUpdatedListener = listener;
+    this.dataUpdatedListener = listener
   }
 
   callDataUpdateListener = async() => {
-    const realEndpoint = cloner.deep.copy(this.endpoints);
+    const realEndpoint = cloner.deep.copy(this.endpoints)
     for (const one in realEndpoint) {
       if (realEndpoint[one].length === 0) {
-        delete realEndpoint[one];
+        delete realEndpoint[one]
       }
 
     }
-    this.dataUpdatedListener(realEndpoint);
+    this.dataUpdatedListener(realEndpoint)
   }
 
   deleteEndpoint = (namespace: string, uniqueIdentifier: string) => {
     if (this.endpoints[namespace] === undefined) {
-      return;
+      return
     }
     for (let i = 0 ; i < this.endpoints[namespace].length; i = i + 1) {
       if (this.endpoints[namespace][i].__deploymentName === uniqueIdentifier) {
-        this.endpoints[namespace].splice(i, 1);
+        this.endpoints[namespace].splice(i, 1)
       }
     }
     if (this.endpoints[namespace].length === 0) {
-      delete this.endpoints[namespace];
+      delete this.endpoints[namespace]
     }
   }
 }
 
-export { WatcherInterface };
+export { WatcherInterface }
