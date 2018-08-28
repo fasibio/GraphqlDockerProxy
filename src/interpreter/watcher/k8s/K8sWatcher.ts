@@ -8,12 +8,32 @@ import { getInClusterByUser } from './getInClusterByUser'
 import * as clientLabels from '../../clientLabels'
 import { token, kubernetesConfigurationKind } from '../../../properties'
 declare function idx(obj: any, callBack: any):any
+type stream = {
+  pods?: any,
+  deployment?: any,
+  service?: any,
+}
+
+type streams = {
+  [index:string]: stream,
+}
 export class K8sWatcher extends WatcherInterface{
-  streams = {}
+  namespaceStream: any = {}
+  streams: streams = {}
   client: any = {}
   deploymentsNames = {}
   constructor() {
     super()
+
+  }
+  abortAllStreams = () => {
+    this.namespaceStream.abort()
+    for (const one in this.streams) {
+      const oneStream = this.streams[one]
+      idx(oneStream, _ => _.deployment.abort())
+      idx(oneStream, _ => _.pods.abort())
+      idx(oneStream, _ => _.service.abort())
+    }
 
   }
 
@@ -33,7 +53,9 @@ export class K8sWatcher extends WatcherInterface{
     const podsStream = this.client.api.v1.watch.namespaces(namespaceName).pods.getStream()
     const podsJSONStream = new JSONStream()
     podsStream.pipe(podsJSONStream)
-
+    podsStream.on('error', (err) => {
+      winston.warn('error by pod Stream', err)
+    })
     podsJSONStream.on('data', (pods) => {
       const deploymentName = idx(pods, _ => _.object.metadata.labels.app) || ''
       if (deploymentName === '') {
@@ -57,6 +79,10 @@ export class K8sWatcher extends WatcherInterface{
                   this.callDataUpdateListener()
                   break
                 }
+                default: {
+                  winston.debug('un used event', pods.type)
+                  break
+                }
               }
             }
           }
@@ -76,6 +102,9 @@ export class K8sWatcher extends WatcherInterface{
                               .namespaces(namespaceName).deployments.getStream()
     const deploymentsJsonStream = new JSONStream()
     deploymentsStream.pipe(deploymentsJsonStream)
+    deploymentsStream.on('error', (err) => {
+      winston.warn('error by deployment Stream', err)
+    })
     deploymentsJsonStream.on('data', async(deployment) => {
 
       const name = idx(deployment, _ => _.object.spec.template.metadata.labels.app) || ''
@@ -98,6 +127,10 @@ export class K8sWatcher extends WatcherInterface{
                 case 'ADDED': {
                   oneEndpoint[i].__created = this.getDateString()
                   await this.callDataUpdateListener()
+                  break
+                }
+                default: {
+                  winston.debug('un used event', deployment.type)
                   break
                 }
               }
@@ -133,6 +166,9 @@ export class K8sWatcher extends WatcherInterface{
     const servicesStream = this.client.api.v1.watch.namespaces(namespaceName).services.getStream()
     const servicesJsonStream = new JSONStream()
     servicesStream.pipe(servicesJsonStream)
+    servicesJsonStream.on('error', (err) => {
+      winston.warn('error by service Stream', err)
+    })
     servicesJsonStream.on('data', async (service) => {
 
       const item = service.object
@@ -178,6 +214,11 @@ export class K8sWatcher extends WatcherInterface{
             this.callDataUpdateListener()
 
           }
+          break
+        }
+        default: {
+          winston.debug('un used event', service.type)
+          break
         }
       }
     })
@@ -212,6 +253,9 @@ export class K8sWatcher extends WatcherInterface{
       const namespaceStream = this.client.api.v1.watch.namespaces.getStream()
       const namespaceJsonStream = new JSONStream()
       namespaceStream.pipe(namespaceJsonStream)
+      namespaceJsonStream.on('error', (err) => {
+        winston.warn('error by namespaceStream', err)
+      })
       namespaceJsonStream.on('data', (object) => {
         const name = object.object.metadata.name
         switch (object.type){
@@ -228,8 +272,13 @@ export class K8sWatcher extends WatcherInterface{
             break
 
           }
+          default: {
+            winston.debug('un used event', object.type)
+            break
+          }
         }
       })
+      this.namespaceStream = namespaceStream
     } catch (err) {
       winston.error('Error by watchEndpoints', err)
     }

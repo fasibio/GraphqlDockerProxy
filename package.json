@@ -11,7 +11,7 @@
     "build": "tsc -p . --skipLibCheck",
     "start": "npm run build &&dockerNetwork=web gqlProxyToken=1234 node dist/main.js",
     "startDev": "dockerNetwork=web gqlProxyToken=1234 gqlProxyAdminUser=admin gqlProxyAdminPassword=test1234 nodemon dist/main.js",
-    "startDevDockerWatcher": "qglProxyRuntime=dockerWatch dockerNetwork=web gqlProxyToken=1234 gqlProxyAdminUser=admin gqlProxyAdminPassword=test1234 nodemon dist/main.js",
+    "startDevDockerWatcher": "qglProxyRuntime=dockerWatch dockerNetwork=web gqlProxyToken=1234 nodemon dist/main.js",
     "startDevK8sWatcher": "gqlProxyToken=1234 qglProxyRuntime=kubernetesWatch nodemon dist/main.js",
     "test": "jest .",
     "lint": "tslint -p .  --fix",

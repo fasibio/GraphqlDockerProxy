@@ -1,8 +1,7 @@
 import { makeExecutableSchema } from 'graphql-tools'
-import { getBlacklist, clearAll } from '../interpreter/finder/k8sFinder/blacklist'
 import { getBuildNumber, getVersion, getPollingMs } from '../properties'
 
-const typeDefs = `
+export const typeDefs = `
   type namespace{
     name: String
     endpoints:[endpoint]
@@ -20,10 +19,7 @@ const typeDefs = `
     endpoints: [endpoint]
   }
 
-  type Kubernetes{
-    blacklist: [String]
-    clearBlackList: Boolean
-  }
+
 
   type Configuration{
     version: String
@@ -33,7 +29,6 @@ const typeDefs = `
 
   type Query{
     namespaces: [namespace]
-    kubernetes: Kubernetes
     configuration: Configuration
   }
 
@@ -57,7 +52,7 @@ const mappingEndpoint = (endpoint) => {
     return data
   })
 }
-const resolvers = {
+export const resolvers = {
   Query: {
     configuration: () => {
       return {
@@ -66,17 +61,7 @@ const resolvers = {
         pollingTimeMS: getPollingMs(),
       }
     },
-    kubernetes: () => {
-      return {
-        blacklist: () => {
-          return getBlacklist()
-        },
-        clearBlackList: () => {
-          clearAll()
-          return true
-        },
-      }
-    },
+
     namespaces: (one, two, context) => {
       const result = []
       const endpoints = context.endpoints

@@ -13,11 +13,12 @@ import {
   showPlayground,
   getBodyParserLimit,
   getEnableClustering,
+  getResetEndpointTime,
 } from './properties'
 
 import  { Endpoints } from './interpreter/endpoints'
 import { sortEndpointAndFindAvailableEndpoints } from './interpreter/endpointsAvailable'
-import adminSchema from './admin/adminSchema'
+import { getAdminSchema } from './admin'
 import * as cluster from 'cluster'
 import * as basicAuth from 'express-basic-auth'
 import * as cloner from 'cloner'
@@ -73,8 +74,12 @@ const run = async() => {
         winston.info('Watcher called new endpoints ', { endpoints })
         foundedEndpoints = endpoints
       })
-
       watcher.watchEndpoint()
+      setInterval(() => {
+        winston.info('Reset Watching from K8S endpoints (work a around)')
+        watcher.abortAllStreams()
+        watcher.watchEndpoint()
+      },          getResetEndpointTime())
 
       break
     }
@@ -239,7 +244,7 @@ const start = async(endpoints : Endpoints) => {
     context: {
       endpoints: await endpoints,
     },
-    schema: adminSchema,
+    schema: getAdminSchema(),
   })
   adminServer.applyMiddleware({
     app,

@@ -1,0 +1,80 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tests the adminSchema snapshot the resolver function 1`] = `
+Object {
+  "Query": Object {
+    "configuration": [Function],
+    "namespaces": [Function],
+  },
+}
+`;
+
+exports[`tests the adminSchema snapshot the typedefs 1`] = `
+"
+  type namespace{
+    name: String
+    endpoints:[endpoint]
+  }
+
+  type endpoint{
+    url: String
+    created: String
+    imageID: String
+    loadBalance: loadBalance
+  }
+
+  type loadBalance{
+    count: Int
+    endpoints: [endpoint]
+  }
+
+
+
+  type Configuration{
+    version: String
+    buildNumber: String
+    pollingTimeMS: Int
+  }
+
+  type Query{
+    namespaces: [namespace]
+    configuration: Configuration
+  }
+
+"
+`;
+
+exports[`tests the adminSchema tests resolver namespaces tests struct 1`] = `
+Array [
+  Object {
+    "endpoints": Array [
+      Object {
+        "created": "mock created",
+        "imageID": "mock image id",
+        "url": "mockUrl",
+      },
+      Object {
+        "created": "mock created2",
+        "imageID": "mock image id2",
+        "loadBalance": Object {
+          "count": 2,
+          "endpoints": Array [
+            Object {
+              "created": "mock create3",
+              "imageID": "mock image id3",
+              "url": "mockUrl3",
+            },
+            Object {
+              "created": "mock create4",
+              "imageID": "mock image id4",
+              "url": "mockUrl4",
+            },
+          ],
+        },
+        "url": "mockUrl2",
+      },
+    ],
+    "name": "testNamspace",
+  },
+]
+`;

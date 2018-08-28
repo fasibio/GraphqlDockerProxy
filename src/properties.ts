@@ -64,6 +64,10 @@ export const k8sUserPassword = () => {
   return idx(process, _ => _.env.gqlProxyK8sUserPassword) || ''
 }
 
+export const getResetEndpointTime = () => {
+  return idx(process, _ => _.env.gqlProxyPollingMs) || 3600000
+}
+
 export const getPollingMs = () => {
   return idx(process, _ => _.env.gqlProxyPollingMs) || 5000
 }

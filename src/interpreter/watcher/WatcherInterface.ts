@@ -19,6 +19,8 @@ class WatcherInterface{
     winston.error('you have to override watchEndpoint')
   }
 
+  abortAllStreams = () => {}
+
   setDataUpdatedListener = (listener:dataUpdatedListener) => {
     this.dataUpdatedListener = listener
   }
