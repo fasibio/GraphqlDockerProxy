@@ -3,6 +3,7 @@ export interface Endpoint {
   namespace: string;
   typePrefix: string;
   __created: string;
+  __intospection?: object;
   __imageID: string;
   __burnd?: boolean;
   __deploymentName : string;
