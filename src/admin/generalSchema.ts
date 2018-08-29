@@ -1,6 +1,6 @@
 import { makeExecutableSchema } from 'graphql-tools'
-import { getBuildNumber, getVersion, getPollingMs } from '../properties'
-
+import { getBuildNumber, getVersion, getPollingMs, runtime, getBodyParserLimit, network, getLogFormat, getLogLevel } from '../properties'
+import { loadLogger } from '../logger'
 export const typeDefs = `
   type namespace{
     name: String
@@ -22,15 +22,41 @@ export const typeDefs = `
 
 
   type Configuration{
+    runtime: String
     version: String
     buildNumber: String
     pollingTimeMS: Int
+    bodyParserLimit: String
+    dockerNetwork: String
+    logging: Logging
+  }
+
+  type Logging {
+    format: String
+    level: String
+
   }
 
   type Query{
     namespaces: [namespace]
     configuration: Configuration
   }
+
+  enum logFormat {
+    simple
+    json
+  }
+
+  enum logLevel {
+    debug
+    info
+    error
+    warn
+  }
+  type Mutation{
+    updateLogger(logFormat: logFormat, logLevel: logLevel ): Boolean
+  }
+
 
 `
 const mappingEndpoint = (endpoint) => {
@@ -53,12 +79,31 @@ const mappingEndpoint = (endpoint) => {
   })
 }
 export const resolvers = {
+  Mutation: {
+    updateLogger: (root, args) => {
+      loadLogger({
+        logFormat: args.logFormat,
+        loglevel: args.logLevel,
+      })
+      winston.info('update loggerconfig temporary', args)
+      return true
+    },
+  },
   Query: {
     configuration: () => {
       return {
-        version: getVersion(),
-        buildNumber: getBuildNumber(),
-        pollingTimeMS: getPollingMs(),
+        runtime,
+        version: getVersion,
+        buildNumber: getBuildNumber,
+        pollingTimeMS: getPollingMs,
+        bodyParserLimit: getBodyParserLimit,
+        dockerNetwork: network,
+        logging: {
+          format: getLogFormat,
+          level: getLogLevel,
+
+        },
+
       }
     },
 

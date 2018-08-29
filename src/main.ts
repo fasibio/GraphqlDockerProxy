@@ -14,6 +14,8 @@ import {
   getBodyParserLimit,
   getEnableClustering,
   getResetEndpointTime,
+  getLogFormat,
+  getLogLevel,
 } from './properties'
 
 import  { Endpoints } from './interpreter/endpoints'
@@ -26,7 +28,11 @@ import { DockerWatcher } from './interpreter/watcher/docker/DockerWatcher'
 // import deepcopy from 'deepcopy/cjs/index'
 import { getMergedInformation } from './schemaBuilder'
 require('./idx')
-require('./logger')
+import { loadLogger } from './logger'
+loadLogger({
+  logFormat: getLogFormat(),
+  loglevel: getLogLevel(),
+})
 
 process.on('unhandledRejection', (reason, p) => {
   console.error('Unhandled Rejection at: Promise', p, 'reason:', reason)

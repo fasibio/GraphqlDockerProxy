@@ -2,6 +2,9 @@
 
 exports[`tests the adminSchema snapshot the resolver function 1`] = `
 Object {
+  "Mutation": Object {
+    "updateLogger": [Function],
+  },
   "Query": Object {
     "configuration": [Function],
     "namespaces": [Function],
@@ -31,15 +34,41 @@ exports[`tests the adminSchema snapshot the typedefs 1`] = `
 
 
   type Configuration{
+    runtime: String
     version: String
     buildNumber: String
     pollingTimeMS: Int
+    bodyParserLimit: String
+    dockerNetwork: String
+    logging: Logging
+  }
+
+  type Logging {
+    format: String
+    level: String
+
   }
 
   type Query{
     namespaces: [namespace]
     configuration: Configuration
   }
+
+  enum logFormat {
+    simple
+    json
+  }
+
+  enum logLevel {
+    debug
+    info
+    error
+    warn
+  }
+  type Mutation{
+    updateLogger(logFormat: logFormat, logLevel: logLevel ): Boolean
+  }
+
 
 "
 `;
