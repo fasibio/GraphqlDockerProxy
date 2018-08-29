@@ -15,6 +15,13 @@ switch (getLogFormat()){
 
 }
 
+const maskIntospectionFormat = winston.format((info) => {
+  if (info.__intospection) {
+    info.__intospection = 'masked for better overview'
+  }
+  return info
+})
+
 const workingClusterFormat = winston.format((info) => {
   if (cluster.isMaster) {
     info.serverRole = 'master'
@@ -30,6 +37,7 @@ let format = winston.format.combine(
 )
 if (getEnableClustering()) {
   format = winston.format.combine(
+    maskIntospectionFormat(),
     workingClusterFormat(),
     winston.format.timestamp(),
     logFormat)
