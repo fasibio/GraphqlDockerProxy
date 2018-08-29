@@ -40,7 +40,6 @@ export class DockerWatcher extends WatcherInterface{
         namespace,
         url,
         typePrefix: namespace + '_',
-        __created: container.Created,
         __imageID: container.Image,
         __deploymentName: deploymentName,
       })
@@ -49,12 +48,10 @@ export class DockerWatcher extends WatcherInterface{
   }
 
   handleRestart = async(datas:Endpoints) : Promise<Endpoints> => {
-    console.log('hier')
     return await foundEquals(datas)
   }
 
   onContainerDown = (container) => {
-    console.log('down!!!', container.Id)
     if (container.Labels[clientLabels.TOKEN] === token()) {
       const deploymentName = container.Id
       for (const one in this.endpoints) {

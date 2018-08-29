@@ -2,12 +2,11 @@ export interface Endpoint {
   url: string;
   namespace: string;
   typePrefix: string;
-  __created: string;
-  __intospection?: object;
+  __introspection?: object;
   __imageID: string;
   __burnd?: boolean;
   __deploymentName : string;
-  __loadbalance?: __loadbalance;
+  __loadbalance?: __loadbalance ;
 }
 
 interface __loadbalance {

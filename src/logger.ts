@@ -1,6 +1,8 @@
 import * as winston from 'winston'
 import { getLogLevel, getLogFormat, getEnableClustering } from'./properties'
 import * as cluster from 'cluster'
+import { Endpoints } from './interpreter/endpoints'
+import * as cloner from 'cloner'
 
 let logFormat = winston.format.simple()
 switch (getLogFormat()){
@@ -15,11 +17,21 @@ switch (getLogFormat()){
 
 }
 
-const maskIntospectionFormat = winston.format((info) => {
-  if (info.__intospection) {
-    info.__intospection = 'masked for better overview'
+const maskIntrospectionFormat = winston.format((info) => {
+  const result = cloner.deep.copy(info)
+  if (result.endpoints) {
+    const endpoints: Endpoints = result.endpoints
+    for (const one in endpoints) {
+      const oneEndpoint = endpoints[one]
+      for (let i = 0; i < oneEndpoint.length; i = i + 1) {
+        const oneConnection = oneEndpoint[i]
+        delete oneConnection.__introspection
+        delete oneConnection.__loadbalance
+      }
+
+    }
   }
-  return info
+  return result
 })
 
 const workingClusterFormat = winston.format((info) => {
@@ -33,11 +45,11 @@ const workingClusterFormat = winston.format((info) => {
 
 let format = winston.format.combine(
   winston.format.timestamp(),
+  maskIntrospectionFormat(),
   logFormat,
 )
 if (getEnableClustering()) {
   format = winston.format.combine(
-    maskIntospectionFormat(),
     workingClusterFormat(),
     winston.format.timestamp(),
     logFormat)

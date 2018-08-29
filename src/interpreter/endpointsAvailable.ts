@@ -29,7 +29,7 @@ async(endpoints :Endpoints): Promise<Endpoints> => {
         winston.warn('Endpoint not Available: ', { url: one.url , namespace: one.namespace })
         oneNamespace.splice(i, 1)
       } else {
-        oneNamespace[i].__intospection = result.json
+        oneNamespace[i].__introspection = result.json
       }
 
     }
