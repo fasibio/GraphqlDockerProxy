@@ -75,7 +75,6 @@ export class K8sWatcher extends WatcherInterface{
               switch (pods.type){
                 case 'MODIFIED':
                 case 'ADDED': {
-                  oneEndpoint[i].__created = this.getDateString()
                   this.callDataUpdateListener()
                   break
                 }
@@ -125,7 +124,6 @@ export class K8sWatcher extends WatcherInterface{
               switch (deployment.type){
                 case 'MODIFIED':
                 case 'ADDED': {
-                  oneEndpoint[i].__created = this.getDateString()
                   await this.callDataUpdateListener()
                   break
                 }
@@ -152,13 +150,6 @@ export class K8sWatcher extends WatcherInterface{
     }
     return 'http://' + sockData.metadata.name + '.' + sockData.metadata.namespace + url
 
-  }
-
-  getDateString = () => {
-    return ''
-    // const date = new Date()
-    // return date.getDay() + '' + date.getMonth() + '' + date.getFullYear() + date.getHours() + ''
-    // + date.getMinutes() + '' + date.getSeconds() + '' + date.getMilliseconds()
   }
 
   watchServicesForNamespace = (namespaceName: string) => {
@@ -196,7 +187,6 @@ export class K8sWatcher extends WatcherInterface{
               url,
               namespace,
               typePrefix: namespace + '_',
-              __created: this.getDateString() ,
               __imageID: '',
               __deploymentName: deploymentName,
             })
