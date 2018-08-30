@@ -1,7 +1,10 @@
 import { Endpoints } from '../endpoints'
-class FindEndpoints{
+import { Interpreter } from '../Interpreter'
+class FindEndpoints extends Interpreter{
 
-  constructor() {}
+  constructor() {
+    super()
+  }
   getEndpoints = (): Promise<Endpoints> => {
     winston.error('you have to override getEndpoints')
     return Promise.resolve({})

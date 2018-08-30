@@ -2,13 +2,15 @@
 // @flow
 import { Endpoints } from '../endpoints'
 import * as cloner from 'cloner'
-
+import { Interpreter } from '../Interpreter'
 type dataUpdatedListener = (data: Endpoints) => void
 
-class WatcherInterface{
+class WatcherInterface extends Interpreter{
   endpoints: Endpoints = {}
 
-  constructor() {}
+  constructor() {
+    super()
+  }
 
   dataUpdatedListener: dataUpdatedListener
 
@@ -19,7 +21,14 @@ class WatcherInterface{
     winston.error('you have to override watchEndpoint')
   }
 
-  abortAllStreams = () => {}
+  abortAllStreams = () => {
+    winston.warn('you have to override abortAllStreams for good stream handling...')
+  }
+
+  resetConnection = () => {
+    this.watchEndpoint()
+    this.abortAllStreams()
+  }
 
   setDataUpdatedListener = (listener:dataUpdatedListener) => {
     this.dataUpdatedListener = listener

@@ -3,6 +3,7 @@
 exports[`tests the adminSchema snapshot the resolver function 1`] = `
 Object {
   "Mutation": Object {
+    "resetEndpointFinder": [Function],
     "updateLogger": [Function],
   },
   "Query": Object {
@@ -67,6 +68,7 @@ exports[`tests the adminSchema snapshot the typedefs 1`] = `
   }
   type Mutation{
     updateLogger(logFormat: logFormat, logLevel: logLevel ): Boolean
+    resetEndpointFinderWatcher: Boolean
   }
 
 

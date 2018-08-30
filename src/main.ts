@@ -17,7 +17,7 @@ import {
   getLogFormat,
   getLogLevel,
 } from './properties'
-
+import { Interpreter } from './interpreter/Interpreter'
 import  { Endpoints } from './interpreter/endpoints'
 import { sortEndpointAndFindAvailableEndpoints } from './interpreter/endpointsAvailable'
 import { getAdminSchema } from './admin'
@@ -52,6 +52,9 @@ let foundedEndpoints: Endpoints = {}
 const run = async() => {
   winston.info('Start IT')
   winston.info('With Configuration: ')
+
+  let interpreter: Interpreter = null
+
   printAllConfigs()
   let handleRestart = (endpoint: Endpoints) => {
     return Promise.resolve(endpoint)
@@ -63,6 +66,7 @@ const run = async() => {
         foundedEndpoints = await k8sFinder.getEndpoints()
       },          getPollingMs())
       handleRestart = k8sFinder.handleRestart
+      interpreter = k8sFinder
       break
     }
     case 'docker': {
@@ -71,6 +75,7 @@ const run = async() => {
         foundedEndpoints = await dockerFinder.getEndpoints()
       },          getPollingMs())
       handleRestart = dockerFinder.handleRestart
+      interpreter = dockerFinder
       break
     }
 
@@ -86,7 +91,7 @@ const run = async() => {
         watcher.abortAllStreams()
         watcher.watchEndpoint()
       },          getResetEndpointTime())
-
+      interpreter = watcher
       break
     }
     case 'dockerWatch': {
@@ -98,11 +103,12 @@ const run = async() => {
         foundedEndpoints = endpoints
       })
       handleRestart = dockerWatcher.handleRestart
+      interpreter = dockerWatcher
     }
 
   }
   setInterval(() => {
-    startWatcher(cloner.deep.copy(foundedEndpoints), handleRestart)
+    startWatcher(cloner.deep.copy(foundedEndpoints), handleRestart, interpreter)
   },          getPollingMs())
 
 }
@@ -112,7 +118,7 @@ let lastEndPoints : string = ''
 let server = null
 
 const startWatcher = async(end: Endpoints,
-                           handleRestart:(endpoints:Endpoints) => Promise<Endpoints>) => {
+                           handleRestart:(endpoints:Endpoints) => Promise<Endpoints>, interpreter: Interpreter) => {
   const endpoints = await sortEndpointAndFindAvailableEndpoints(end)
   if (JSON.stringify(endpoints) !== lastEndPoints) {
     winston.info('Changes Found restart Server')
@@ -125,7 +131,7 @@ const startWatcher = async(end: Endpoints,
     //     cluster.fork()
     //   }
     // } else {
-    server = await start(await handleRestart(endpoints))
+    server = await start(await handleRestart(endpoints), interpreter)
     // }
 
   } else {
@@ -168,7 +174,7 @@ const startWatcher = async(end: Endpoints,
 // };
 // const oldSchema = null
 
-const start = async(endpoints : Endpoints) => {
+const start = async(endpoints : Endpoints, interpreter: Interpreter) => {
   winston.info('loading endpoints', { endpoints })
   const weaverEndpoints = []
 
@@ -248,6 +254,7 @@ const start = async(endpoints : Endpoints) => {
     playground,
     introspection: true,
     context: {
+      interpreter,
       endpoints: await endpoints,
     },
     schema: getAdminSchema(),

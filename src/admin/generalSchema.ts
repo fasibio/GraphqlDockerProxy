@@ -1,6 +1,7 @@
 import { makeExecutableSchema } from 'graphql-tools'
 import { getBuildNumber, getVersion, getPollingMs, runtime, getBodyParserLimit, network, getLogFormat, getLogLevel } from '../properties'
 import { loadLogger } from '../logger'
+import { Interpreter } from '../interpreter/Interpreter'
 export const typeDefs = `
   type namespace{
     name: String
@@ -55,6 +56,7 @@ export const typeDefs = `
   }
   type Mutation{
     updateLogger(logFormat: logFormat, logLevel: logLevel ): Boolean
+    resetEndpointFinderWatcher: Boolean
   }
 
 
@@ -80,6 +82,13 @@ const mappingEndpoint = (endpoint) => {
 }
 export const resolvers = {
   Mutation: {
+    resetEndpointFinder: (root, args, context) => {
+      const interpreter : Interpreter = context.interpreter
+      winston.info('Reset Watching from K8S endpoints manual')
+      interpreter.resetConnection()
+      return true
+    },
+
     updateLogger: (root, args) => {
       loadLogger({
         logFormat: args.logFormat,
