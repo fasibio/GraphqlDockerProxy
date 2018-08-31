@@ -1,3 +1,4 @@
+
 export const network = () => {
   return process.env.dockerNetwork || 'web'
 }
@@ -14,6 +15,10 @@ export const getBuildNumber = () => {
   return idx(process, _ => _.env.BUILD_NUMBER)
 }
 
+/**
+ * Set set loglevel
+ * debug, info, warn, error etc
+ */
 export const getLogLevel = () => {
   return idx(process, _ => _.env.winstonLogLevel) || 'info'
 }

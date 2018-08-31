@@ -5,7 +5,6 @@ import { weaveSchemas } from 'graphql-weaver'
 import { DockerFinder } from './interpreter/finder/dockerFinder/dockerFinder'
 import { K8sFinder } from './interpreter/finder/k8sFinder/k8sFinder'
 import { K8sWatcher } from './interpreter/watcher/k8s/K8sWatcher'
-import { diff } from 'deep-object-diff'
 import * as http from 'http'
 import {
   runtime,
@@ -28,7 +27,6 @@ import * as cluster from 'cluster'
 import * as basicAuth from 'express-basic-auth'
 import * as cloner from 'cloner'
 import { DockerWatcher } from './interpreter/watcher/docker/DockerWatcher'
-// import deepcopy from 'deepcopy/cjs/index'
 import { getMergedInformation } from './schemaBuilder'
 require('./idx')
 import { loadLogger } from './logger'
@@ -126,59 +124,15 @@ const startWatcher = async(end: Endpoints,
   if (JSON.stringify(endpoints) !== lastEndPoints) {
     winston.info('Changes Found restart Server')
     if (winston.level === 'debug' && lastEndPoints !== '') {
-      winston.debug('The Changes: ' , diff(JSON.parse(lastEndPoints), endpoints))
     }
     lastEndPoints = JSON.stringify(endpoints)
-    // cluster.schedulingPolicy = cluster.SCHED_RR
-    // if (cluster.isMaster){
-    //   var cpuCount = require('os').cpus().length
-    //   for (var i = 0; i < cpuCount; i += 1) {
-    //     console.log('START SLAVE')
-    //     cluster.fork()
-    //   }
-    // } else {
     server = await start(await handleRestart(endpoints), interpreter)
-    // }
 
   } else {
     winston.debug('no Change at endpoints does not need a restart')
   }
 }
-// const runPoller = (finder) => {
 
-//   setInterval(async() => {
-//     try {
-//       let endpoints : Endpoints = await finder.getEndpoints();
-//       endpoints = await sortEndpointAndFindAvailableEndpoints(endpoints);
-//       if (JSON.stringify(endpoints) !== lastEndPoints) {
-//         winston.info('Changes Found restart Server');
-//         if (server != null) {
-//           server.close();
-//         }
-
-//         lastEndPoints = JSON.stringify(endpoints);
-//         process.env.NODE_CLUSTER_SCHED_POLICY = 'rr';
-//         if (cluster.isMaster) {
-//           const cpuCount = require('os').cpus().length;
-//           for (let i = 0; i < cpuCount; i += 1) {
-//             winston.info('START SLAVE');
-//             cluster.fork();
-//           }
-//         } else {
-//           server = await start(await finder.handleRestart(endpoints));
-//         }
-
-//       } else {
-//         winston.info('no Change at endpoints does not need a restart');
-//       }
-//     } catch (e) {
-//       winston.error('GLOBAL ERROR', e);
-//       lastEndPoints = '';
-//     }
-
-//   },          getPollingMs());
-// };
-// const oldSchema = null
 let app :core.Express = null
 const start = async(endpoints : Endpoints, interpreter: Interpreter) => {
   winston.info('loading endpoints', { endpoints })
@@ -193,19 +147,7 @@ const start = async(endpoints : Endpoints, interpreter: Interpreter) => {
   }
   const schema = await weaverIt(weaverEndpoints)
   let schemaMerged = null
-  // if (knownOldSchemas() == 'true'){
-
-  //   if (oldSchema != null){
-  //     console.log('merge Old and New Schemas. to known old Schemas', oldSchema)
-  //     schemaMerged = mergeSchemas({
-  //       schemas: [schema, oldSchema],
-  //     })
-  //   } else {
   schemaMerged = schema
-  // }
-
-  // oldSchema = deepcopy(schemaMerged)
-  // }
   app = express()
   let playground: any = false
   if (showPlayground()) {
@@ -283,16 +225,6 @@ const start = async(endpoints : Endpoints, interpreter: Interpreter) => {
   return app.listen(3000)
 
 }
-// process.env['NODE_CLUSTER_SCHED_POLICY'] = 'rr';
-// if (cluster.isMaster) {
-//   const cpuCount = require('os').cpus().length;
-//   for (let i = 0; i < cpuCount; i += 1) {
-//     cluster.fork();
-//   }
-// } else {
-  // winston.info('START Slave');
-
-// }
 
 if (getEnableClustering()) {
   process.env['NODE_CLUSTER_SCHED_POLICY'] = 'rr'
@@ -309,14 +241,15 @@ if (getEnableClustering()) {
   run()
 }
 
-// The signals we want to handle
-// NOTE: although it is tempting, the SIGKILL signal (9) cannot be intercepted and handled
+/**
+ * Shutdownhandler
+ */
+
 const signals = {
   SIGHUP: 1,
   SIGINT: 2,
   SIGTERM: 15,
 }
-// Do any necessary shutdown logic for our application here
 const shutdown = (signal, value) => {
   winston.info('shutdown!')
   server.close(() => {
@@ -326,9 +259,7 @@ const shutdown = (signal, value) => {
     })
   })
 }
-// Create a listener for each of the signals that we want to handle
 Object.keys(signals).forEach((signal) => {
-
   (process as NodeJS.EventEmitter).on(signal, () => {
     winston.debug(`process received a ${signal} signal`)
     shutdown(signal, signals[signal])
