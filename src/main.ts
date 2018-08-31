@@ -4,6 +4,7 @@ import { weaveSchemas } from 'graphql-weaver'
 import { DockerFinder } from './interpreter/finder/dockerFinder/dockerFinder'
 import { K8sFinder } from './interpreter/finder/k8sFinder/k8sFinder'
 import { K8sWatcher } from './interpreter/watcher/k8s/K8sWatcher'
+import * as http from 'http'
 import {
   runtime,
   getPollingMs,
@@ -115,7 +116,7 @@ const run = async() => {
 
 // start and restart by listener
 let lastEndPoints : string = ''
-let server = null
+let server: http.Server = null
 
 const startWatcher = async(end: Endpoints,
                            handleRestart:(endpoints:Endpoints) => Promise<Endpoints>, interpreter: Interpreter) => {
@@ -228,6 +229,7 @@ const start = async(endpoints : Endpoints, interpreter: Interpreter) => {
       }
     },
   })
+
   apiServer.applyMiddleware({
     app,
     path: '/graphql',
@@ -266,9 +268,11 @@ const start = async(endpoints : Endpoints, interpreter: Interpreter) => {
   })
 
   winston.info('Server running. Open http://localhost:3000/graphql to run queries.')
+
   if (server != null) {
     server.close()
   }
+
   return app.listen(3000)
 }
 // process.env['NODE_CLUSTER_SCHED_POLICY'] = 'rr';

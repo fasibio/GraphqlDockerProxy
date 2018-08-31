@@ -3,7 +3,7 @@
 exports[`tests the adminSchema snapshot the resolver function 1`] = `
 Object {
   "Mutation": Object {
-    "resetEndpointFinder": [Function],
+    "resetEndpointFinderWatcher": [Function],
     "updateLogger": [Function],
   },
   "Query": Object {

@@ -82,7 +82,7 @@ const mappingEndpoint = (endpoint) => {
 }
 export const resolvers = {
   Mutation: {
-    resetEndpointFinder: (root, args, context) => {
+    resetEndpointFinderWatcher: (root, args, context) => {
       const interpreter : Interpreter = context.interpreter
       winston.info('Reset Watching from K8S endpoints manual')
       interpreter.resetConnection()

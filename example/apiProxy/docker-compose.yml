@@ -2,7 +2,7 @@ version: '3'
 services: 
   api: 
     restart: always
-    image: fasibio/graphqldockerproxy
+    image: fasibio/graphqldockerproxy:rc_0.0.12_19
     expose:
       - 3000
     ports:
