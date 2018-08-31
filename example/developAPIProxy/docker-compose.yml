@@ -12,8 +12,9 @@ services:
     environment: 
       - dockerNetwork=web
       - gqlProxyToken=1234
-      - qglProxyRuntime=docker
+      - qglProxyRuntime=dockerWatch
       - gqlProxyKnownOldSchemas=true
+      - winstonLogLevel=debug
     volumes: 
      - /var/run/docker.sock:/var/run/docker.sock
 networks:

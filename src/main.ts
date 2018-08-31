@@ -1,9 +1,11 @@
 import { ApolloServer } from 'apollo-server-express'
 import * as express from 'express'
+import * as core from 'express-serve-static-core'
 import { weaveSchemas } from 'graphql-weaver'
 import { DockerFinder } from './interpreter/finder/dockerFinder/dockerFinder'
 import { K8sFinder } from './interpreter/finder/k8sFinder/k8sFinder'
 import { K8sWatcher } from './interpreter/watcher/k8s/K8sWatcher'
+import { diff } from 'deep-object-diff'
 import * as http from 'http'
 import {
   runtime,
@@ -123,6 +125,9 @@ const startWatcher = async(end: Endpoints,
   const endpoints = await sortEndpointAndFindAvailableEndpoints(end)
   if (JSON.stringify(endpoints) !== lastEndPoints) {
     winston.info('Changes Found restart Server')
+    if (winston.level === 'debug' && lastEndPoints !== '') {
+      winston.debug('The Changes: ' , diff(JSON.parse(lastEndPoints), endpoints))
+    }
     lastEndPoints = JSON.stringify(endpoints)
     // cluster.schedulingPolicy = cluster.SCHED_RR
     // if (cluster.isMaster){
@@ -174,7 +179,7 @@ const startWatcher = async(end: Endpoints,
 //   },          getPollingMs());
 // };
 // const oldSchema = null
-
+let app :core.Express = null
 const start = async(endpoints : Endpoints, interpreter: Interpreter) => {
   winston.info('loading endpoints', { endpoints })
   const weaverEndpoints = []
@@ -201,7 +206,7 @@ const start = async(endpoints : Endpoints, interpreter: Interpreter) => {
 
   // oldSchema = deepcopy(schemaMerged)
   // }
-  const app = express()
+  app = express()
   let playground: any = false
   if (showPlayground()) {
     playground = {
@@ -268,12 +273,15 @@ const start = async(endpoints : Endpoints, interpreter: Interpreter) => {
   })
 
   winston.info('Server running. Open http://localhost:3000/graphql to run queries.')
-
   if (server != null) {
-    server.close()
+    server.close(() => {
+      server = app.listen(3000)
+    })
+    return server
   }
 
   return app.listen(3000)
+
 }
 // process.env['NODE_CLUSTER_SCHED_POLICY'] = 'rr';
 // if (cluster.isMaster) {
