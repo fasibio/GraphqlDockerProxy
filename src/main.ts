@@ -308,3 +308,29 @@ if (getEnableClustering()) {
 } else {
   run()
 }
+
+// The signals we want to handle
+// NOTE: although it is tempting, the SIGKILL signal (9) cannot be intercepted and handled
+const signals = {
+  SIGHUP: 1,
+  SIGINT: 2,
+  SIGTERM: 15,
+}
+// Do any necessary shutdown logic for our application here
+const shutdown = (signal, value) => {
+  winston.info('shutdown!')
+  server.close(() => {
+    winston.info(`server stopped by ${signal} with value ${value}`)
+    server.close(() => {
+      process.exit(128 + value)
+    })
+  })
+}
+// Create a listener for each of the signals that we want to handle
+Object.keys(signals).forEach((signal) => {
+
+  (process as NodeJS.EventEmitter).on(signal, () => {
+    winston.debug(`process received a ${signal} signal`)
+    shutdown(signal, signals[signal])
+  })
+})
