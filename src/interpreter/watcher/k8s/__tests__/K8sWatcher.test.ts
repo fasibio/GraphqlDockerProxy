@@ -1,6 +1,6 @@
 import { K8sWatcher } from '../K8sWatcher'
 import { Readable } from 'stream'
-
+import { Endpoints } from '../../../endpoints'
 jest.mock('../../../endpointsAvailable', () => {
   return {
     allEndpointsAvailable: () => true,
@@ -13,7 +13,7 @@ jest.mock('../../../endpointsAvailable', () => {
 describe('tests the K8sWatcher', () => {
 
   let k8sWatcher = null
-  let endpoints = {}
+  let endpoints: Endpoints = {}
   beforeEach(() => {
     k8sWatcher = new K8sWatcher()
     endpoints = {
@@ -22,7 +22,6 @@ describe('tests the K8sWatcher', () => {
         { url: 'http://swapi.starwars:9002/graphql',
           namespace: 'swapi',
           typePrefix: 'swapi_',
-          __created: '',
           __imageID: '',
           __deploymentName: 'swapi',
         },
@@ -86,19 +85,18 @@ describe('tests the K8sWatcher', () => {
         },
       }
       await mockedStream.emit('data', JSON.stringify(mockStreamObj))
-
-      expect(callMockFunc).toBeCalledWith({
+      const haveTo: Endpoints = {
         swapi:
         [
           { url: 'http://swapi.starwars:9002/graphql',
             namespace: 'swapi',
             typePrefix: 'swapi_',
-            __created: '',
             __imageID: '',
             __deploymentName: 'swapi',
           },
         ],
-      })
+      }
+      expect(callMockFunc).toBeCalledWith(haveTo)
     })
 
     it('by MODIFIED deyployment', async() => {
@@ -131,18 +129,18 @@ describe('tests the K8sWatcher', () => {
       }
       await mockedStream.emit('data', JSON.stringify(mockStreamObj))
 
-      expect(callMockFunc).toBeCalledWith({
+      const haveTo: Endpoints = {
         swapi:
         [
           { url: 'http://swapi.starwars:9002/graphql',
             namespace: 'swapi',
             typePrefix: 'swapi_',
-            __created: '',
             __imageID: '',
             __deploymentName: 'swapi',
           },
         ],
-      })
+      }
+      expect(callMockFunc).toBeCalledWith(haveTo)
     })
 
     xit('by DELETED deyployment', async() => {
@@ -210,9 +208,8 @@ describe('tests the K8sWatcher', () => {
         url: 'http://nodelete.default:9002/graphql',
         namespace: 'swapi',
         typePrefix: 'swapi_',
-        __created: '',
         __imageID: '',
-        __deploymentName: 'nodelete',
+        __deploymentName: 'swapi',
       }
       endpoints.swapi.push(noDelete)
       k8sWatcher.endpoints = endpoints
