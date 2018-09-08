@@ -1,4 +1,5 @@
 import schema from '../generalSchema'
+import { Interpreter } from '../../interpreter/Interpreter'
 import { clearAll } from '../../interpreter/finder/k8sFinder/blacklist'
 jest.mock('../../interpreter/finder/k8sFinder/blacklist', () => {
   return {
@@ -28,7 +29,7 @@ jest.mock('graphql-tools', () => {
 })
 
 describe('tests the adminSchema', () => {
-  it('snapshot the typedefs', () => {
+  it('snapshot the typeDefs', () => {
 
     expect(schema.typeDefs).toMatchSnapshot()// tslint:disable-line
   })
@@ -37,10 +38,26 @@ describe('tests the adminSchema', () => {
     expect(schema.resolvers).toMatchSnapshot()// tslint:disable-line
   })
 
+  it('tests resolver mutation => resetEndpointFinderWatcher', () => {
+    const testInterpreter = new class MockInterpreter implements Interpreter{
+      testCallFunc = jest.fn()
+
+      resetConnection =  () => {
+        this.testCallFunc()
+      }
+    }
+    schema.resolvers.Mutation.resetEndpointFinderWatcher(null, null, {
+      interpreter: testInterpreter,
+    })
+
+    expect(testInterpreter.testCallFunc).toBeCalled()
+  })
+
   it('tests resolver configuration', () => {
     expect(schema.resolvers.Query.configuration()).toMatchSnapshot// tslint:disable-line
   })
   xit('tests resolver kubernetes=>blacklist ', () => {
+
     expect(schema.resolvers.Query.kubernetes().blacklist()).toMatchSnapshot()// tslint:disable-line
   })
 

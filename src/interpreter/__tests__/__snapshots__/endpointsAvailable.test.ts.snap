@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test endpointsAvailable tests that not available endpoints are filtert 1`] = `
+Object {
+  "a": Array [
+    Object {
+      "__deploymentName": "___",
+      "__imageID": "___",
+      "__introspection": Object {
+        "found": true,
+      },
+      "namespace": "mock1",
+      "typePrefix": "_mock1",
+      "url": "found",
+    },
+    Object {
+      "__deploymentName": "___",
+      "__imageID": "___",
+      "__introspection": Object {
+        "found": true,
+      },
+      "namespace": "mock1",
+      "typePrefix": "_mock1",
+      "url": "found",
+    },
+  ],
+  "b": Array [
+    Object {
+      "__deploymentName": "___",
+      "__imageID": "___",
+      "__introspection": Object {
+        "found": true,
+      },
+      "namespace": "mock1",
+      "typePrefix": "_mock1",
+      "url": "found",
+    },
+  ],
+}
+`;

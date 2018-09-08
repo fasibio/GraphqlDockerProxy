@@ -13,7 +13,7 @@ Object {
 }
 `;
 
-exports[`tests the adminSchema snapshot the typedefs 1`] = `
+exports[`tests the adminSchema snapshot the typeDefs 1`] = `
 "
   type namespace{
     name: String

@@ -1,5 +1,5 @@
 import * as winston from 'winston'
-import { getLogLevel, getLogFormat, getEnableClustering } from'./properties'
+import { getEnableClustering } from'./properties'
 import * as cluster from 'cluster'
 import { Endpoints } from './interpreter/endpoints'
 import * as cloner from 'cloner'
@@ -9,7 +9,6 @@ type loadLoggerParam = {
   loglevel: string,
 }
 export const loadLogger = (param: loadLoggerParam) => {
-
   let logFormat = winston.format.simple()
   switch (param.logFormat){
     case 'simple': {
