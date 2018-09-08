@@ -2,7 +2,7 @@
     "exclude": [
         "__mocks__",
         "**/*.test.ts",
-        "**/jstlogger.ts"
+        "**/jestlogger.ts"
     ],
     "compilerOptions": {
         "target": "es5",
