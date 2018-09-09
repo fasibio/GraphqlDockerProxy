@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test schemabuilder tests createRemoteSchema 1`] = `
+Object {
+  "link": class_1 {
+    "uri": "mock",
+  },
+  "schema": class_1 {
+    "uri": "mock",
+  },
+}
+`;
+
+exports[`test schemabuilder tests getMergedInformation 1`] = `
+Object {
+  "schemas": Array [
+    Object {
+      "link": class_1 {
+        "uri": "mock",
+      },
+      "schema": class_1 {
+        "uri": "mock",
+      },
+    },
+  ],
+}
+`;

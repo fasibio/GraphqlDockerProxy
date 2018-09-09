@@ -4,7 +4,7 @@ import { makeRemoteExecutableSchema, mergeSchemas, introspectSchema } from 'grap
 import fetch from 'node-fetch'
 import  { Endpoint } from './interpreter/endpoints'
 
-export const createRemoteSchema = async(url) => {
+export const createRemoteSchema = async(url : string) => {
   const http = new HttpLink({ fetch, uri: url  })
   const link = setContext((request, previousContext) => {
     return previousContext.graphqlContext
