@@ -1,18 +1,6 @@
 import schema from '../generalSchema'
 import { Interpreter } from '../../interpreter/Interpreter'
-import { clearAll } from '../../interpreter/finder/k8sFinder/blacklist'
-jest.mock('../../interpreter/finder/k8sFinder/blacklist', () => {
-  return {
-    getBlacklist: () => {
-      return [
-        '1',
-        '2',
-        '3',
-      ]
-    },
-    clearAll: jest.fn(),
-  }
-})
+
 jest.mock('../../properties', () => {
   return {
     getBuildNumber: () => 'mockBnNumber',
@@ -55,16 +43,6 @@ describe('tests the adminSchema', () => {
 
   it('tests resolver configuration', () => {
     expect(schema.resolvers.Query.configuration()).toMatchSnapshot// tslint:disable-line
-  })
-  xit('tests resolver kubernetes=>blacklist ', () => {
-
-    expect(schema.resolvers.Query.kubernetes().blacklist()).toMatchSnapshot()// tslint:disable-line
-  })
-
-  xit('tests resolver kubernetes=>clearBlackList ', () => {
-    expect(schema.resolvers.Query.kubernetes().clearBlackList()).toBeTruthy()// tslint:disable-line
-    expect(clearAll).toBeCalled()
-
   })
 
   describe('tests resolver namespaces', () => {

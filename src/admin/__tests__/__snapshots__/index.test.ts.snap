@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tests getAdminSchema tests by runtime: docker 1`] = `
+Object {
+  "schemas": Array [
+    Object {
+      "resolvers": Object {
+        "mock": true,
+      },
+      "typeDefs": "generalSchema Admin",
+    },
+  ],
+}
+`;
+
+exports[`tests getAdminSchema tests by runtime: dockerWatch 1`] = `
+Object {
+  "schemas": Array [
+    Object {
+      "resolvers": Object {
+        "mock": true,
+      },
+      "typeDefs": "generalSchema Admin",
+    },
+  ],
+}
+`;
+
+exports[`tests getAdminSchema tests by runtime: kubernetes 1`] = `
+Object {
+  "schemas": Array [
+    Object {
+      "resolvers": Object {
+        "mock": true,
+      },
+      "typeDefs": "k8sSchema Admin",
+    },
+    Object {
+      "resolvers": Object {
+        "mock": true,
+      },
+      "typeDefs": "generalSchema Admin",
+    },
+  ],
+}
+`;
+
+exports[`tests getAdminSchema tests by runtime: kubernetesWatch 1`] = `
+Object {
+  "schemas": Array [
+    Object {
+      "resolvers": Object {
+        "mock": true,
+      },
+      "typeDefs": "k8sSchema Admin",
+    },
+    Object {
+      "resolvers": Object {
+        "mock": true,
+      },
+      "typeDefs": "generalSchema Admin",
+    },
+  ],
+}
+`;

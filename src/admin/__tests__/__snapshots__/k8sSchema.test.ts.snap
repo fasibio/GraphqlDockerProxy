@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test k8sSchema snapshot the resolver function 1`] = `
+Object {
+  "Query": Object {
+    "kubernetes": [Function],
+  },
+}
+`;
+
+exports[`test k8sSchema snapshot the typeDefs 1`] = `
+"
+type Kubernetes{
+    blacklist: [String]
+    clearBlackList: Boolean
+  }
+type Query{
+    kubernetes: Kubernetes
+
+  }
+"
+`;
+
+exports[`test k8sSchema tests resolver kubernetes=>blacklist  1`] = `
+Array [
+  "1",
+  "2",
+  "3",
+]
+`;

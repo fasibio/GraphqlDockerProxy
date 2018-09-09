@@ -1,5 +1,4 @@
 
-// @flow
 import { Endpoints } from '../endpoints'
 import * as cloner from 'cloner'
 import { Interpreter } from '../Interpreter'

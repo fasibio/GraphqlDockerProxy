@@ -1,4 +1,3 @@
-// @flow
 const Client = require('kubernetes-client').Client
 const config = require('kubernetes-client').config
 
@@ -7,7 +6,6 @@ import { WatcherInterface } from '../WatcherInterface'
 import { getInClusterByUser } from './getInClusterByUser'
 import * as clientLabels from '../../clientLabels'
 import { token, kubernetesConfigurationKind } from '../../../properties'
-declare function idx(obj: any, callBack: any):any
 type stream = {
   pods?: any,
   deployment?: any,

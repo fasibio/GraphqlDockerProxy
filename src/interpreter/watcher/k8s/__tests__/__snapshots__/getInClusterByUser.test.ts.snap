@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tests the getInClusterByUser snapshot result 1`] = `
+Object {
+  "auth": Object {
+    "pass": "mockPassword",
+    "user": "mockUser",
+  },
+  "insecureSkipTlsVerify": true,
+  "url": "https://mockHost:mockPort",
+}
+`;

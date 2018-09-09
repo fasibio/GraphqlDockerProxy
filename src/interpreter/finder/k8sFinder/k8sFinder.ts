@@ -1,5 +1,4 @@
 
-// @flow
 const Client = require('kubernetes-client').Client
 const config = require('kubernetes-client').config
 import * as clientLabels from '../../clientLabels'
