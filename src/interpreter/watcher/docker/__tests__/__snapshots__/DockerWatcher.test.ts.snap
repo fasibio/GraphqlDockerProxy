@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test the DockerWatcher tests onContainerUp tests by container with gql label token 1`] = `
+Object {
+  "a": Array [
+    Object {
+      "__deploymentName": undefined,
+      "__imageID": undefined,
+      "namespace": "a",
+      "typePrefix": "a_",
+      "url": "http://127.0.0.1:mock:9000",
+    },
+  ],
+}
+`;

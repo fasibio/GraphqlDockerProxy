@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test the WatcherInterface snapshot all methodes and const 1`] = `"resetConnection"`;
+
+exports[`Test the WatcherInterface snapshot all methodes and const 2`] = `"endpoints"`;
+
+exports[`Test the WatcherInterface snapshot all methodes and const 3`] = `"handleRestart"`;
+
+exports[`Test the WatcherInterface snapshot all methodes and const 4`] = `"watchEndpoint"`;
+
+exports[`Test the WatcherInterface snapshot all methodes and const 5`] = `"abortAllStreams"`;
+
+exports[`Test the WatcherInterface snapshot all methodes and const 6`] = `"setDataUpdatedListener"`;
+
+exports[`Test the WatcherInterface snapshot all methodes and const 7`] = `"callDataUpdateListener"`;
+
+exports[`Test the WatcherInterface snapshot all methodes and const 8`] = `"deleteEndpoint"`;
+
+exports[`Test the WatcherInterface snapshot all methodes and const 9`] = `"constructor"`;
