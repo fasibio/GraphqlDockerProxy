@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tests the runtimeini tests loadRuntime by runtime: kubernetes 1`] = `
+Object {
+  "foundedEndpoints": Object {
+    "a": Array [
+      Object {
+        "__deploymentName": "mock",
+        "__imageID": "mock",
+        "namespace": "mock",
+        "typePrefix": "_mock",
+        "url": "mock",
+      },
+    ],
+  },
+  "handleRestart": [Function],
+  "interpreter": K8sWatcherMock {},
+}
+`;
+
+exports[`tests the runtimeini tests loadRuntime by runtime: kubernetes 2`] = `
+Object {
+  "foundedEndpoints": Object {
+    "a": Array [
+      Object {
+        "__deploymentName": "mock",
+        "__imageID": "mock",
+        "namespace": "mock",
+        "typePrefix": "_mock",
+        "url": "mock",
+      },
+    ],
+  },
+  "handleRestart": [Function],
+  "interpreter": K8sWatcherMock {},
+}
+`;
+
+exports[`tests the runtimeini tests loadRuntime by runtime: kubernetes 3`] = `
+Object {
+  "foundedEndpoints": Object {
+    "a": Array [
+      Object {
+        "__deploymentName": "mock",
+        "__imageID": "mock",
+        "namespace": "mock",
+        "typePrefix": "_mock",
+        "url": "mock",
+      },
+    ],
+  },
+  "handleRestart": [Function],
+  "interpreter": K8sFinderMock {},
+}
+`;
+
+exports[`tests the runtimeini tests loadRuntime by runtime: kubernetes 4`] = `
+Object {
+  "foundedEndpoints": Object {
+    "a": Array [
+      Object {
+        "__deploymentName": "mock",
+        "__imageID": "mock",
+        "namespace": "mock",
+        "typePrefix": "_mock",
+        "url": "mock",
+      },
+    ],
+  },
+  "handleRestart": [Function],
+  "interpreter": K8sFinderMock {},
+}
+`;
+
+exports[`tests the runtimeini tests loadRuntime by runtime: kubernetes 5`] = `
+Object {
+  "foundedEndpoints": Object {
+    "a": Array [
+      Object {
+        "__deploymentName": "mock",
+        "__imageID": "mock",
+        "namespace": "mock",
+        "typePrefix": "_mock",
+        "url": "mock",
+      },
+    ],
+  },
+  "handleRestart": [Function],
+  "interpreter": DockerFinderMock {},
+}
+`;

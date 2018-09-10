@@ -2,12 +2,8 @@ import { ApolloServer } from 'apollo-server-express'
 import * as express from 'express'
 import * as core from 'express-serve-static-core'
 import { weaveSchemas } from 'graphql-weaver'
-import { DockerFinder } from './interpreter/finder/dockerFinder/dockerFinder'
-import { K8sFinder } from './interpreter/finder/k8sFinder/k8sFinder'
-import { K8sWatcher } from './interpreter/watcher/k8s/K8sWatcher'
 import * as http from 'http'
 import {
-  runtime,
   getPollingMs,
   printAllConfigs,
   adminPassword,
@@ -15,7 +11,6 @@ import {
   showPlayground,
   getBodyParserLimit,
   getEnableClustering,
-  getResetEndpointTime,
   getLogFormat,
   getLogLevel,
 } from './properties'
@@ -26,10 +21,10 @@ import { getAdminSchema } from './admin'
 import * as cluster from 'cluster'
 import * as basicAuth from 'express-basic-auth'
 import * as cloner from 'cloner'
-import { DockerWatcher } from './interpreter/watcher/docker/DockerWatcher'
 import { getMergedInformation } from './schemaBuilder'
 require('./idx')
 import { loadLogger } from './logger'
+import { loadRuntimeInfo } from './runtimeIni'
 loadLogger({
   logFormat: getLogFormat(),
   loglevel: getLogLevel(),
@@ -60,54 +55,12 @@ const run = async() => {
   let handleRestart = (endpoint: Endpoints) => {
     return Promise.resolve(endpoint)
   }
-  switch (runtime()){
-    case 'kubernetes': {
-      const k8sFinder = new K8sFinder()
-      setInterval(async() => {
-        foundedEndpoints = await k8sFinder.getEndpoints()
-      },          getPollingMs())
-      handleRestart = k8sFinder.handleRestart
-      interpreter = k8sFinder
-      break
-    }
-    case 'docker': {
-      const dockerFinder = new DockerFinder()
-      setInterval(async() => {
-        foundedEndpoints = await dockerFinder.getEndpoints()
-      },          getPollingMs())
-      handleRestart = dockerFinder.handleRestart
-      interpreter = dockerFinder
-      break
-    }
+  loadRuntimeInfo((obj) => {
+    interpreter = obj.interpreter
+    handleRestart = obj.handleRestart
+    foundedEndpoints = obj.foundedEndpoints
 
-    case 'kubernetesWatch': {
-      const watcher = new K8sWatcher()
-      watcher.setDataUpdatedListener((endpoints) => {
-        winston.info('Watcher called new endpoints ', { endpoints })
-        foundedEndpoints = endpoints
-      })
-      watcher.watchEndpoint()
-      setInterval(() => {
-        winston.info('Reset Watching from K8S endpoints (work a around)')
-        watcher.abortAllStreams()
-        watcher.watchEndpoint()
-      },          getResetEndpointTime())
-      interpreter = watcher
-      break
-    }
-    case 'dockerWatch': {
-      const dockerWatcher = new DockerWatcher()
-      dockerWatcher.watchEndpoint()
-      dockerWatcher.setDataUpdatedListener((endpoints) => {
-        winston.info('Watcher called new endpoints ')
-        console.log(endpoints)
-        foundedEndpoints = endpoints
-      })
-      handleRestart = dockerWatcher.handleRestart
-      interpreter = dockerWatcher
-    }
-
-  }
+  })
   setInterval(() => {
     startWatcher(cloner.deep.copy(foundedEndpoints), handleRestart, interpreter)
   },          getPollingMs())
@@ -124,6 +77,7 @@ const startWatcher = async(end: Endpoints,
   if (JSON.stringify(endpoints) !== lastEndPoints) {
     winston.info('Changes Found restart Server')
     if (winston.level === 'debug' && lastEndPoints !== '') {
+
     }
     lastEndPoints = JSON.stringify(endpoints)
     server = await start(await handleRestart(endpoints), interpreter)

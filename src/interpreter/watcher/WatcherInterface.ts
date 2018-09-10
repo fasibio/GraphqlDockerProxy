@@ -25,8 +25,8 @@ class WatcherInterface extends Interpreter{
   }
 
   resetConnection = () => {
-    this.watchEndpoint()
     this.abortAllStreams()
+    this.watchEndpoint()
   }
 
   setDataUpdatedListener = (listener:dataUpdatedListener) => {
