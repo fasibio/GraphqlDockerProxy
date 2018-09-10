@@ -1,0 +1,12 @@
+@startuml
+actor ClientApplication
+collections GraphqlProxy
+collections SWAPI
+collections HelloWordGraphqClient
+
+ClientApplication -> GraphqlProxy : send GraphQL Query
+GraphqlProxy -> SWAPI : forward to Client
+GraphqlProxy -> HelloWordGraphqClient: forward to Client
+
+
+@enduml
