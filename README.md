@@ -1,5 +1,5 @@
+![Logo](/doc/assets/logo.png)
 # GraphqlDockerProxy
-![Logo](/doc/assets/logo_small.png)
 
 A generic Graphql Docker Proxy 
 
