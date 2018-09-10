@@ -1,4 +1,7 @@
 # GraphqlDockerProxy
+
+![Logo](/doc/assets/logo_small.png)
+
 A generic Graphql Docker Proxy 
 
 It's a GraphQL API Gateway. 
