@@ -10,6 +10,14 @@ jest.mock('../../../endpointsAvailable', () => {
   }
 })
 
+jest.mock('../../../../properties', () => {
+  return {
+    token: () => {
+      return '123'
+    },
+  }
+})
+
 describe('tests the K8sWatcher', () => {
 
   let k8sWatcher = null
@@ -30,152 +38,71 @@ describe('tests the K8sWatcher', () => {
     }
   })
 
-  describe('tests the updatelistener is Called by deployment stream', () => {
-    let mockedStream = null
+  describe('tests the updatelistener is called by service stream', () => {
+    let mockStream = null
     beforeEach(() => {
-      mockedStream = new Readable()
+      mockStream = new Readable()
       k8sWatcher.client = {
-        apis: {
-          apps: {
-            v1beta2: {
-              watch: {
-                namespaces: () => {
-                  return {
-                    deployments: {
-                      getStream: () => {
-                        mockedStream._read = function () { /* do nothing */ }
-                        return mockedStream
-                      },
+        api: {
+          v1: {
+            watch: {
+              namespaces: () => {
+                return {
+                  services: {
+                    getStream: () => {
+                      mockStream._read = function () { /* do nothing */ }
+                      return mockStream
                     },
-                  }
-                },
+                  },
+                }
               },
             },
           },
         },
       }
-      k8sWatcher.endpoints = endpoints
     })
 
-    it('by ADDING deyployment', async() => {
-      expect.assertions(1)
+    it('tests addService', async() => {
       const callMockFunc = jest.fn()
       k8sWatcher.setDataUpdatedListener(callMockFunc)
-      k8sWatcher.deploymentsNames = {
-        swapi: true,
-      }
-      k8sWatcher.watchDeploymentsForNamespace('mock')
+      k8sWatcher.watchServicesForNamespace('mock')
+      console.log('hier')
       const mockStreamObj = {
         type: 'ADDED',
         object: {
           metadata: {
+            name: 'mockName',
+            namespace: 'mockNamespace',
+            annotations:{
+              'gqlProxy.token':'123',
+              'gqlProxy.url': ':9000/graph',
+              'gqlProxy.namespace': 'mockgqlNamespace',
+            },
             creationTimestamp: 'mock',
             resourceVersion: 'mock',
           },
           spec: {
-            template: {
-              metadata: {
-                labels: {
-                  app: 'swapi',
-
-                },
-              },
+            selector: {
+              app: 'mockapp',
             },
           },
         },
       }
-      await mockedStream.emit('data', JSON.stringify(mockStreamObj))
+
+      await mockStream.emit('data', JSON.stringify(mockStreamObj))
       const haveTo: Endpoints = {
-        swapi:
+        mockgqlNamespace:
         [
-          { url: 'http://swapi.starwars:9002/graphql',
-            namespace: 'swapi',
-            typePrefix: 'swapi_',
+          { url: 'http://mockName.mockNamespace:9000/graph',
+            namespace: 'mockgqlNamespace',
+            typePrefix: 'mockgqlNamespace_',
             __imageID: '',
-            __deploymentName: 'swapi',
+            __deploymentName: 'mockapp',
           },
         ],
       }
       expect(callMockFunc).toBeCalledWith(haveTo)
     })
-
-    it('by MODIFIED deyployment', async() => {
-      expect.assertions(1)
-
-      const callMockFunc = jest.fn()
-      k8sWatcher.setDataUpdatedListener(callMockFunc)
-      k8sWatcher.deploymentsNames = {
-        swapi: true,
-      }
-      k8sWatcher.watchDeploymentsForNamespace('mock')
-      const mockStreamObj = {
-        type: 'MODIFIED',
-        object: {
-          metadata: {
-            creationTimestamp: 'mock',
-            resourceVersion: 'mock',
-          },
-          spec: {
-            template: {
-              metadata: {
-                labels: {
-                  app: 'swapi',
-
-                },
-              },
-            },
-          },
-        },
-      }
-      await mockedStream.emit('data', JSON.stringify(mockStreamObj))
-
-      const haveTo: Endpoints = {
-        swapi:
-        [
-          { url: 'http://swapi.starwars:9002/graphql',
-            namespace: 'swapi',
-            typePrefix: 'swapi_',
-            __imageID: '',
-            __deploymentName: 'swapi',
-          },
-        ],
-      }
-      expect(callMockFunc).toBeCalledWith(haveTo)
-    })
-
-    xit('by DELETED deyployment', async() => {
-      expect.assertions(1)
-
-      const callMockFunc = jest.fn()
-      k8sWatcher.setDataUpdatedListener(callMockFunc)
-      k8sWatcher.deploymentsNames = {
-        swapi: true,
-      }
-      k8sWatcher.watchDeploymentsForNamespace('mock')
-      const mockStreamObj = {
-        type: 'DELETED',
-        object: {
-          metadata: {
-            creationTimestamp: 'mock',
-            resourceVersion: 'mock',
-          },
-          spec: {
-            template: {
-              metadata: {
-                labels: {
-                  app: 'swapi',
-
-                },
-              },
-            },
-          },
-        },
-      }
-      await mockedStream.emit('data', JSON.stringify(mockStreamObj))
-
-      expect(callMockFunc).toBeCalledWith({})
-    })
-
   })
 
   describe('tests updateUrl ', () => {

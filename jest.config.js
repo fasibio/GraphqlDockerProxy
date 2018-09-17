@@ -21,11 +21,12 @@
   // collectCoverage: true,
   // 'coverageReporters': ['json', 'html'],
   coverageDirectory: 'coverage',
-  // 'collectCoverageFrom': [
-  //   '**/*.{js,jsx}',
-  //   '!**/node_modules/**',
-  //   '!**/vendor/**',
-  // ],
+  'collectCoverageFrom': [
+    '**/*.{ts}',
+    '!**/node_modules/**',
+    '!**/vendor/**',
+    '!**/*.d.{ts}'
+  ],
   setupFiles: [
     './src/idx.ts',
     './src/jestlogger.ts',

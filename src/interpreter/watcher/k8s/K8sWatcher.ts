@@ -7,9 +7,7 @@ import { getInClusterByUser } from './getInClusterByUser'
 import * as clientLabels from '../../clientLabels'
 import { token, kubernetesConfigurationKind } from '../../../properties'
 type stream = {
-  pods?: any,
-  deployment?: any,
-  service?: any,
+  service: any,
 }
 
 type streams = {
@@ -19,7 +17,6 @@ export class K8sWatcher extends WatcherInterface{
   namespaceStream: any = {}
   streams: streams = {}
   client: any = {}
-  deploymentsNames = {}
   constructor() {
     super()
 
@@ -28,8 +25,6 @@ export class K8sWatcher extends WatcherInterface{
     this.namespaceStream.abort()
     for (const one in this.streams) {
       const oneStream = this.streams[one]
-      idx(oneStream, _ => _.deployment.abort())
-      idx(oneStream, _ => _.pods.abort())
       idx(oneStream, _ => _.service.abort())
     }
 
@@ -37,109 +32,6 @@ export class K8sWatcher extends WatcherInterface{
 
   abortServicesForNamespace = (namespaceName : string) => {
     this.streams[namespaceName].service.abort()
-  }
-
-  abortDeploymentsForNamespace = (namespaceName: string) => {
-    this.streams[namespaceName].deployment.abort()
-  }
-
-  abortPodsForNamespace = (namespaceName: string) => {
-    this.streams[namespaceName].pods.abort()
-  }
-
-  watchPodsForNamespace = (namespaceName: string) => {
-    const podsStream = this.client.api.v1.watch.namespaces(namespaceName).pods.getStream()
-    const podsJSONStream = new JSONStream()
-    podsStream.pipe(podsJSONStream)
-    podsStream.on('error', (err) => {
-      winston.warn('error by pod Stream', err)
-    })
-    podsJSONStream.on('data', (pods) => {
-      const deploymentName = idx(pods, _ => _.object.metadata.labels.app) || ''
-      if (deploymentName === '') {
-        if (pods.status === 'Failure') {
-          winston.warn('no Permission for Namspace ' + namespaceName)
-        } else {
-          winston.warn('pod obj is missing object.metadata.labels.app will be ignored')
-        }
-      }
-      if (this.deploymentsNames[deploymentName] !== undefined) {
-        winston.debug('stream send new pods for: ' + deploymentName, { pods })
-        for (const one in this.endpoints) {
-          const oneEndpoint = this.endpoints[one]
-          for (let i = 0 ; i < oneEndpoint.length; i = i + 1) {
-
-            if (oneEndpoint[i].__deploymentName === deploymentName) {
-              switch (pods.type){
-                case 'MODIFIED':
-                case 'ADDED': {
-                  this.callDataUpdateListener()
-                  break
-                }
-                default: {
-                  winston.debug('un used event', pods.type)
-                  break
-                }
-              }
-            }
-          }
-        }
-      }
-    })
-    this.streams[namespaceName] = {
-      pods: podsStream,
-    }
-
-  }
-
-  watchDeploymentsForNamespace = (namespaceName: string) => {
-
-    // Deployments of Namespace
-    const deploymentsStream = this.client.apis.apps.v1beta2.watch
-                              .namespaces(namespaceName).deployments.getStream()
-    const deploymentsJsonStream = new JSONStream()
-    deploymentsStream.pipe(deploymentsJsonStream)
-    deploymentsStream.on('error', (err) => {
-      winston.warn('error by deployment Stream', err)
-    })
-    deploymentsJsonStream.on('data', async(deployment) => {
-
-      const name = idx(deployment, _ => _.object.spec.template.metadata.labels.app) || ''
-      if (name === '') {
-        if (deployment.status === 'Failure') {
-          winston.info('no Permission for Namspace' + namespaceName)
-        } else {
-          winston.info('deployment obj is missing attributes. missing labels app. will be ignored')
-        }
-      }
-      if (this.deploymentsNames[name] !== undefined) {
-        winston.debug('stream send new deployments for: ' + name, { deployment })
-        for (const one in this.endpoints) {
-          const oneEndpoint = this.endpoints[one]
-          for (let i = 0 ; i < oneEndpoint.length; i = i + 1) {
-
-            if (oneEndpoint[i].__deploymentName === name) {
-              switch (deployment.type){
-                case 'MODIFIED':
-                case 'ADDED': {
-                  await this.callDataUpdateListener()
-                  break
-                }
-                default: {
-                  winston.debug('un used event', deployment.type)
-                  break
-                }
-              }
-            }
-          }
-        }
-      }
-    })
-
-    this.streams[namespaceName] = {
-      deployment: deploymentsStream,
-    }
-
   }
 
   updateUrl = (url:string, sockData:any) :string => {
@@ -159,6 +51,7 @@ export class K8sWatcher extends WatcherInterface{
     servicesJsonStream.on('error', (err) => {
       winston.warn('error by service Stream', err)
     })
+
     servicesJsonStream.on('data', async (service) => {
 
       const item = service.object
@@ -176,7 +69,7 @@ export class K8sWatcher extends WatcherInterface{
             // deployments.body.items.filter((one) => {
             //   return one.spec.template.metadata.labels.app === deploymentName;
             // });
-            this.deploymentsNames[deploymentName] = true
+
             this.deleteEndpoint(namespace, deploymentName)
             if (this.endpoints[namespace] === undefined) {
               this.endpoints[namespace] = []
@@ -219,7 +112,6 @@ export class K8sWatcher extends WatcherInterface{
   }
 
   watchEndpoint = async() => {
-
     winston.info('Load K8s')
     switch (kubernetesConfigurationKind()){
       case 'fromKubeconfig': {
@@ -250,14 +142,10 @@ export class K8sWatcher extends WatcherInterface{
         switch (object.type){
           case 'ADDED': {
             this.watchServicesForNamespace(name)
-            this.watchDeploymentsForNamespace(name)
-            this.watchPodsForNamespace(name)
             break
           }
           case 'DELETED': {
             this.abortServicesForNamespace(name)
-            this.abortDeploymentsForNamespace(name)
-            this.abortPodsForNamespace(name)
             break
 
           }
