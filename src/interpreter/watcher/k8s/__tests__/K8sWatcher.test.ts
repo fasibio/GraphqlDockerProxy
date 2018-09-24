@@ -15,6 +15,9 @@ jest.mock('../../../../properties', () => {
     token: () => {
       return '123'
     },
+    kubernetesConfigurationKind: () => {
+      return 'mock'
+    },
   }
 })
 
@@ -37,7 +40,62 @@ describe('tests the K8sWatcher', () => {
       ],
     }
   })
+  describe('tests watchEndpoint', () => {
+    let mockStream: Readable = null
+    beforeEach(() => {
+      mockStream = new Readable()
 
+      k8sWatcher.client = {
+        api: {
+          v1: {
+            watch:{
+              namespaces:{
+                getStream: () => {
+                  mockStream._read = function () { /* do nothing */ }
+                  return mockStream
+                },
+              },
+            },
+          },
+        },
+        loadSpec: () => {},
+      }
+    })
+    it('tests delete watchEndpoint', async() => {
+      k8sWatcher.abortServicesForNamespace = jest.fn()
+      k8sWatcher.watchServicesForNamespace = jest.fn()
+
+      await k8sWatcher.watchEndpoint()
+      const mockStreamObj = {
+        type: 'DELETED',
+        object: {
+          metadata: {
+            name: 'test',
+          },
+        },
+      }
+      await mockStream.emit('data', JSON.stringify(mockStreamObj))
+      expect(k8sWatcher.abortServicesForNamespace).toBeCalledWith('test')
+      expect(k8sWatcher.watchServicesForNamespace).not.toBeCalled()
+    })
+    it('tests added watchEndpoint', async() => {
+      k8sWatcher.watchServicesForNamespace = jest.fn()
+      k8sWatcher.abortServicesForNamespace = jest.fn()
+
+      await k8sWatcher.watchEndpoint()
+      const mockStreamObj = {
+        type: 'ADDED',
+        object: {
+          metadata: {
+            name: 'test',
+          },
+        },
+      }
+      await mockStream.emit('data', JSON.stringify(mockStreamObj))
+      expect(k8sWatcher.watchServicesForNamespace).toBeCalledWith('test')
+      expect(k8sWatcher.abortServicesForNamespace).not.toBeCalled()
+    })
+  })
   describe('tests the updatelistener is called by service stream', () => {
     let mockStream = null
     beforeEach(() => {
@@ -66,7 +124,6 @@ describe('tests the K8sWatcher', () => {
       const callMockFunc = jest.fn()
       k8sWatcher.setDataUpdatedListener(callMockFunc)
       k8sWatcher.watchServicesForNamespace('mock')
-      console.log('hier')
       const mockStreamObj = {
         type: 'ADDED',
         object: {

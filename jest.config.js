@@ -33,6 +33,5 @@
   ],
   globals: {
     idx: global.idx,
-    winston: {},
   },
 }

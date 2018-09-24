@@ -1,4 +1,4 @@
-import schema from '../generalSchema'
+import schema, { typeDefs, resolvers } from '../generalSchema'
 import { Interpreter } from '../../interpreter/Interpreter'
 
 jest.mock('../../properties', () => {
@@ -19,11 +19,11 @@ jest.mock('graphql-tools', () => {
 describe('tests the adminSchema', () => {
   it('snapshot the typeDefs', () => {
 
-    expect(schema.typeDefs).toMatchSnapshot()// tslint:disable-line
+    expect(typeDefs).toMatchSnapshot()// tslint:disable-line
   })
 
   it('snapshot the resolver function', () => {
-    expect(schema.resolvers).toMatchSnapshot()// tslint:disable-line
+    expect(resolvers).toMatchSnapshot()// tslint:disable-line
   })
 
   it('tests resolver mutation => resetEndpointFinderWatcher', () => {
@@ -34,7 +34,7 @@ describe('tests the adminSchema', () => {
         this.testCallFunc()
       }
     }
-    schema.resolvers.Mutation.resetEndpointFinderWatcher(null, null, {
+    resolvers.Mutation.resetEndpointFinderWatcher(null, null, {
       interpreter: testInterpreter,
     })
 
@@ -42,7 +42,7 @@ describe('tests the adminSchema', () => {
   })
 
   it('tests resolver configuration', () => {
-    expect(schema.resolvers.Query.configuration()).toMatchSnapshot// tslint:disable-line
+    expect(resolvers.Query.configuration()).toMatchSnapshot// tslint:disable-line
   })
 
   describe('tests resolver namespaces', () => {
@@ -77,7 +77,7 @@ describe('tests the adminSchema', () => {
       const endpoints = {
         testNamspace: inputData,
       }
-      expect(schema.resolvers.Query.namespaces({}, {}, { endpoints })).toMatchSnapshot()
+      expect(resolvers.Query.namespaces({}, {}, { endpoints })).toMatchSnapshot()
     })
   })
 
