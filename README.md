@@ -40,7 +40,7 @@ services:
     networks:
      - web
     environment: 
-      - qglProxyRuntime=docker
+      - qglProxyRuntime=dockerWatch
       - dockerNetwork=web
       - gqlProxyToken=1234
     volumes: 
@@ -138,7 +138,7 @@ See "How it works with Docker".
 You have to set labels in the Deployment-Manifest.
 
 The following labels a available/necessary 
-- ```qglProxyRuntime```: can be ```docker``` or ```kubernetes```. For Kubernetes you need kubernetes ^^
+- ```qglProxyRuntime```: can be ```docker``` or ```kubernetes``` or ```dockerWatch``` or ```kubernetesWatch```. For Kubernetes you need kubernetes* ^^
 - ```gqlProxyToken```: a token which verifies that the microservice belongs to the proxy 
 - ```kubernetesConfigurationKind```: How the proxy find the Kubernetes API. 
   - ```fromKubeconfig```: A Config file which is mount in the Container
@@ -297,23 +297,23 @@ Set the environment variables, ```gqlProxyAdminUser``` and ```gqlProxyAdminPassw
 
 Key | Available Values | Default | Description | Need for | Required 
 --- | --- | --- | --- | --- | ---
-| ```qglProxyRuntime``` | ```docker``` or ```kubernetes``` or ```kubernetesWatch``` | ```docker``` | tells the proxy run to in a docker image or in a kubernetes "world" | docker and kubernetes | true 
-|```dockerNetwork``` | string | none | the network where the backend GraphQL-Server is shared with the proxy|  ```docker``` | for docker
-| ```gqlProxyToken``` | string | empty string | a token which verifies that the microservice belongs to the proxy |  ```docker``` or ```kubernetes``` or ```kubernetesWatch``` | false but better you set it
+| ```qglProxyRuntime``` | ```docker``` or ```dockerWatch``` or ```kubernetes``` or ```kubernetesWatch``` | ```dockerWatch``` | tells the proxy run to in a docker image or in a kubernetes "world" | docker and kubernetes | true 
+|```dockerNetwork``` | string | none | the network where the backend GraphQL-Server is shared with the proxy|  ```docker``` or ```dockerWatch```| for docker
+| ```gqlProxyToken``` | string | empty string | a token which verifies that the microservice belongs to the proxy |  ```docker``` or ```dockerWatch``` or ```kubernetes``` or ```kubernetesWatch``` | false but better you set it
 |```kubernetesConfigurationKind``` | ```fromKubeconfig``` or ```getInCluster``` or ```getInClusterByUser``` | ```fromKubeconfig``` | How the proxy finds the Kubernetes API config. | ```kubernetes``` or ```kubernetesWatch``` | false
-|```gqlProxyPollingMs```| int | 5000 | The polling time to check for changes |  ```docker``` or ```kubernetes``` | false
+|```gqlProxyPollingMs```| int | 5000 | The polling time to check for changes |  all | false
 |```gqlProxyK8sUser```| string | no Default | The K8s user. This is only needed for configuration type ```getInClusterByUser```. |  ```kubernetes``` or ```kubernetesWatch``` | false
 |```gqlProxyK8sUserPassword```| string | no Default |  The password for the K8s user. This is only needed for configuration type ```getInClusterByUser```. |  ```kubernetes``` or ```kubernetesWatch``` | false
-|```gqlProxyAdminUser```| string | empty string | The Basic Auth user for the admin page |  ```docker``` or ```kubernetes``` or ```kubernetesWatch``` | false
-|```gqlProxyAdminPassword```| string | empty string | The Basic Auth password for the admin page |  ```docker``` or ```kubernetes``` or ```kubernetesWatch``` | false
-|```gqlShowPlayground```| bool | true | toggle graphql playground ui on and off |  ```docker``` or ```kubernetes``` or ```kubernetesWatch``` | true
-|```gqlBodyParserLimit```| string| 1mb | Set the body size limit for big Data | ```docker``` or ```kubernetes``` or ```kubernetesWatch``` | false
+|```gqlProxyAdminUser```| string | empty string | The Basic Auth user for the admin page |  all | false
+|```gqlProxyAdminPassword```| string | empty string | The Basic Auth password for the admin page |  all | false
+|```gqlShowPlayground```| bool | true | toggle graphql playground ui on and off |  all | true
+|```gqlBodyParserLimit```| string| 1mb | Set the body size limit for big Data | all | false
 |```winstonLogLevel```| string| ```info``` | Set standart loglevel for winston e.g: ```debug```, ```info```, ```warn``` ```error``` | all | false
 |```winstonLogStyle```| string| ```simple``` | Set the style to logging for winston ```simple``` or ```json``` | all | false
 |```enableClustering```| bool | ```false``` | Staring a cluster set a proxy for each cpu kernel. (sometimes can bring more boost) | all | false
 
 ### Possible Environment Variable Combinations for Docker
-  - ```qglProxyRuntime```=docker
+  - ```qglProxyRuntime```=dockerWatch
   - ```dockerNetwork```=web
 
 ### Possible Environment Variable Combinations for Kubernetes

@@ -32,7 +32,7 @@ exports[`testing the properties snapshot default result of propertie network 1`]
 
 exports[`testing the properties snapshot default result of propertie printAllConfigs 1`] = `undefined`;
 
-exports[`testing the properties snapshot default result of propertie runtime 1`] = `"docker"`;
+exports[`testing the properties snapshot default result of propertie runtime 1`] = `"dockerWatch"`;
 
 exports[`testing the properties snapshot default result of propertie showPlayground 1`] = `true`;
 

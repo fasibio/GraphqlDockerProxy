@@ -34,7 +34,7 @@ export const getLogFormat = () => {
  * Available values: docker & kubernetes && kubernetesWatch && dockerWatch
  */
 export const runtime = () => {
-  return idx(process, _ => _.env.qglProxyRuntime) || 'docker'
+  return idx(process, _ => _.env.qglProxyRuntime) || 'dockerWatch'
 }
 
 /**
