@@ -21,7 +21,7 @@ It's a GraphQL API Gateway.
 ## How Does it Work: 
 It works without dependencies. 
 You can start it in your docker cloud. 
-Use it to manage your GraphQL-Microservices. With docker labels you can registory your microservices in the proxy.
+Use it to manage your GraphQL-Microservices. With docker labels you can registry your microservices in the proxy.
 The proxy automatically will find your services and add them to the gateway.
 
 ## How to Start the Proxy
@@ -64,7 +64,7 @@ You can do this with the following environment variables:
 
  ## Let's Start a GraphQL Microservice 
 
- It is imporant to put your microservice in the same network as the proxy (In this example the network is called 'web'). 
+ It is important to put your microservice in the same network as the proxy (In this example the network is called 'web'). 
  Now you have to set the following labels: 
   - ```gqlProxy.token```: The same token you set in the proxy. (In this example 1234)
   - ```gqlProxy.url```: This is the relative path to the proxy running inside the container. (For example: :9000/graphql)
@@ -109,7 +109,7 @@ For example:
 }
 ```
 
-Or you can use the adminpage to see what has been included http://127.0.0.1:3000/admin/graphql (See the second tab at playground)
+Or you can use the admin Page to see what has been included http://127.0.0.1:3000/admin/graphql (See the second tab at playground)
 
 ## Now Let's Scale the GraphQL Microservice !
 The proxy knows how to reference the same images with a round robin loadbalancer. 
