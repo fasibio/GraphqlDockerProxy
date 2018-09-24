@@ -20,7 +20,7 @@ jest.mock('../../../../properties', () => {
 
 describe('tests the K8sWatcher', () => {
 
-  let k8sWatcher = null
+  let k8sWatcher : K8sWatcher = null
   let endpoints: Endpoints = {}
   beforeEach(() => {
     k8sWatcher = new K8sWatcher()
@@ -120,6 +120,43 @@ describe('tests the K8sWatcher', () => {
       expect(k8sWatcher.updateUrl(':3000/graphql', sockData))
       .toBe('http://test.testNamespace:3000/graphql')
     })
+  })
+
+  describe('tests abort', () => {
+
+    it('tests abortServiceForNamespace', () => {
+      const serviceAbortMockFunc = jest.fn()
+      k8sWatcher.streams = {
+        test: {
+          service: {
+            abort: serviceAbortMockFunc,
+          },
+        },
+      }
+      k8sWatcher.abortServicesForNamespace('test')
+      expect(serviceAbortMockFunc).toBeCalled()
+
+    })
+    it('abortAllStreams', () => {
+      const namespaceAbortMockFunc = jest.fn()
+      k8sWatcher.namespaceStream = {
+        abort: namespaceAbortMockFunc,
+      }
+
+      const serviceAbortMockFunc = jest.fn()
+      k8sWatcher.streams = {
+        one: {
+          service: {
+            abort: serviceAbortMockFunc,
+          },
+        },
+      }
+
+      k8sWatcher.abortAllStreams()
+      expect(namespaceAbortMockFunc).toBeCalled()
+      expect(serviceAbortMockFunc).toBeCalled()
+    })
+
   })
 
   describe('tests __deleteEndpoint', () => {
