@@ -311,7 +311,7 @@ Key | Available Values | Default | Description | Need for | Required
 |```winstonLogLevel```| string| ```info``` | Set standart loglevel for winston e.g: ```debug```, ```info```, ```warn``` ```error``` | all | false
 |```winstonLogStyle```| string| ```simple``` | Set the style to logging for winston ```simple``` or ```json``` | all | false
 |```enableClustering```| bool | ```false``` | Staring a cluster set a proxy for each cpu kernel. (sometimes can bring more boost) | all | false
-
+|```sendIntrospection```|bool | ```true```| if it true: client can see the structure. if it false: no introspection will be send. **For more __security__ Set to false in Produktion mode** | all| false
 ### Possible Environment Variable Combinations for Docker
   - ```qglProxyRuntime```=dockerWatch
   - ```dockerNetwork```=web

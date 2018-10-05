@@ -34,6 +34,8 @@ exports[`testing the properties snapshot default result of propertie printAllCon
 
 exports[`testing the properties snapshot default result of propertie runtime 1`] = `"dockerWatch"`;
 
+exports[`testing the properties snapshot default result of propertie sendIntrospection 1`] = `true`;
+
 exports[`testing the properties snapshot default result of propertie showPlayground 1`] = `true`;
 
 exports[`testing the properties snapshot default result of propertie token 1`] = `""`;
@@ -71,6 +73,8 @@ exports[`testing the properties tests with given envs snapshot network is filled
 exports[`testing the properties tests with given envs snapshot printAllConfigs is filled by env\`s correctly 1`] = `undefined`;
 
 exports[`testing the properties tests with given envs snapshot runtime is filled by env\`s correctly 1`] = `"mock"`;
+
+exports[`testing the properties tests with given envs snapshot sendIntrospection is filled by env\`s correctly 1`] = `true`;
 
 exports[`testing the properties tests with given envs snapshot showPlayground is filled by env\`s correctly 1`] = `"mock"`;
 

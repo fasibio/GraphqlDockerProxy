@@ -13,6 +13,7 @@ import {
   getEnableClustering,
   getLogFormat,
   getLogLevel,
+  sendIntrospection,
 } from './properties'
 import { Interpreter } from './interpreter/Interpreter'
 import  { Endpoints } from './interpreter/endpoints'
@@ -123,7 +124,7 @@ const start = async(endpoints : Endpoints, interpreter: Interpreter) => {
   const apiServer = new ApolloServer({
     playground,
     schema: schemaMerged,
-    introspection: true,
+    introspection: sendIntrospection(),
     context: (obj) => {
       return {
         headers: obj.res.req.headers,

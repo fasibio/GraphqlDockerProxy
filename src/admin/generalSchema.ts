@@ -1,5 +1,14 @@
 import { makeExecutableSchema } from 'graphql-tools'
-import { getBuildNumber, getVersion, getPollingMs, runtime, getBodyParserLimit, network, getLogFormat, getLogLevel } from '../properties'
+import {
+  getBuildNumber,
+  getVersion,
+  getPollingMs,
+  runtime,
+  getBodyParserLimit,
+  network,
+  getLogFormat,
+  getLogLevel,
+  sendIntrospection } from '../properties'
 import { loadLogger } from '../logger'
 import { Interpreter } from '../interpreter/Interpreter'
 export const typeDefs = `
@@ -30,6 +39,7 @@ export const typeDefs = `
     bodyParserLimit: String
     dockerNetwork: String
     logging: Logging
+    sendIntrospection: Boolean
   }
 
   type Logging {
@@ -102,6 +112,7 @@ export const resolvers = {
     configuration: () => {
       return {
         runtime,
+        sendIntrospection,
         version: getVersion,
         buildNumber: getBuildNumber,
         pollingTimeMS: getPollingMs,
@@ -110,9 +121,7 @@ export const resolvers = {
         logging: {
           format: getLogFormat,
           level: getLogLevel,
-
         },
-
       }
     },
 

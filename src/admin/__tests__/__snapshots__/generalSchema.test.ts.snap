@@ -42,6 +42,7 @@ exports[`tests the adminSchema snapshot the typeDefs 1`] = `
     bodyParserLimit: String
     dockerNetwork: String
     logging: Logging
+    sendIntrospection: Boolean
   }
 
   type Logging {

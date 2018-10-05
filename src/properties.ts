@@ -93,6 +93,16 @@ export const getBodyParserLimit = () => {
   return idx(process, _ => _.env.gqlBodyParserLimit) || '1mb'
 }
 
+/**
+ * boolean if true client can see the structure if false no introspection will be send
+ * Only for /grapghql
+ * for /admin/graphql intospection will always send
+ * default true
+ */
+export const sendIntrospection = (): boolean => {
+  return idx(process, _ => _.env.sendIntrospection) || true
+}
+
 export const printAllConfigs = () => {
   console.log('===================================')
   console.log('LogLevel:', getLogLevel())
@@ -101,6 +111,7 @@ export const printAllConfigs = () => {
   console.log('gqlProxyAdminUser:', adminUser())
   console.log('gqlProxyKnownOldSchemas', knownOldSchemas())
   console.log('gqlShowPlayground', showPlayground())
+  console.log('sendIntrospection:', sendIntrospection())
   console.log('Version: ', getVersion())
   console.log('Buildnumber: ', getBuildNumber())
   if (runtime() === 'docker') {
