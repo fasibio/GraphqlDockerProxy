@@ -35,7 +35,7 @@ apiVersion: v1
 metadata:
   annotations:
     gqlProxy.token: '1234'
-    gqlProxy.url: ':9002/graphql'
+    gqlProxy.url: ':9000/graphql'
     gqlProxy.namespace: 'swapi'
   labels:
     name: swapi
@@ -43,7 +43,7 @@ metadata:
   namespace: starwars
 spec:
   ports:
-    - port: 9001
+    - port: 9000
       targetPort: 9000
       name: http
   selector:

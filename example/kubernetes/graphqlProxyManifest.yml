@@ -27,8 +27,12 @@ spec:
           value: admin
         - name: gqlProxyAdminPassword
           value: test1234
+        - name: kubernetesConfigurationKind
+          value: getInCluster
         - name: gqlBodyParserLimit
           value: 5mb
+        - name: winstonLogLevel
+          value: debug
         image: fasibio/graphqldockerproxy:rc_0.0.12
         imagePullPolicy: Always
         readinessProbe:
