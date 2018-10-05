@@ -39,7 +39,7 @@
     "node-docker-api": "1.1.22",
     "node-docker-monitor": "1.0.11",
     "node-fetch": "2.2.0",
-    "sort-object": "^3.0.2",
+    "sort-object": "3.0.2",
     "typescript": "2.9.2",
     "winston": "3.0.0"
   },
