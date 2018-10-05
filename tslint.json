@@ -3,6 +3,7 @@
   "rules": {
     "import-name": false,
     "semicolon": [true, "never"],
-    "max-line-length": [true, 300]
+    "max-line-length": [true, 300],
+    "prefer-template": false
   }
 }
