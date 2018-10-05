@@ -41,7 +41,7 @@ export const runtime = () => {
  * Starting Slaves for each CPU
  */
 export const getEnableClustering = () => {
-  return idx(process, _ => _.env.enableClustering) || false
+  return idx(process, _ => _.env.enableClustering) === 'true' || false
 }
 
 /**
@@ -50,7 +50,7 @@ export const getEnableClustering = () => {
  * WIP Not produktionable
  */
 export const knownOldSchemas = () => {
-  return idx(process, _ => _.env.gqlProxyKnownOldSchemas) || false
+  return idx(process, _ => _.env.gqlProxyKnownOldSchemas) === 'true' || false
 }
 
 export const kubernetesConfigurationKind = () => {
@@ -86,7 +86,7 @@ export const adminPassword = () => {
 }
 
 export const showPlayground = () => {
-  return idx(process, _ => _.env.gqlShowPlayground) || true
+  return idx(process, _ => _.env.gqlShowPlayground) === 'true' || true
 }
 
 export const getBodyParserLimit = () => {
@@ -100,7 +100,7 @@ export const getBodyParserLimit = () => {
  * default true
  */
 export const sendIntrospection = (): boolean => {
-  return idx(process, _ => _.env.sendIntrospection) || true
+  return idx(process, _ => _.env.sendIntrospection) === 'true' || true
 }
 
 export const printAllConfigs = () => {
