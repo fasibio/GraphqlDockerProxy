@@ -86,7 +86,10 @@ export const adminPassword = () => {
 }
 
 export const showPlayground = () => {
-  return idx(process, _ => _.env.gqlShowPlayground) === 'true' || true
+  if (idx(process, _ => _.env.gqlShowPlayground) === null) {
+    return true
+  }
+  return idx(process, _ => _.env.gqlShowPlayground) === 'true'
 }
 
 export const getBodyParserLimit = () => {
@@ -100,7 +103,10 @@ export const getBodyParserLimit = () => {
  * default true
  */
 export const sendIntrospection = (): boolean => {
-  return idx(process, _ => _.env.sendIntrospection) === 'true' || true
+  if (idx(process, _ => _.env.sendIntrospection) === null) {
+    return true
+  }
+  return idx(process, _ => _.env.sendIntrospection) === 'true'
 }
 
 export const printAllConfigs = () => {

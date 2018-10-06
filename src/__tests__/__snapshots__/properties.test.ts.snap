@@ -76,6 +76,6 @@ exports[`testing the properties tests with given envs snapshot runtime is filled
 
 exports[`testing the properties tests with given envs snapshot sendIntrospection is filled by env\`s correctly 1`] = `true`;
 
-exports[`testing the properties tests with given envs snapshot showPlayground is filled by env\`s correctly 1`] = `true`;
+exports[`testing the properties tests with given envs snapshot showPlayground is filled by env\`s correctly 1`] = `false`;
 
 exports[`testing the properties tests with given envs snapshot token is filled by env\`s correctly 1`] = `"mock"`;

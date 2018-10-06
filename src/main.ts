@@ -81,7 +81,7 @@ const startWatcher = async(end: Endpoints,
 
     }
     lastEndPoints = JSON.stringify(endpoints)
-    server = await start(await handleRestart(endpoints), interpreter)
+    await start(await handleRestart(endpoints), interpreter)
 
   } else {
     winston.debug('no Change at endpoints does not need a restart')
@@ -174,11 +174,9 @@ const start = async(endpoints : Endpoints, interpreter: Interpreter) => {
     server.close(() => {
       server = app.listen(3000)
     })
-    return server
+  }else {
+    server =  app.listen(3000)
   }
-
-  return app.listen(3000)
-
 }
 
 if (getEnableClustering()) {
@@ -207,12 +205,14 @@ const signals = {
 }
 const shutdown = (signal, value) => {
   winston.info('shutdown!')
-  server.close(() => {
+  if (server === null) {
+    process.exit(128 + value)
+  } else {
     winston.info(`server stopped by ${signal} with value ${value}`)
     server.close(() => {
       process.exit(128 + value)
     })
-  })
+  }
 }
 Object.keys(signals).forEach((signal) => {
   (process as NodeJS.EventEmitter).on(signal, () => {
