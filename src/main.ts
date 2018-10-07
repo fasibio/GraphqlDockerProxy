@@ -2,6 +2,8 @@ import { ApolloServer } from 'apollo-server-express'
 import * as express from 'express'
 import * as core from 'express-serve-static-core'
 import { weaveSchemas } from 'graphql-weaver'
+import { EngineReportingOptions } from 'apollo-engine-reporting'
+
 import * as http from 'http'
 import {
   getPollingMs,
@@ -14,6 +16,7 @@ import {
   getLogFormat,
   getLogLevel,
   sendIntrospection,
+  getApolloEngineApiKey,
 } from './properties'
 import { Interpreter } from './interpreter/Interpreter'
 import  { Endpoints } from './interpreter/endpoints'
@@ -121,8 +124,16 @@ const start = async(endpoints : Endpoints, interpreter: Interpreter) => {
 
     }
   }
+
+  let engine:  boolean | EngineReportingOptions = false
+  if (getApolloEngineApiKey() !== '') {
+    engine = {
+      apiKey: getApolloEngineApiKey(),
+    }
+  }
   const apiServer = new ApolloServer({
     playground,
+    engine,
     schema: schemaMerged,
     introspection: sendIntrospection(),
     context: (obj) => {

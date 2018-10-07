@@ -97,6 +97,13 @@ export const getBodyParserLimit = () => {
 }
 
 /**
+ * The Key to active the ApolloEngine
+ */
+export const getApolloEngineApiKey = (): string => {
+  return idx(process, _ => _.env.gqlApolloEngineApiKey) || ''
+}
+
+/**
  * boolean if true client can see the structure if false no introspection will be send
  * Only for /grapghql
  * for /admin/graphql intospection will always send
@@ -120,10 +127,13 @@ export const printAllConfigs = () => {
   console.log('sendIntrospection:', sendIntrospection())
   console.log('Version: ', getVersion())
   console.log('Buildnumber: ', getBuildNumber())
-  if (runtime() === 'docker') {
+  console.log('gqlProxyToken:', token())
+  if (getApolloEngineApiKey() !== '') {
+    console.log('gqlApolloEngineApiKey:', getApolloEngineApiKey())
+  }
+  if (runtime() === 'docker' || runtime() === 'dockerWatch') {
     console.log('dockerNetwork:', network())
-    console.log('gqlProxyToken:', token())
-  } else if (runtime() === 'kubernetes') {
+  } else if (runtime() === 'kubernetes' || runtime() === 'kubernetesWatch') {
     console.log('kubernetesConfigurationKind:', kubernetesConfigurationKind())
     if (kubernetesConfigurationKind() === 'getInClusterByUser') {
       console.log('gqlProxyK8sUser:', k8sUser())
