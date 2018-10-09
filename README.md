@@ -24,10 +24,10 @@ To build Graphql microservices and combine this automatically, in one API, witho
 You can find examples docker-compose files in the example directory of this git project ([./example/quickstart](/example/quickstart)).
 
 ## How Does it Work: 
-It works without dependencies. 
-You can start it in your docker cloud. 
-Use it to manage your GraphQL-Microservices. With docker labels you can registry your microservices in the proxy.
-The proxy automatically will find your services and add them to the gateway.
+- It works without dependencies. 
+- You can start it in your docker cloud. 
+ - Use it to manage your GraphQL-Microservices. With docker labels you can registry your microservices in the proxy.
+- The proxy automatically will find your services and add them to the gateway.
 
 ## How to Start the Proxy
 In this example we will use docker-compose to start the proxy. 
@@ -90,7 +90,8 @@ networks:
 
 Start the docker-compose file. 
 The proxy will automatically find the microservice and include it.
-Under http://127.0.0.1:3000/graphql you can now see that swapi has wrapped your graphql microservice 
+Under http://127.0.0.1:3000/graphql you can now see that swapi has wrapped your graphql microservice.
+
 Inside this namespace you can make graphql requests. 
 For example:
 ```
@@ -117,7 +118,7 @@ Or you can use the admin Page to see what has been included http://127.0.0.1:300
 ## Now Let's Scale the GraphQL Microservice !
 The proxy knows how to reference the same images with a round robin loadbalancer. 
 
-Go in the folder where the SWAPI service is. 
+Go in the folder where the SWAPI docker-compose file is. 
 
 Enter the command: 
 ```sudo docker-compose scale swapi=3```
@@ -125,8 +126,8 @@ Enter the command:
 The proxy will automatically start a loadbalancer
 
 
-**And thats all.**
-Now you can add you Graphql microservices by adding the labels to your compose file and set the same Network ('web').
+**And thats all!**
+Now you can add you Graphql microservices by adding the labels to your compose file and set the same Network (for example 'web').
 
 
 # Run with Kubernetes (18min example)
@@ -338,3 +339,6 @@ Key | Available Values |  Description | Required
   - ```gqlProxyAdminUser```=myAdminPageUser
   - ```gqlProxyAdminPassword```=adminPassword
  
+ If you find a bug, have questions please open an issue. 
+ 
+ Have fun.
