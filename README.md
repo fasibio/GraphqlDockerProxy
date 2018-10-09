@@ -2,6 +2,7 @@
 # GraphqlDockerProxy
 
 It's a generic Graphql Proxy Api Gateway.
+
 To build Graphql microservices and combine this automatically, in one API, without extra Code.
 
 
