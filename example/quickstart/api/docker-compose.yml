@@ -1,0 +1,20 @@
+version: '3'
+services: 
+  api: 
+    restart: always
+    image: fasibio/graphqldockerproxy
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+    networks:
+     - web
+    environment: 
+      - qglProxyRuntime=dockerWatch
+      - dockerNetwork=web
+      - gqlProxyToken=1234
+    volumes: 
+     - /var/run/docker.sock:/var/run/docker.sock
+networks:
+  web:
+    external: true
