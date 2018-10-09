@@ -339,6 +339,8 @@ Key | Available Values |  Description | Required
   - ```gqlProxyAdminUser```=myAdminPageUser
   - ```gqlProxyAdminPassword```=adminPassword
  
+ # and finally
+ 
  If you find a bug, have questions please open an issue. 
  
  Have fun.
