@@ -125,7 +125,7 @@ const start = async(endpoints : Endpoints, interpreter: Interpreter) => {
     }
   }
 
-  let engine:  boolean | EngineReportingOptions = false
+  let engine:  boolean | EngineReportingOptions<any> = false
   if (getApolloEngineApiKey() !== '') {
     engine = {
       apiKey: getApolloEngineApiKey(),
