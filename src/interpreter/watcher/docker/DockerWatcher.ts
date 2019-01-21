@@ -5,8 +5,12 @@ import { WatcherInterface } from '../WatcherInterface'
 import * as monitor from 'node-docker-monitor'
 import { Endpoints } from '../../endpoints'
 import { foundEquals } from '../../loadBalancer'
-export class DockerWatcher extends WatcherInterface{
+interface Monitor {
+  stop()
+}
 
+export class DockerWatcher extends WatcherInterface{
+  m : Monitor = null
   constructor() {
     super()
   }
@@ -22,6 +26,12 @@ export class DockerWatcher extends WatcherInterface{
     }
     return 'http://' + sockData.NetworkSettings.Networks[network()].IPAddress + url
 
+  }
+
+  abortAllStreams = () => {
+    if (this.m != null) {
+      this.m.stop()
+    }
   }
 
   onContainerUp = (container: any) => {
@@ -69,7 +79,7 @@ export class DockerWatcher extends WatcherInterface{
   }
   watchEndpoint = () => {
 
-    monitor({
+    this.m = monitor({
       onMonitorStarted: () => { },
       onMonitorStopped: () => {},
       onContainerUp: this.onContainerUp,

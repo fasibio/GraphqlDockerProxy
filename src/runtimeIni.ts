@@ -68,7 +68,7 @@ export const loadRuntimeInfo = (callBack: callBack) => {
         })
       })
       setInterval(() => {
-        winston.info('Reset Watching from K8S endpoints (work a around)')
+        winston.info('Reset Watching from endpoints (work a around)')
         dockerWatcher.abortAllStreams()
         dockerWatcher.watchEndpoint()
       },          getResetEndpointTime())
