@@ -306,6 +306,8 @@ Key | Available Values | Default | Description | Need for | Required
 |```enableClustering```| bool | ```false``` | Staring a cluster set a proxy for each cpu kernel. (sometimes can bring more boost) | all | false
 |```sendIntrospection```|bool | ```true```| if it true: client can see the structure. if it false: no introspection will be send. **For more __security__ Set to false in Produktion mode** | all| false
 |```gqlApolloEngineApiKey```|string| empty string | The apollo Engine Key (after login by apollo you get this key)|all| false
+|```AccessControlAllowOrigin```|string| empty string | Cors settings | all | false
+|```AccessControlAllowHeader```|string| empty string | Cors settings see ```AccessControlAllowOrigin``` | all | false
 ### Possible Environment Variable Combinations for Docker
   - ```qglProxyRuntime```=dockerWatch
   - ```dockerNetwork```=web
