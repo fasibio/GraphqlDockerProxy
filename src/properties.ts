@@ -103,6 +103,14 @@ export const getApolloEngineApiKey = (): string => {
   return idx(process, _ => _.env.gqlApolloEngineApiKey) || ''
 }
 
+export const getAccessControlAllowOrigin = () :string => {
+  return idx(process, _ => _.env.AccessControlAllowOrigin) || ''
+}
+
+export const getAccessControlAllowHeaders = () :string => {
+  return idx(process, _ => _.env.AccessControlAllowHeaders) || ''
+}
+
 /**
  * boolean if true client can see the structure if false no introspection will be send
  * Only for /grapghql

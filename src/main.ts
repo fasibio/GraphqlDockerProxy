@@ -17,6 +17,8 @@ import {
   getLogLevel,
   sendIntrospection,
   getApolloEngineApiKey,
+  getAccessControlAllowHeaders,
+  getAccessControlAllowOrigin,
 } from './properties'
 import { Interpreter } from './interpreter/Interpreter'
 import  { Endpoints } from './interpreter/endpoints'
@@ -107,6 +109,13 @@ const start = async(endpoints : Endpoints, interpreter: Interpreter) => {
   let schemaMerged = null
   schemaMerged = schema
   app = express()
+  app.use((req, res, next) => {
+    if (getAccessControlAllowOrigin() !== '') {
+      res.header('Access-Control-Allow-Origin', getAccessControlAllowOrigin())
+      res.header('Access-Control-Allow-Headers', getAccessControlAllowHeaders())
+    }
+    next()
+  })
   let playground: any = false
   if (showPlayground()) {
     playground = {
