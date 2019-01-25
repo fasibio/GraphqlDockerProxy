@@ -4,6 +4,10 @@ exports[`testing the properties snapshot default result of propertie adminPasswo
 
 exports[`testing the properties snapshot default result of propertie adminUser 1`] = `""`;
 
+exports[`testing the properties snapshot default result of propertie getAccessControlAllowHeaders 1`] = `""`;
+
+exports[`testing the properties snapshot default result of propertie getAccessControlAllowOrigin 1`] = `""`;
+
 exports[`testing the properties snapshot default result of propertie getApolloEngineApiKey 1`] = `""`;
 
 exports[`testing the properties snapshot default result of propertie getBodyParserLimit 1`] = `"1mb"`;
@@ -45,6 +49,10 @@ exports[`testing the properties snapshot default result of propertie token 1`] =
 exports[`testing the properties tests with given envs snapshot adminPassword is filled by env\`s correctly 1`] = `"mock"`;
 
 exports[`testing the properties tests with given envs snapshot adminUser is filled by env\`s correctly 1`] = `"mock"`;
+
+exports[`testing the properties tests with given envs snapshot getAccessControlAllowHeaders is filled by env\`s correctly 1`] = `""`;
+
+exports[`testing the properties tests with given envs snapshot getAccessControlAllowOrigin is filled by env\`s correctly 1`] = `""`;
 
 exports[`testing the properties tests with given envs snapshot getApolloEngineApiKey is filled by env\`s correctly 1`] = `""`;
 
