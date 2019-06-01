@@ -35,6 +35,7 @@ export class DockerWatcher extends WatcherInterface{
   }
 
   onContainerUp = (container: any) => {
+    winston.debug('onContainerUp', container)
     if (container.Labels[clientLabels.TOKEN] === token()) {
       console.log('onContainerUp')
       const namespace :string = container.Labels[clientLabels.NAMESPACE]
