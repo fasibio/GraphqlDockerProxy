@@ -6,7 +6,7 @@
   "scripts": {
     "precommit": "yarn lint",
     "prepush": "npm test",
-    "prepkg-docker": "yarn build",
+    "prenexe-docker": "npm run build",
     "dev": "tsc -w -p . --skipLibCheck",
     "build": "tsc -p . --skipLibCheck",
     "start": "npm run build &&dockerNetwork=web gqlProxyToken=1234 node dist/main.js",
@@ -15,8 +15,8 @@
     "startDevK8sWatcher": "gqlProxyToken=1234 qglProxyRuntime=kubernetesWatch nodemon dist/main.js",
     "test": "jest .",
     "lint": "tslint -p .  --fix",
-    "pkg-docker": "pkg dist/main.js --targets node9-alpine-x64 --output pkg/app",
-    "pkg-docker-healthcheck": "pkg ./healthcheck.js --targets node9-alpine-x64 --output pkg/healthcheck"
+    "nexe-docker": "nexe dist/main.js -t alpine-x86-8.15.0 -o nexe/app",
+    "nexe-docker-healthcheck": "nexe ./healthcheck.js -t alpine-x86-8.15.0 -o nexe/healthcheck"
   },
   "author": "fasibio",
   "license": "ISC",
@@ -36,6 +36,7 @@
     "graphql-weaver": "0.13.1",
     "json-stream": "1.0.0",
     "kubernetes-client": "6.7.1",
+    "nexe": "^3.2.1",
     "node-docker-api": "1.1.22",
     "node-docker-monitor": "1.0.11",
     "node-fetch": "2.3.0",
@@ -53,7 +54,6 @@
     "jest": "23.6.0",
     "jsdom": "13.1.0",
     "nodemon": "1.18.9",
-    "pkg": "4.3.1",
     "shebang-loader": "0.0.1",
     "ts-jest": "23.10.5",
     "tslint": "5.12.0",

@@ -1,0 +1,21 @@
+version: '3.3'
+services: 
+    swapi: 
+      image: bfillmer/graphql-swapi
+      labels: 
+        - gqlProxy.token=testmich
+        - gqlProxy.url=:9000/graphql
+        - gqlProxy.namespace=swapi
+      expose:
+        - 9000
+      networks: 
+        - web
+      deploy:
+        replicas: 1
+        
+
+      
+
+networks:
+    web:
+      external: true

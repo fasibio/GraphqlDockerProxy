@@ -1,8 +1,8 @@
-FROM node:6 as build_job
+FROM node:9 as build_job
 ADD . /src
 WORKDIR /src
-RUN npm install && mkdir /src/pkg
-RUN npm run pkg-docker && npm run pkg-docker-healthcheck
+RUN npm install && mkdir /src/nexe
+RUN npm run nexe-docker && npm run nexe-docker-healthcheck
 
 FROM alpine:3.5
 ARG version
@@ -12,8 +12,8 @@ ENV VERSION=${version}
 ENV BUILD_NUMBER=${buildNumber}
 
 RUN apk update && apk add --no-cache libstdc++ libgcc
-COPY --from=build_job /src/pkg/app /src/app
-COPY --from=build_job /src/pkg/healthcheck /src/healthcheck
+COPY --from=build_job /src/nexe/app /src/app
+COPY --from=build_job /src/nexe/healthcheck /src/healthcheck
 WORKDIR /src
 EXPOSE 3000
 CMD ["/src/app"]

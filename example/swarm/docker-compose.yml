@@ -1,0 +1,32 @@
+version: '3.3'
+
+services: 
+  api: 
+    restart: always
+    image: swarmgqltester
+    expose:
+      - 3000
+    networks:
+     - web
+    environment: 
+      - qglProxyRuntime=dockerWatch
+      - dockerNetwork=web
+      - gqlProxyToken=testmich
+      - gqlProxyAdminUser=admin
+      - gqlProxyAdminPassword=test123
+      - gqlProxyPollingMs=10000
+      - winstonLogLevel=debug
+    volumes: 
+     - /var/run/docker.sock:/var/run/docker.sock
+    deploy: 
+      replicas: 1
+      placement:
+        constraints:
+        - node.role == manager
+    ports:
+      - "3000:3000"  
+
+
+networks:
+  web:
+    external: true
